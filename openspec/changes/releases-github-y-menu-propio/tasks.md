@@ -50,5 +50,5 @@
 
 - [x] 7.1 En el entorno local con SQLite: instalar el zip de `dist/` sobre una copia con `0.1.0` activa mediante `Plugin_Upgrader` y verificar que la versión pasa a `0.2.0`, el plugin sigue activo y `get_option( 'escritoriowp_ajustes' )` no cambia
 - [x] 7.2 Archivar el cambio `create-escritoriowp-plugin` (`/opsx:archive`) para que exista la spec principal `nucleo-plugin` y verificar que `openspec validate releases-github-y-menu-propio` ya no avisa de que falta la spec objetivo
-- [ ] 7.3 Fusionar en `main` y verificar en GitHub que el workflow crea el tag `v0.2.0`, la release `0.2.0` marcada como última con las notas del changelog y el activo `escritoriowp-0.2.0.zip`; descargarlo y comprobar con `unzip -l` la estructura
+- [x] 7.3 Fusionar en `main` y verificar en GitHub que el workflow crea el tag `v0.2.0`, la release `0.2.0` marcada como última con las notas del changelog y el activo `escritoriowp-0.2.0.zip`; descargarlo y comprobar con `unzip -l` la estructura
 - [ ] 7.4 En una instalación real con `0.2.0` instalada desde ese zip, apuntar temporalmente la constante a una release de prueba mayor (o publicar `0.2.1` cuando toque) y verificar el ciclo completo: aviso en Plugins, «Ver detalles» con el changelog, «Actualizar ahora» descarga de GitHub y deja el plugin activo; anotar el resultado en `docs/qa.md`

@@ -7,6 +7,17 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.2.1] - 2026-09-13
+
+Versión de mantenimiento, sin cambios en el comportamiento del plugin.
+
+### Corregido
+
+- El generador de la plantilla de traducción llevaba la versión escrita a mano, así que el `.pot`
+  distribuido anunciaba siempre la 0.1.0. Ahora la lee de la cabecera del plugin.
+- Las dependencias de desarrollo se resuelven contra PHP 8.1, la versión mínima que declara el
+  plugin, para que la integración continua pueda instalarlas.
+
 ## [0.2.0] - 2026-09-13
 
 ### Añadido

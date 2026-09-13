@@ -210,10 +210,12 @@ Repite la lista con cada combinación:
 - [x] `[S]` `php tools/empaquetar.php --wordpress-org` quita el módulo de actualizaciones, la cabecera
       `Update URI` y vacía la constante, sin tocar el árbol de trabajo.
 - [x] `[S]` Plugin Check sobre esa variante no encuentra el error del actualizador.
+- [x] `[S]` El zip publicado en la release tiene `escritoriowp/` como única entrada raíz y la versión correcta.
+- [x] `[S]` Contra la API real de GitHub, el plugin lee la release publicada y concluye bien si está al día.
 - [x] `[S]` `readme.txt` declara el servicio externo, con qué se envía y los enlaces legales de GitHub.
 - [x] `[S]` La descripción corta del `readme.txt` no pasa de 150 caracteres.
 - [x] `[N]` `php tools/notas-release.php X.Y.Z` extrae la sección del changelog y falla si no existe.
-- [ ] `[M]` Un push a `main` con la versión subida crea el tag y publica la release con su zip.
+- [x] `[S]` Un push a `main` con la versión subida crea el tag y publica la release con su zip.
 - [ ] `[M]` Un push a `main` sin subir la versión pasa las comprobaciones y no publica nada.
 - [ ] `[M]` Un push con las versiones descuadradas o sin changelog falla antes de crear el tag.
 - [ ] **Pendiente de decisión, no de comprobación:** el nombre y el slug llevan «wp», prohibido en el

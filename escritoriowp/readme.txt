@@ -4,7 +4,7 @@ Tags: dashboard, escritorio, buscador, command palette, woocommerce
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,6 +122,9 @@ Política de privacidad: https://docs.github.com/site-policy/privacy-policies/gi
 
 == Changelog ==
 
+= 0.2.1 =
+* Corrige la versión que se anunciaba en la plantilla de traducción, que se quedaba en la anterior.
+
 = 0.2.0 =
 * Menú propio «EscritorioWP» en el administrador, con las pantallas Ajustes y Acerca de.
 * La pantalla de ajustes se traslada desde Ajustes › EscritorioWP al menú propio.
@@ -141,6 +144,9 @@ Política de privacidad: https://docs.github.com/site-policy/privacy-policies/gi
 * Compatibilidad declarada con HPOS de WooCommerce.
 
 == Upgrade Notice ==
+
+= 0.2.1 =
+Versión de mantenimiento. No cambia nada de lo que ves ni de cómo funciona el plugin.
 
 = 0.2.0 =
 Añade el menú propio del plugin, la pantalla Acerca de y las actualizaciones automáticas desde

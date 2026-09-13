@@ -3,7 +3,7 @@
  * Plugin Name:       EscritorioWP
  * Plugin URI:        https://webprogramacion.es/escritoriowp
  * Description:       Sustituye el escritorio de WordPress por una interfaz propia y reemplaza la paleta de comandos por un lanzador que busca entradas, páginas, usuarios, productos y pedidos.
- * Version:           0.2.0
+ * Version:           0.2.1
  * Requires at least: 6.7
  * Requires PHP:      8.1
  * Author:            webprogramacion.es
@@ -25,7 +25,7 @@ namespace EscritorioWP;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION    = '0.2.0';
+const VERSION    = '0.2.1';
 const WP_MINIMO  = '6.7';
 const PHP_MINIMO = '8.1';
 const WOO_MINIMO = '8.0';
