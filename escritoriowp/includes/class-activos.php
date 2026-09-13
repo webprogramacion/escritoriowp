@@ -65,7 +65,8 @@ final class Activos {
 		wp_register_style( 'escritoriowp-comun', $css . 'comun.css', array( 'dashicons' ), $version );
 		wp_register_style( 'escritoriowp-escritorio', $css . 'escritorio.css', array( 'escritoriowp-comun' ), $version );
 		wp_register_style( 'escritoriowp-lanzador', $css . 'lanzador.css', array( 'escritoriowp-comun' ), $version );
-		wp_register_style( 'escritoriowp-ajustes', $css . 'ajustes.css', array(), $version );
+		// Depende de comun.css: la pantalla Acerca de usa sus tokens y sus botones y etiquetas.
+		wp_register_style( 'escritoriowp-ajustes', $css . 'ajustes.css', array( 'escritoriowp-comun' ), $version );
 
 		wp_register_script( 'escritoriowp-comun', $js . 'comun.js', array(), $version, true );
 		wp_register_script( 'escritoriowp-escritorio', $js . 'escritorio.js', array( 'escritoriowp-comun' ), $version, true );

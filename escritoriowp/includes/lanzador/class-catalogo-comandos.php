@@ -249,7 +249,7 @@ final class CatalogoComandos {
 				'accion-ajustes-escritoriowp',
 				__( 'Ajustes de EscritorioWP', 'escritoriowp' ),
 				'',
-				admin_url( 'options-general.php?page=' . Ajustes::PAGINA ),
+				Ajustes::url(),
 				'dashicons-admin-settings',
 				'accion'
 			);

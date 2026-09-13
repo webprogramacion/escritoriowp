@@ -292,13 +292,26 @@ foreach ( $iterador as $archivo ) {
 
 ksort( $cadenas );
 
+/*
+ * La versión se lee de la cabecera del plugin: escribirla a mano aquí hacía que cada release
+ * publicase un .pot anunciando la versión anterior.
+ */
+$principal = (string) file_get_contents( $origen . '/escritoriowp.php' );
+$version   = '0.0.0';
+
+if ( 1 === preg_match( '/^\s*\*\s*Version:\s*(\S+)/mi', $principal, $coincidencia ) ) {
+	$version = $coincidencia[1];
+} else {
+	fwrite( STDERR, "Aviso: la cabecera del plugin no declara ninguna versión.\n" );
+}
+
 $fecha    = gmdate( 'Y-m-d H:iO' );
 $cabecera = <<<POT
 # Copyright (C) webprogramacion.es
 # This file is distributed under the GPL-2.0-or-later license.
 msgid ""
 msgstr ""
-"Project-Id-Version: EscritorioWP 0.1.0\\n"
+"Project-Id-Version: EscritorioWP {$version}\\n"
 "Report-Msgid-Bugs-To: https://webprogramacion.es\\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"
 "Language-Team: LANGUAGE <LL@li.org>\\n"

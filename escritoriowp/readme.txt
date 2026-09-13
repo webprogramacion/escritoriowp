@@ -4,12 +4,11 @@ Tags: dashboard, escritorio, buscador, command palette, woocommerce
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Sustituye el escritorio de WordPress por una interfaz propia y la paleta de comandos por un
-lanzador que además busca entradas, páginas, usuarios, productos y pedidos.
+Sustituye el escritorio de WordPress por una interfaz propia y la paleta de comandos por un lanzador que busca el contenido del sitio.
 
 == Description ==
 
@@ -42,11 +41,21 @@ contenido que no podría abrir en el administrador.
 WooCommerce es opcional. Si está activo, el plugin añade productos y pedidos al escritorio y al
 buscador, y declara compatibilidad con el almacenamiento de pedidos de alto rendimiento (HPOS).
 
-= Ajustes =
+= El menú del plugin =
 
-En Ajustes › EscritorioWP puedes desactivar cada parte por separado: sustituir o no el escritorio,
-conservar los widgets de otros plugins, desactivar o no la paleta nativa y activar o desactivar el
-lanzador, también en el sitio público.
+EscritorioWP añade su propio menú en el administrador, con dos pantallas:
+
+* **Ajustes**: desactiva cada parte por separado. Sustituir o no el escritorio, conservar los
+  widgets de otros plugins, desactivar o no la paleta de comandos nativa y activar o desactivar el
+  lanzador, también en el sitio público.
+* **Acerca de**: la versión instalada, los enlaces del proyecto, el estado de la actualización con
+  un botón para comprobarla al momento, y las novedades de cada versión publicada.
+
+= Actualizaciones =
+
+El plugin se distribuye desde su repositorio público de GitHub. WordPress avisa cuando hay una
+versión nueva en la pantalla Plugins, igual que con cualquier otro plugin, y se actualiza con un
+clic. Consulta la sección «External services» para saber qué se consulta y cuándo.
 
 == Installation ==
 
@@ -54,7 +63,7 @@ lanzador, también en el sitio público.
    nuevo › Subir plugin.
 2. Actívalo desde la pantalla de Plugins.
 3. Entra en el Escritorio: ya verás la interfaz nueva. Pulsa Comando+K o Control+K para el buscador.
-4. Ajusta su comportamiento en Ajustes › EscritorioWP.
+4. Ajusta su comportamiento en EscritorioWP › Ajustes.
 
 == Frequently Asked Questions ==
 
@@ -80,7 +89,28 @@ ve el panel de usuarios.
 
 = ¿Se puede volver al escritorio de siempre? =
 
-Sí. Desactiva «Sustituir el escritorio nativo» en Ajustes › EscritorioWP, o desactiva el plugin.
+Sí. Desactiva «Sustituir el escritorio nativo» en EscritorioWP › Ajustes, o desactiva el plugin.
+
+== External services ==
+
+Este plugin se conecta a la API pública de GitHub para saber si existe una versión más reciente de
+EscritorioWP y, cuando decides actualizar, para descargar el paquete de esa versión.
+
+Qué se consulta: la última versión publicada del repositorio
+`https://github.com/webprogramacion/escritoriowp`, mediante la dirección
+`https://api.github.com/repos/webprogramacion/escritoriowp/releases/latest`.
+
+Cuándo se consulta: durante la comprobación periódica de actualizaciones que WordPress hace por su
+cuenta (como mucho una vez cada doce horas, porque la respuesta se guarda en caché), y cuando pulsas
+«Buscar actualizaciones ahora» en la pantalla Acerca de. Al instalar la actualización se descarga el
+fichero zip de esa versión desde GitHub.
+
+Qué datos se envían: ninguno del sitio ni de las personas que lo usan. La petición no lleva
+parámetros, ni cookies, ni la dirección del sitio: solo identifica al cliente como «EscritorioWP» y
+su número de versión, como exige GitHub.
+
+Servicio: GitHub, Inc. Condiciones de uso: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+Política de privacidad: https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement
 
 == Screenshots ==
 
@@ -88,8 +118,17 @@ Sí. Desactiva «Sustituir el escritorio nativo» en Ajustes › EscritorioWP, o
 2. El lanzador abierto con resultados agrupados por tipo.
 3. La ventana de creación rápida de una entrada.
 4. La pantalla de ajustes.
+5. La pantalla Acerca de con el historial de novedades.
 
 == Changelog ==
+
+= 0.2.0 =
+* Menú propio «EscritorioWP» en el administrador, con las pantallas Ajustes y Acerca de.
+* La pantalla de ajustes se traslada desde Ajustes › EscritorioWP al menú propio.
+* Pantalla Acerca de con la versión instalada, los enlaces del proyecto y las novedades de cada versión.
+* Aviso de versión nueva dentro de WordPress y actualización con un clic desde el repositorio de GitHub.
+* Botón para buscar actualizaciones al momento desde la pantalla Acerca de.
+* Cada versión se publica sola como release de GitHub al subir el número de versión.
 
 = 0.1.0 =
 * Primera versión.
@@ -102,6 +141,10 @@ Sí. Desactiva «Sustituir el escritorio nativo» en Ajustes › EscritorioWP, o
 * Compatibilidad declarada con HPOS de WooCommerce.
 
 == Upgrade Notice ==
+
+= 0.2.0 =
+Añade el menú propio del plugin, la pantalla Acerca de y las actualizaciones automáticas desde
+GitHub. La pantalla de ajustes cambia de sitio: ahora está en EscritorioWP › Ajustes.
 
 = 0.1.0 =
 Primera versión de EscritorioWP.

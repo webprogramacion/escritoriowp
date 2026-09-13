@@ -26,7 +26,7 @@ Repite la lista con cada combinación:
 - [x] `[S]` En la primera activación se crea la opción con los seis valores por defecto.
 - [x] `[N]` Un ajuste ausente tras una actualización toma su valor por defecto sin perder el resto.
 - [x] `[N]` Un número de elementos por panel fuera de rango se ajusta al límite más cercano.
-- [x] `[S]` La página Ajustes › EscritorioWP existe, exige `manage_options` y publica en `options.php`
+- [x] `[S]` La página EscritorioWP › Ajustes existe, exige `manage_options` y publica en `options.php`
       con nonce.
 - [ ] `[M]` Guardar «Sustituir el escritorio nativo» en No devuelve el escritorio nativo al recargar.
 - [ ] `[M]` Un usuario sin `manage_options` que abre la URL de ajustes recibe el aviso de permisos.
@@ -152,3 +152,70 @@ Repite la lista con cada combinación:
 - [x] `[S]` Lo mismo con el almacenamiento clásico de pedidos.
 - [x] `[S]` Con límite 2 cada grupo trae 2 elementos e informa del total real.
 - [x] `[S]` Pedir solo el tipo «usuarios» no consulta ni devuelve otros grupos.
+
+## 6. Menú del plugin
+
+- [x] `[S]` El menú «EscritorioWP» aparece en la barra lateral con el icono del escritorio.
+- [x] `[S]` Su submenú tiene «Ajustes» primero y «Acerca de» después, ambas con `manage_options`.
+- [x] `[S]` La subpágina antigua bajo Ajustes ya no existe.
+- [x] `[S]` `options-general.php?page=escritoriowp` ya no resuelve a ninguna pantalla del plugin.
+- [x] `[S]` Un usuario sin `manage_options` recibe el aviso de permisos al abrir cualquiera de las dos.
+- [x] `[S]` El comando «Ajustes de EscritorioWP» del lanzador apunta a `admin.php?page=escritoriowp`.
+- [x] `[S]` Las dos pantallas aparecen en el catálogo del lanzador leídas del menú.
+- [ ] `[M]` Buscar «acerca» en el lanzador lleva a la pantalla Acerca de.
+- [ ] `[M]` Desmarcar «Activar el lanzador» y guardar deja Comando+K sin efecto en la siguiente carga.
+- [x] `[S]` `ajustes.css` se encola en las dos pantallas del menú y en ninguna otra.
+- [ ] `[M]` Las dos pantallas se ven bien con tema claro, oscuro y automático.
+- [ ] `[M]` La pantalla Acerca de se lee bien a 400 px de ancho.
+
+## 7. Pantalla Acerca de
+
+- [x] `[S]` Muestra el nombre del plugin y la versión instalada.
+- [x] `[S]` Enlaza al repositorio, a sus releases y al sitio del autor, con `rel="noopener"`.
+- [ ] `[M]` Los tres enlaces externos abren en una pestaña nueva.
+- [x] `[S]` La sección «Novedades» lista las versiones del `readme.txt`, de la más reciente a la más antigua.
+- [x] `[S]` La versión instalada aparece marcada como «Instalada».
+- [x] `[S]` Con el `readme.txt` ausente o sin changelog, muestra el texto alternativo y ningún aviso de PHP.
+- [x] `[S]` Pintar la pantalla no provoca ninguna petición a GitHub.
+- [x] `[S]` Sin ninguna comprobación previa, dice que todavía no se ha comprobado.
+- [x] `[S]` Con una versión mayor conocida, la anuncia y enlaza a la pantalla Plugins.
+- [x] `[S]` Con la instalación al día, dice que es la última versión publicada.
+- [x] `[S]` Un usuario con `manage_options` pero sin `update_plugins` no ve el bloque de actualización.
+
+## 8. Actualizaciones desde GitHub
+
+- [x] `[S]` WordPress lee la cabecera `Update URI` y deriva el filtro `update_plugins_github.com`.
+- [x] `[S]` Con una release mayor, el plugin queda en `response` del transitorio de actualizaciones.
+- [x] `[S]` Con una release igual o menor, queda en `no_update` y no se anuncia nada.
+- [x] `[S]` Una release sin ningún activo `.zip` no se ofrece como actualización.
+- [x] `[N]` Un borrador, un prelanzamiento o un tag que no es una versión se descartan.
+- [x] `[S]` Dos comprobaciones seguidas hacen una sola petición: la respuesta se guarda 12 horas.
+- [x] `[S]` Un fallo de red no muestra nada al usuario y se guarda una hora.
+- [x] `[S]` La petición no lleva datos del sitio ni del usuario, solo el agente «EscritorioWP/versión».
+- [x] `[S]` «Ver detalles» devuelve nombre, versión, autor, requisitos, fecha y changelog de la release.
+- [x] `[S]` «Ver detalles» no consulta WordPress.org.
+- [ ] `[M]` La ventana de detalles se ve correctamente y ofrece el botón de instalar.
+- [x] `[S]` «Buscar actualizaciones ahora» con nonce válido consulta, refresca y vuelve con `comprobado=1`.
+- [x] `[S]` Sin nonce o con uno caducado, la petición se rechaza y no sale ninguna consulta a GitHub.
+- [ ] `[M]` «Actualizar ahora» desde Plugins descarga el zip de GitHub y deja el plugin activo y actualizado.
+- [ ] `[M]` Lo mismo desde Escritorio › Actualizaciones marcando el plugin.
+- [ ] `[M]` Tras actualizar, los ajustes y las preferencias de usuario siguen igual.
+- [ ] `[M]` Subir el zip a mano desde Plugins › Añadir nuevo ofrece reemplazar la versión instalada.
+- [x] `[S]` Con la constante del repositorio vacía no se registra ningún filtro ni se consulta GitHub.
+
+## 9. Publicación y cumplimiento
+
+- [x] `[S]` El zip de la release tiene `escritoriowp/` como única entrada raíz y no lleva `.DS_Store`.
+- [x] `[S]` El zip no incluye `vendor/`, `tests/` ni `openspec/`.
+- [x] `[S]` `php tools/empaquetar.php --wordpress-org` quita el módulo de actualizaciones, la cabecera
+      `Update URI` y vacía la constante, sin tocar el árbol de trabajo.
+- [x] `[S]` Plugin Check sobre esa variante no encuentra el error del actualizador.
+- [x] `[S]` `readme.txt` declara el servicio externo, con qué se envía y los enlaces legales de GitHub.
+- [x] `[S]` La descripción corta del `readme.txt` no pasa de 150 caracteres.
+- [x] `[N]` `php tools/notas-release.php X.Y.Z` extrae la sección del changelog y falla si no existe.
+- [ ] `[M]` Un push a `main` con la versión subida crea el tag y publica la release con su zip.
+- [ ] `[M]` Un push a `main` sin subir la versión pasa las comprobaciones y no publica nada.
+- [ ] `[M]` Un push con las versiones descuadradas o sin changelog falla antes de crear el tag.
+- [ ] **Pendiente de decisión, no de comprobación:** el nombre y el slug llevan «wp», prohibido en el
+      directorio de WordPress.org, y el `readme.txt` tendría que estar en inglés. Ver
+      `publicar-wordpress-org.md`.

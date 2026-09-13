@@ -12,7 +12,7 @@ namespace EscritorioWP;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Gestiona la opción de ajustes, sus valores por defecto y la pantalla Ajustes › EscritorioWP.
+ * Gestiona la opción de ajustes, sus valores por defecto y la pantalla EscritorioWP › Ajustes.
  */
 final class Ajustes {
 
@@ -54,6 +54,13 @@ final class Ajustes {
 	 * @var array<string, bool|int>|null
 	 */
 	private ?array $cache = null;
+
+	/**
+	 * Identificadores de pantalla que WordPress devuelve al registrar el menú.
+	 *
+	 * @var array<int, string>
+	 */
+	private array $pantallas = array();
 
 	/**
 	 * Constructor privado: la clase se usa como singleton.
@@ -184,13 +191,22 @@ final class Ajustes {
 	}
 
 	/**
+	 * URL de la pantalla de ajustes.
+	 *
+	 * @return string
+	 */
+	public static function url(): string {
+		return admin_url( 'admin.php?page=' . self::PAGINA );
+	}
+
+	/**
 	 * Encola la hoja de estilo de la pantalla de ajustes.
 	 *
 	 * @param string $pantalla Identificador de la pantalla actual.
 	 * @return void
 	 */
 	public function encolar( string $pantalla ): void {
-		if ( 'settings_page_' . self::PAGINA !== $pantalla ) {
+		if ( ! in_array( $pantalla, $this->pantallas, true ) ) {
 			return;
 		}
 
@@ -198,14 +214,31 @@ final class Ajustes {
 	}
 
 	/**
-	 * Añade la subpágina Ajustes › EscritorioWP.
+	 * Crea el menú propio del plugin con los ajustes como primera entrada.
+	 *
+	 * Sin posición explícita: el menú queda al final, junto al de los demás plugins, sin desplazar
+	 * los menús nativos de WordPress.
 	 *
 	 * @return void
 	 */
 	public function anadir_pagina(): void {
-		add_options_page(
+		$this->pantallas[] = (string) add_menu_page(
 			__( 'Ajustes de EscritorioWP', 'escritoriowp' ),
 			__( 'EscritorioWP', 'escritoriowp' ),
+			'manage_options',
+			self::PAGINA,
+			array( $this, 'pintar_pagina' ),
+			'dashicons-dashboard'
+		);
+
+		/*
+		 * Sin esta segunda llamada, la primera entrada del submenú repetiría el nombre del menú.
+		 * Al compartir el identificador con el menú, WordPress la sustituye en lugar de añadirla.
+		 */
+		$this->pantallas[] = (string) add_submenu_page(
+			self::PAGINA,
+			__( 'Ajustes de EscritorioWP', 'escritoriowp' ),
+			__( 'Ajustes', 'escritoriowp' ),
 			'manage_options',
 			self::PAGINA,
 			array( $this, 'pintar_pagina' )

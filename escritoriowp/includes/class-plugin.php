@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace EscritorioWP;
 
+use EscritorioWP\Actualizaciones\ActualizadorGithub;
 use EscritorioWP\Escritorio\Escritorio;
 use EscritorioWP\Lanzador\Lanzador;
 use EscritorioWP\Rest\Rest;
@@ -73,6 +74,25 @@ final class Plugin {
 		( new Escritorio( $ajustes ) )->registrar();
 		( new Lanzador( $ajustes ) )->registrar();
 		( new Rest( $ajustes ) )->registrar();
+
+		$actualizador = $this->actualizador();
+		$actualizador?->registrar();
+
+		( new AcercaDe( $actualizador ) )->registrar();
+	}
+
+	/**
+	 * Crea el actualizador desde GitHub, si esta copia del plugin lo incluye.
+	 *
+	 * La variante que se envía al directorio de WordPress.org deja vacía la constante del
+	 * repositorio, y entonces el plugin no registra ningún enganche de actualizaciones.
+	 *
+	 * @return ActualizadorGithub|null
+	 */
+	private function actualizador(): ?ActualizadorGithub {
+		$repositorio = defined( 'ESCRITORIOWP_REPOSITORIO' ) ? (string) ESCRITORIOWP_REPOSITORIO : '';
+
+		return '' === $repositorio ? null : new ActualizadorGithub( $repositorio );
 	}
 
 	/**

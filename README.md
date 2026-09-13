@@ -38,7 +38,7 @@ paleta de comandos de wp-admin por un lanzador que además busca contenido real 
 
 1. Copia o enlaza el directorio `escritoriowp/` en `wp-content/plugins/` de tu instalación.
 2. Actívalo desde Plugins.
-3. Ajusta su comportamiento en Ajustes › EscritorioWP.
+3. Ajusta su comportamiento en el menú EscritorioWP › Ajustes.
 
 No hay paso de compilación: el CSS y el JavaScript se escriben a mano y se sirven tal cual.
 
@@ -51,6 +51,21 @@ composer make-pot      # regenera languages/escritoriowp.pot (requiere wp-cli)
 php tools/generar-pot.php   # alternativa sin wp-cli
 php tests/ejecutar.php      # pruebas unitarias PHP
 node tests/ejecutar.js      # pruebas unitarias JavaScript
+
+php tools/empaquetar.php                  # dist/escritoriowp-X.Y.Z.zip, el zip que se sube a WordPress
+php tools/empaquetar.php --wordpress-org  # la misma versión sin el actualizador desde GitHub
+php tools/notas-release.php 0.2.0         # imprime las notas de esa versión desde CHANGELOG.md
 ```
+
+## Publicación
+
+Las releases se publican solas. Al empujar a `main` un commit cuya versión de cabecera todavía no
+tiene tag, el workflow pasa las comprobaciones, crea el tag `vX.Y.Z` y publica la release con
+`escritoriowp-X.Y.Z.zip`, que es el fichero que se sube a WordPress. Las instalaciones con el
+plugin ya activo detectan esa release y se actualizan desde el propio escritorio.
+
+Los pasos completos están en [CLAUDE.md](CLAUDE.md), sección «Publicar una versión». Para enviar el
+plugin al directorio oficial de WordPress.org, consulta
+[docs/publicar-wordpress-org.md](docs/publicar-wordpress-org.md).
 
 Consulta [CLAUDE.md](CLAUDE.md) para la arquitectura y las convenciones del proyecto.

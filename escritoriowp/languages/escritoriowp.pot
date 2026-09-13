@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later license.
 msgid ""
 msgstr ""
-"Project-Id-Version: EscritorioWP 0.1.0\n"
+"Project-Id-Version: EscritorioWP 0.2.0\n"
 "Report-Msgid-Bugs-To: https://webprogramacion.es\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-13 09:08+0000\n"
+"POT-Creation-Date: 2026-09-13 16:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: tools/generar-pot.php\n"
@@ -22,7 +22,7 @@ msgid_plural "%s en borrador"
 msgstr[0] ""
 msgstr[1] ""
 
-#: escritoriowp/includes/class-activos.php:199
+#: escritoriowp/includes/class-activos.php:200
 msgid "%s resultados"
 msgstr ""
 
@@ -31,11 +31,11 @@ msgstr ""
 msgid "(sin título)"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:200
+#: escritoriowp/includes/class-activos.php:201
 msgid "1 resultado"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:278
+#: escritoriowp/includes/class-ajustes.php:311
 msgid "Abre el buscador con Comando+K o Control+K y desde el botón de la barra de administración."
 msgstr ""
 
@@ -43,11 +43,20 @@ msgstr ""
 msgid "Abrir el buscador de EscritorioWP"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:192
+#: escritoriowp/includes/class-activos.php:193
 msgid "Acciones rápidas"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:277
+#: escritoriowp/includes/class-acerca-de.php:74
+msgid "Acerca de"
+msgstr ""
+
+#: escritoriowp/includes/class-acerca-de.php:73
+#: escritoriowp/includes/class-acerca-de.php:111
+msgid "Acerca de EscritorioWP"
+msgstr ""
+
+#: escritoriowp/includes/class-ajustes.php:310
 msgid "Activar el lanzador de EscritorioWP"
 msgstr ""
 
@@ -63,30 +72,43 @@ msgstr ""
 msgid "Actualizar"
 msgstr ""
 
+#: escritoriowp/includes/class-acerca-de.php:206
+msgid "Actualizar en la pantalla Plugins"
+msgstr ""
+
 #: escritoriowp/includes/escritorio/class-recientes.php:234
 #: escritoriowp/includes/busqueda/class-fuente-productos.php:134
 msgid "Agotado"
 msgstr ""
 
+#: escritoriowp/includes/class-ajustes.php:241
+msgid "Ajustes"
+msgstr ""
+
 #: escritoriowp/includes/lanzador/class-catalogo-comandos.php:250
-#: escritoriowp/includes/class-ajustes.php:207
-#: escritoriowp/includes/class-ajustes.php:354
+#: escritoriowp/includes/class-ajustes.php:226
+#: escritoriowp/includes/class-ajustes.php:240
+#: escritoriowp/includes/class-ajustes.php:387
 msgid "Ajustes de EscritorioWP"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:171
+#: escritoriowp/includes/class-acerca-de.php:145
+msgid "Ajustes del plugin"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:172
 msgid "Apellidos"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:154
+#: escritoriowp/includes/class-activos.php:155
 msgid "Automático"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:161
+#: escritoriowp/includes/class-activos.php:162
 msgid "Bajar el panel %s"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:176
+#: escritoriowp/includes/class-activos.php:177
 msgid "Borrador"
 msgstr ""
 
@@ -102,11 +124,11 @@ msgstr ""
 msgid "Buenos días, %s"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:189
+#: escritoriowp/includes/class-activos.php:190
 msgid "Busca pantallas, entradas, páginas, usuarios, productos o pedidos…"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:188
+#: escritoriowp/includes/class-activos.php:189
 msgid "Buscador de EscritorioWP"
 msgstr ""
 
@@ -115,19 +137,23 @@ msgstr ""
 msgid "Buscar"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:132
+#: escritoriowp/includes/class-acerca-de.php:214
+msgid "Buscar actualizaciones ahora"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:133
 msgid "Cancelar"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:127
+#: escritoriowp/includes/class-activos.php:128
 msgid "Cargando…"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:166
+#: escritoriowp/includes/class-activos.php:167
 msgid "Categoría"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:131
+#: escritoriowp/includes/class-activos.php:132
 msgid "Cerrar"
 msgstr ""
 
@@ -135,7 +161,7 @@ msgstr ""
 msgid "Cerrar sesión"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:155
+#: escritoriowp/includes/class-activos.php:156
 msgid "Claro"
 msgstr ""
 
@@ -155,60 +181,60 @@ msgstr ""
 msgid "Comentarios pendientes"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:165
+#: escritoriowp/includes/class-activos.php:166
 msgid "Contenido"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:244
+#: escritoriowp/includes/class-ajustes.php:277
 msgid "Controla el buscador que se abre con Comando+K o Control+K."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:235
+#: escritoriowp/includes/class-ajustes.php:268
 msgid "Controla qué se muestra al entrar en el escritorio de WordPress."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:180
+#: escritoriowp/includes/class-activos.php:181
 msgid "Crear"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:148
+#: escritoriowp/includes/class-activos.php:149
 msgid "Crear el primer pedido"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:147
+#: escritoriowp/includes/class-activos.php:148
 msgid "Crear el primer producto"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:146
+#: escritoriowp/includes/class-activos.php:147
 msgid "Crear el primer usuario"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:144
+#: escritoriowp/includes/class-activos.php:145
 msgid "Crear la primera entrada"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:145
+#: escritoriowp/includes/class-activos.php:146
 msgid "Crear la primera página"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:183
+#: escritoriowp/includes/class-activos.php:184
 msgid "Crear otro"
 msgstr ""
 
 #. translators: 1: número mínimo, 2: número máximo.
-#: escritoriowp/includes/class-ajustes.php:265
+#: escritoriowp/includes/class-ajustes.php:298
 msgid "Cuántos elementos recientes muestra cada panel (entre %1$d y %2$d)."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:272
+#: escritoriowp/includes/class-ajustes.php:305
 msgid "Desactivar la paleta de comandos nativa"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:282
+#: escritoriowp/includes/class-ajustes.php:315
 msgid "Disponible también en el sitio público"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:134
+#: escritoriowp/includes/class-activos.php:135
 msgid "Editar"
 msgstr ""
 
@@ -232,11 +258,11 @@ msgstr ""
 msgid "El título es obligatorio."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:262
+#: escritoriowp/includes/class-ajustes.php:295
 msgid "Elementos por panel"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:169
+#: escritoriowp/includes/class-activos.php:170
 msgid "Email"
 msgstr ""
 
@@ -253,20 +279,20 @@ msgstr ""
 msgid "Entradas publicadas"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:173
+#: escritoriowp/includes/class-activos.php:174
 msgid "Enviarle un email de bienvenida"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:190
+#: escritoriowp/includes/class-activos.php:191
 msgid "Escribe para buscar por título, email, SKU o número de pedido."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:233
+#: escritoriowp/includes/class-ajustes.php:266
 msgid "Escritorio"
 msgstr ""
 
 #: escritoriowp/includes/escritorio/class-escritorio.php:125
-#: escritoriowp/includes/class-ajustes.php:208
+#: escritoriowp/includes/class-ajustes.php:227
 msgid "EscritorioWP"
 msgstr ""
 
@@ -275,16 +301,16 @@ msgid "EscritorioWP necesita JavaScript para mostrar el escritorio."
 msgstr ""
 
 #. translators: 1: versión de PHP requerida, 2: versión de PHP instalada.
-#: escritoriowp/escritoriowp.php:73
+#: escritoriowp/escritoriowp.php:82
 msgid "EscritorioWP necesita PHP %1$s o superior. Esta instalación usa PHP %2$s."
 msgstr ""
 
 #. translators: 1: versión de WordPress requerida, 2: versión de WordPress instalada.
-#: escritoriowp/escritoriowp.php:79
+#: escritoriowp/escritoriowp.php:88
 msgid "EscritorioWP necesita WordPress %1$s o superior. Esta instalación usa WordPress %2$s."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:356
+#: escritoriowp/includes/class-ajustes.php:389
 msgid "EscritorioWP sustituye el escritorio de WordPress y su paleta de comandos. Puedes desactivar cada parte por separado."
 msgstr ""
 
@@ -301,24 +327,37 @@ msgstr ""
 msgid "Ese tipo de contenido no está disponible."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:167
+#: escritoriowp/includes/class-activos.php:168
 msgid "Estado"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:136
+#: escritoriowp/includes/class-activos.php:137
 msgid "Este campo es obligatorio."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:273
+#: escritoriowp/includes/class-acerca-de.php:195
+msgid "Estás en la última versión publicada."
+msgstr ""
+
+#: escritoriowp/includes/class-ajustes.php:306
 msgid "Evita que WordPress cargue su paleta en el administrador. La paleta del editor de bloques no se toca."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:178
+#: escritoriowp/includes/class-activos.php:179
 msgid "Guardar borrador"
+msgstr ""
+
+#. translators: %s: número de la versión disponible.
+#: escritoriowp/includes/class-acerca-de.php:189
+msgid "Hay una versión nueva disponible: %s"
 msgstr ""
 
 #: escritoriowp/includes/escritorio/class-resumen.php:175
 msgid "Ingresos este mes"
+msgstr ""
+
+#: escritoriowp/includes/class-acerca-de.php:247
+msgid "Instalada"
 msgstr ""
 
 #: escritoriowp/includes/escritorio/class-recientes.php:291
@@ -335,15 +374,15 @@ msgstr ""
 msgid "La búsqueda debe tener entre %1$d y %2$d caracteres."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:195
+#: escritoriowp/includes/class-activos.php:196
 msgid "La búsqueda ha fallado. Los comandos siguen disponibles."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:242
+#: escritoriowp/includes/class-ajustes.php:275
 msgid "Lanzador"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:197
+#: escritoriowp/includes/class-activos.php:198
 #: escritoriowp/includes/lanzador/class-lanzador.php:169
 msgid "Menú"
 msgstr ""
@@ -352,24 +391,33 @@ msgstr ""
 msgid "Mi perfil"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:253
+#: escritoriowp/includes/class-ajustes.php:286
 msgid "Muestra la interfaz de EscritorioWP en lugar de los widgets de WordPress."
+msgstr ""
+
+#: escritoriowp/includes/class-acerca-de.php:233
+msgid "No hay historial de cambios disponible."
 msgstr ""
 
 #: escritoriowp/includes/creacion/class-creador-usuario.php:64
 msgid "No puedes asignar ese rol."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:130
+#: escritoriowp/includes/class-acerca-de.php:197
+msgid "No se ha podido consultar GitHub. Vuelve a intentarlo más tarde."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:131
 #: escritoriowp/includes/creacion/class-errores.php:74
 msgid "No se ha podido guardar."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:129
+#: escritoriowp/includes/class-activos.php:130
 msgid "No se han podido cargar los datos."
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:349
+#: escritoriowp/includes/class-acerca-de.php:102
+#: escritoriowp/includes/class-ajustes.php:382
 msgid "No tienes permisos para acceder a esta página."
 msgstr ""
 
@@ -377,16 +425,24 @@ msgstr ""
 msgid "No tienes permisos para acceder a estos datos."
 msgstr ""
 
+#: escritoriowp/includes/actualizaciones/class-actualizador-github.php:84
+msgid "No tienes permisos para buscar actualizaciones."
+msgstr ""
+
 #: escritoriowp/includes/creacion/class-errores.php:47
 msgid "No tienes permisos para hacer esto."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:170
+#: escritoriowp/includes/class-activos.php:171
 msgid "Nombre"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:168
+#: escritoriowp/includes/class-activos.php:169
 msgid "Nombre de usuario"
+msgstr ""
+
+#: escritoriowp/includes/class-acerca-de.php:151
+msgid "Novedades"
 msgstr ""
 
 #: escritoriowp/includes/class-capacidades.php:248
@@ -413,11 +469,11 @@ msgstr ""
 msgid "Nuevo usuario"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:257
+#: escritoriowp/includes/class-ajustes.php:290
 msgid "Ocultar los widgets de otros plugins"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:156
+#: escritoriowp/includes/class-activos.php:157
 msgid "Oscuro"
 msgstr ""
 
@@ -429,11 +485,11 @@ msgstr ""
 msgid "Otros widgets"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:152
+#: escritoriowp/includes/class-activos.php:153
 msgid "Paneles"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:283
+#: escritoriowp/includes/class-ajustes.php:316
 msgid "Para usuarios identificados que ven la barra de administración."
 msgstr ""
 
@@ -450,11 +506,11 @@ msgstr ""
 msgid "Pedidos este mes"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:151
+#: escritoriowp/includes/class-activos.php:152
 msgid "Personalizar"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:174
+#: escritoriowp/includes/class-activos.php:175
 msgid "Precio normal"
 msgstr ""
 
@@ -466,11 +522,11 @@ msgstr ""
 msgid "Productos publicados"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:177
+#: escritoriowp/includes/class-activos.php:178
 msgid "Publicada"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:179
+#: escritoriowp/includes/class-activos.php:180
 msgid "Publicar"
 msgstr ""
 
@@ -482,15 +538,19 @@ msgstr ""
 msgid "Páginas publicadas"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:191
+#: escritoriowp/includes/class-activos.php:192
 msgid "Recientes"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:128
+#: escritoriowp/includes/class-activos.php:129
 msgid "Reintentar"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:157
+#: escritoriowp/includes/class-acerca-de.php:133
+msgid "Repositorio en GitHub"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:158
 msgid "Restablecer"
 msgstr ""
 
@@ -502,11 +562,11 @@ msgstr ""
 msgid "Revisa los datos del formulario."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:172
+#: escritoriowp/includes/class-activos.php:173
 msgid "Rol"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:175
+#: escritoriowp/includes/class-activos.php:176
 msgid "SKU"
 msgstr ""
 
@@ -515,11 +575,11 @@ msgstr ""
 msgid "SKU %s"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:258
+#: escritoriowp/includes/class-ajustes.php:291
 msgid "Si lo desactivas, los widgets de otros plugins se muestran debajo, bajo el título «Otros widgets»."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:194
+#: escritoriowp/includes/class-activos.php:195
 msgid "Sin resultados para «%s»"
 msgstr ""
 
@@ -527,15 +587,15 @@ msgstr ""
 msgid "Sin rol"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:159
+#: escritoriowp/includes/class-activos.php:160
 msgid "Subir el panel %s"
 msgstr ""
 
-#: escritoriowp/includes/class-ajustes.php:252
+#: escritoriowp/includes/class-ajustes.php:285
 msgid "Sustituir el escritorio nativo"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:153
+#: escritoriowp/includes/class-activos.php:154
 msgid "Tema"
 msgstr ""
 
@@ -543,24 +603,32 @@ msgstr ""
 msgid "Texto a buscar."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:139
-msgid "Todavía no hay entradas."
-msgstr ""
-
-#: escritoriowp/includes/class-activos.php:143
-msgid "Todavía no hay pedidos."
-msgstr ""
-
-#: escritoriowp/includes/class-activos.php:142
-msgid "Todavía no hay productos."
+#: escritoriowp/includes/class-acerca-de.php:136
+msgid "Todas las versiones"
 msgstr ""
 
 #: escritoriowp/includes/class-activos.php:140
-msgid "Todavía no hay páginas."
+msgid "Todavía no hay entradas."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:144
+msgid "Todavía no hay pedidos."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:143
+msgid "Todavía no hay productos."
 msgstr ""
 
 #: escritoriowp/includes/class-activos.php:141
+msgid "Todavía no hay páginas."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:142
 msgid "Todavía no hay usuarios."
+msgstr ""
+
+#: escritoriowp/includes/class-acerca-de.php:199
+msgid "Todavía no se ha comprobado si hay versiones nuevas."
 msgstr ""
 
 #: escritoriowp/includes/lanzador/class-lanzador.php:165
@@ -571,13 +639,13 @@ msgstr ""
 msgid "Todo al día"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:184
+#: escritoriowp/includes/class-activos.php:185
 #: escritoriowp/includes/creacion/class-creador-contenido.php:55
 #: escritoriowp/includes/creacion/class-creador-producto.php:68
 msgid "Tu rol solo permite guardar borradores."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:164
+#: escritoriowp/includes/class-activos.php:165
 msgid "Título"
 msgstr ""
 
@@ -589,7 +657,7 @@ msgstr ""
 msgid "Usuarios registrados"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:133
+#: escritoriowp/includes/class-activos.php:134
 msgid "Ver"
 msgstr ""
 
@@ -597,12 +665,17 @@ msgstr ""
 msgid "Ver el sitio"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:135
+#: escritoriowp/includes/class-activos.php:136
 msgid "Ver todos"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:196
+#: escritoriowp/includes/class-activos.php:197
 msgid "Ver todos en el listado"
+msgstr ""
+
+#. translators: %s: número de versión instalada.
+#: escritoriowp/includes/class-acerca-de.php:123
+msgid "Versión %s"
 msgstr ""
 
 #: escritoriowp/includes/creacion/class-creador-producto.php:58
@@ -617,11 +690,11 @@ msgstr ""
 msgid "Ya existe un usuario con este email."
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:201
+#: escritoriowp/includes/class-activos.php:202
 msgid "abrir"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:205
+#: escritoriowp/includes/class-activos.php:206
 msgid "filtrar"
 msgstr ""
 
@@ -630,15 +703,15 @@ msgstr ""
 msgid "hace %s"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:204
+#: escritoriowp/includes/class-activos.php:205
 msgid "navegar"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:185
+#: escritoriowp/includes/class-activos.php:186
 msgid "opcional"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:202
+#: escritoriowp/includes/class-activos.php:203
 msgid "pestaña nueva"
 msgstr ""
 
@@ -648,11 +721,11 @@ msgstr ""
 msgid "por %s"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:203
+#: escritoriowp/includes/class-activos.php:204
 msgid "ver en el sitio"
 msgstr ""
 
-#: escritoriowp/includes/class-activos.php:182
+#: escritoriowp/includes/class-activos.php:183
 msgid "¡Listo! Se ha creado «%s»."
 msgstr ""
 

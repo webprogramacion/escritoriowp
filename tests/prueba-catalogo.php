@@ -22,9 +22,15 @@ comprobar(
 );
 
 comprobar(
-	'options-general.php?page=escritoriowp',
-	CatalogoComandos::resolver_ruta( 'escritoriowp', 'options-general.php', 'options-general.php' ),
+	'options-general.php?page=un-plugin',
+	CatalogoComandos::resolver_ruta( 'un-plugin', 'options-general.php', 'options-general.php' ),
 	'página de plugin bajo Ajustes'
+);
+
+comprobar(
+	'admin.php?page=escritoriowp-acerca',
+	CatalogoComandos::resolver_ruta( 'escritoriowp-acerca', 'escritoriowp', 'escritoriowp' ),
+	'página del propio plugin bajo su menú'
 );
 
 comprobar(

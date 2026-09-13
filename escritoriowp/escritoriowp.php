@@ -3,7 +3,7 @@
  * Plugin Name:       EscritorioWP
  * Plugin URI:        https://webprogramacion.es/escritoriowp
  * Description:       Sustituye el escritorio de WordPress por una interfaz propia y reemplaza la paleta de comandos por un lanzador que busca entradas, páginas, usuarios, productos y pedidos.
- * Version:           0.1.0
+ * Version:           0.2.0
  * Requires at least: 6.7
  * Requires PHP:      8.1
  * Author:            webprogramacion.es
@@ -12,6 +12,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       escritoriowp
  * Domain Path:       /languages
+ * Update URI:        https://github.com/webprogramacion/escritoriowp
  * WC requires at least: 8.0
  * WC tested up to:   11.1
  *
@@ -24,16 +25,24 @@ namespace EscritorioWP;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION    = '0.1.0';
+const VERSION    = '0.2.0';
 const WP_MINIMO  = '6.7';
 const PHP_MINIMO = '8.1';
 const WOO_MINIMO = '8.0';
+
+/*
+ * Repositorio del que se descargan las actualizaciones. Vaciarla desactiva por completo el módulo
+ * de actualizaciones: es lo que hace «php tools/empaquetar.php --wordpress-org», porque el
+ * directorio oficial no permite servir actualizaciones desde otros servidores.
+ */
+const REPOSITORIO = 'https://github.com/webprogramacion/escritoriowp';
 
 define( 'ESCRITORIOWP_VERSION', VERSION );
 define( 'ESCRITORIOWP_FILE', __FILE__ );
 define( 'ESCRITORIOWP_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESCRITORIOWP_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESCRITORIOWP_BASENAME', plugin_basename( __FILE__ ) );
+define( 'ESCRITORIOWP_REPOSITORIO', REPOSITORIO );
 
 /**
  * Comprueba que el entorno cumple los requisitos mínimos del plugin.
