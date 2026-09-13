@@ -1,0 +1,31 @@
+{
+  "name": "webprogramacion/escritoriowp",
+  "description": "Escritorio propio y lanzador de comandos para WordPress.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.1"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.9",
+    "wp-coding-standards/wpcs": "^3.1",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "wp-cli/i18n-command": "^2.6"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "scripts": {
+    "lint": "phpcs",
+    "lint:fix": "phpcbf",
+    "make-pot": "wp i18n make-pot escritoriowp escritoriowp/languages/escritoriowp.pot --domain=escritoriowp --exclude=node_modules,vendor",
+    "test": [
+      "php tests/ejecutar.php",
+      "node tests/ejecutar.js",
+      "node tools/comprobar-contraste.js"
+    ]
+  }
+}

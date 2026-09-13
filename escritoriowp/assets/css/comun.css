@@ -1,0 +1,238 @@
+/**
+ * EscritorioWP · tokens de diseño y componentes compartidos.
+ *
+ * La paleta se define completa en :root y se redefine para el tema oscuro, tanto cuando el usuario
+ * lo elige de forma explícita (data-tema="oscuro") como cuando deja el tema automático y su sistema
+ * está en modo oscuro.
+ */
+
+.escritoriowp,
+.escritoriowp-lanzador {
+	--ewp-fondo: #f6f7f9;
+	--ewp-superficie: #ffffff;
+	--ewp-superficie-2: #f2f4f7;
+	--ewp-borde: #e2e5ea;
+	--ewp-borde-fuerte: #8a9199;
+	--ewp-texto: #1d2327;
+	--ewp-texto-suave: #616a75;
+	--ewp-texto-tenue: #697079;
+	--ewp-acento: #2a5fd6;
+	--ewp-acento-suave: #e8eefc;
+	--ewp-acento-texto: #ffffff;
+	--ewp-verde: #137c42;
+	--ewp-verde-suave: #e3f5ea;
+	--ewp-ambar: #8a5a00;
+	--ewp-ambar-suave: #fdf1da;
+	--ewp-rojo: #a91b1b;
+	--ewp-rojo-suave: #fbe6e6;
+	--ewp-azul: #1c4f9c;
+	--ewp-azul-suave: #e6eefb;
+	--ewp-morado: #6b3fa0;
+	--ewp-morado-suave: #f0e9fa;
+	--ewp-sombra: 0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 12px rgba(16, 24, 40, 0.06);
+	--ewp-sombra-alta: 0 12px 40px rgba(16, 24, 40, 0.18);
+	--ewp-radio: 12px;
+	--ewp-radio-pequeno: 8px;
+	--ewp-espacio: 16px;
+	--ewp-tipografia: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--ewp-transicion: 160ms ease;
+}
+
+.escritoriowp[data-tema="oscuro"],
+.escritoriowp-lanzador[data-tema="oscuro"] {
+	--ewp-fondo: #12161c;
+	--ewp-superficie: #1b2027;
+	--ewp-superficie-2: #232a33;
+	--ewp-borde: #2d3540;
+	--ewp-borde-fuerte: #68727f;
+	--ewp-texto: #e8ecf1;
+	--ewp-texto-suave: #a7b0bb;
+	--ewp-texto-tenue: #8f97a3;
+	--ewp-acento: #6f9bff;
+	--ewp-acento-suave: #1e2a44;
+	--ewp-acento-texto: #0d1117;
+	--ewp-verde: #5bd08a;
+	--ewp-verde-suave: #14301f;
+	--ewp-ambar: #f0b455;
+	--ewp-ambar-suave: #33260f;
+	--ewp-rojo: #ff8a8a;
+	--ewp-rojo-suave: #3a1c1c;
+	--ewp-azul: #85b0ff;
+	--ewp-azul-suave: #1a2740;
+	--ewp-morado: #c3a0ff;
+	--ewp-morado-suave: #2a2140;
+	--ewp-sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.35);
+	--ewp-sombra-alta: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-color-scheme: dark) {
+	.escritoriowp[data-tema="auto"],
+	.escritoriowp-lanzador[data-tema="auto"] {
+		--ewp-fondo: #12161c;
+		--ewp-superficie: #1b2027;
+		--ewp-superficie-2: #232a33;
+		--ewp-borde: #2d3540;
+		--ewp-borde-fuerte: #68727f;
+		--ewp-texto: #e8ecf1;
+		--ewp-texto-suave: #a7b0bb;
+		--ewp-texto-tenue: #8f97a3;
+		--ewp-acento: #6f9bff;
+		--ewp-acento-suave: #1e2a44;
+		--ewp-acento-texto: #0d1117;
+		--ewp-verde: #5bd08a;
+		--ewp-verde-suave: #14301f;
+		--ewp-ambar: #f0b455;
+		--ewp-ambar-suave: #33260f;
+		--ewp-rojo: #ff8a8a;
+		--ewp-rojo-suave: #3a1c1c;
+		--ewp-azul: #85b0ff;
+		--ewp-azul-suave: #1a2740;
+		--ewp-morado: #c3a0ff;
+		--ewp-morado-suave: #2a2140;
+		--ewp-sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.35);
+		--ewp-sombra-alta: 0 12px 40px rgba(0, 0, 0, 0.55);
+	}
+}
+
+/* --- Botones --- */
+
+.escritoriowp-boton {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 13px;
+	border: 1px solid transparent;
+	border-radius: var(--ewp-radio-pequeno);
+	background: var(--ewp-acento);
+	color: var(--ewp-acento-texto);
+	font-family: var(--ewp-tipografia);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background var(--ewp-transicion), border-color var(--ewp-transicion), transform var(--ewp-transicion);
+}
+
+.escritoriowp-boton:hover,
+.escritoriowp-boton:focus {
+	color: var(--ewp-acento-texto);
+	filter: brightness(1.07);
+}
+
+.escritoriowp-boton:focus-visible {
+	outline: 2px solid var(--ewp-acento);
+	outline-offset: 2px;
+}
+
+.escritoriowp-boton:active {
+	transform: translateY(1px);
+}
+
+.escritoriowp-boton .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+}
+
+.escritoriowp-boton--claro {
+	background: var(--ewp-superficie);
+	border-color: var(--ewp-borde-fuerte);
+	color: var(--ewp-texto);
+}
+
+.escritoriowp-boton--claro:hover,
+.escritoriowp-boton--claro:focus {
+	background: var(--ewp-superficie-2);
+	color: var(--ewp-texto);
+}
+
+.escritoriowp-boton--fantasma {
+	background: transparent;
+	border-color: var(--ewp-borde);
+	color: var(--ewp-texto-suave);
+}
+
+.escritoriowp-boton--fantasma:hover,
+.escritoriowp-boton--fantasma:focus {
+	background: var(--ewp-superficie-2);
+	color: var(--ewp-texto);
+}
+
+.escritoriowp-boton--enlace {
+	padding: 2px 4px;
+	background: transparent;
+	border-color: transparent;
+	color: var(--ewp-acento);
+	font-weight: 500;
+}
+
+.escritoriowp-boton--enlace:hover,
+.escritoriowp-boton--enlace:focus {
+	color: var(--ewp-acento);
+	text-decoration: underline;
+}
+
+/* --- Etiquetas de estado --- */
+
+.escritoriowp-etiqueta {
+	display: inline-flex;
+	align-items: center;
+	padding: 1px 8px;
+	border-radius: 999px;
+	background: var(--ewp-superficie-2);
+	color: var(--ewp-texto-suave);
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.escritoriowp-etiqueta[data-tono="verde"] { background: var(--ewp-verde-suave); color: var(--ewp-verde); }
+.escritoriowp-etiqueta[data-tono="ambar"] { background: var(--ewp-ambar-suave); color: var(--ewp-ambar); }
+.escritoriowp-etiqueta[data-tono="rojo"] { background: var(--ewp-rojo-suave); color: var(--ewp-rojo); }
+.escritoriowp-etiqueta[data-tono="azul"] { background: var(--ewp-azul-suave); color: var(--ewp-azul); }
+.escritoriowp-etiqueta[data-tono="morado"] { background: var(--ewp-morado-suave); color: var(--ewp-morado); }
+
+/* --- Atajo de teclado --- */
+
+.escritoriowp-atajo {
+	padding: 1px 6px;
+	border: 1px solid var(--ewp-borde-fuerte);
+	border-radius: 5px;
+	background: var(--ewp-superficie-2);
+	color: var(--ewp-texto-tenue);
+	font-family: var(--ewp-tipografia);
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.6;
+}
+
+/* --- Carga --- */
+
+.escritoriowp-esqueleto {
+	background: linear-gradient(90deg, var(--ewp-superficie-2) 25%, var(--ewp-borde) 37%, var(--ewp-superficie-2) 63%);
+	background-size: 400% 100%;
+	border-radius: var(--ewp-radio-pequeno);
+	animation: escritoriowp-brillo 1.3s ease infinite;
+}
+
+@keyframes escritoriowp-brillo {
+	0% { background-position: 100% 50%; }
+	100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.escritoriowp-esqueleto { animation: none; }
+	.escritoriowp-boton { transition: none; }
+}
+
+/* --- Botón de la barra de administración --- */
+
+#wpadminbar .escritoriowp-barra-boton .escritoriowp-barra-atajo {
+	margin-left: 6px;
+	padding: 0 5px;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 4px;
+	font-size: 11px;
+	opacity: 0.75;
+}

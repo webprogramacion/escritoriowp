@@ -1,0 +1,19 @@
+# Dependencias de desarrollo (nunca se distribuyen)
+/vendor/
+/node_modules/
+
+# Artefactos de empaquetado
+/build/
+/dist/
+*.zip
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-*
+
+# Salidas locales
+*.log
+/tmp/

@@ -1,0 +1,30 @@
+/**
+ * EscritorioWP · pantalla de ajustes.
+ */
+
+.escritoriowp-ajustes__intro {
+	max-width: 640px;
+	color: #50575e;
+	font-size: 14px;
+}
+
+.escritoriowp-ajustes .form-table th {
+	width: 260px;
+	padding-top: 16px;
+}
+
+.escritoriowp-ajustes .form-table td {
+	padding-top: 14px;
+}
+
+.escritoriowp-ajustes .description {
+	max-width: 520px;
+	margin-top: 4px;
+}
+
+.escritoriowp-ajustes h2 {
+	margin-top: 28px;
+	padding-top: 14px;
+	border-top: 1px solid #dcdcde;
+	font-size: 15px;
+}

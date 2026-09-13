@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="EscritorioWP">
+	<description>Estándar de codificación de EscritorioWP (WordPress + compatibilidad PHP).</description>
+
+	<file>escritoriowp</file>
+
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+	<arg name="parallel" value="8"/>
+
+	<rule ref="WordPress">
+		<!-- El plugin se distribuye con ficheros de un solo propósito y nombres en kebab-case. -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="escritoriowp"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="escritoriowp"/>
+				<element value="ESCRITORIOWP"/>
+				<element value="EscritorioWP"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.WP.DeprecatedFunctions">
+		<properties>
+			<property name="minimum_wp_version" value="6.7"/>
+		</properties>
+	</rule>
+
+	<config name="minimum_wp_version" value="6.7"/>
+
+	<rule ref="PHPCompatibilityWP"/>
+	<config name="testVersion" value="8.1-"/>
+</ruleset>
