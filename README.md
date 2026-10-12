@@ -55,6 +55,8 @@ node tests/ejecutar.js      # pruebas unitarias JavaScript
 php tools/empaquetar.php                  # dist/escritoriowp-X.Y.Z.zip, el zip que se sube a WordPress
 php tools/empaquetar.php --wordpress-org  # la misma versión sin el actualizador desde GitHub
 php tools/notas-release.php 0.2.0         # imprime las notas de esa versión desde CHANGELOG.md
+php tools/nueva-version.php minor --simular   # imprime la versión que saldría, sin escribir nada
+php tools/nueva-version.php --comprobar       # versiones y changelogs coherentes, como el workflow
 ```
 
 ## Publicación
@@ -64,8 +66,16 @@ tiene tag, el workflow pasa las comprobaciones, crea el tag `vX.Y.Z` y publica l
 `escritoriowp-X.Y.Z.zip`, que es el fichero que se sube a WordPress. Las instalaciones con el
 plugin ya activo detectan esa release y se actualizan desde el propio escritorio.
 
-Los pasos completos están en [CLAUDE.md](CLAUDE.md), sección «Publicar una versión». Para enviar el
-plugin al directorio oficial de WordPress.org, consulta
-[docs/publicar-wordpress-org.md](docs/publicar-wordpress-org.md).
+Para preparar una versión, ejecuta `/nueva-version` en Claude Code (opcionalmente con `patch`,
+`minor`, `major` o un número `X.Y.Z`). Comprueba que `main` está al día y redacta las novedades a
+partir de lo que ha cambiado desde el último tag. Te las enseña antes de escribir nada. Después sube
+la versión, actualiza `CHANGELOG.md` y `readme.txt`, regenera el `.pot`, pasa las pruebas, `phpcs` y
+el empaquetado, y hace el commit `Release X.Y.Z` en `main`. El push lo hace solo si se lo confirmas,
+porque es lo que publica.
+
+Sin la skill, los mismos pasos se hacen a mano; `php tools/nueva-version.php --comprobar` verifica
+al final que versiones y changelogs cuadran. Los pasos completos están en [CLAUDE.md](CLAUDE.md),
+sección «Publicar una versión». Para enviar el plugin al directorio oficial de WordPress.org,
+consulta [docs/publicar-wordpress-org.md](docs/publicar-wordpress-org.md).
 
 Consulta [CLAUDE.md](CLAUDE.md) para la arquitectura y las convenciones del proyecto.

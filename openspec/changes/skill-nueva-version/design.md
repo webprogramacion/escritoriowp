@@ -43,7 +43,8 @@ disable-model-invocation: true
 allowed-tools: Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git fetch:*),
   Bash(git tag:*), Bash(git ls-remote:*), Bash(git rev-parse:*), Bash(git rev-list:*),
   Bash(git branch:*), Bash(git add:*), Bash(git commit:*), Bash(php:*), Bash(node:*),
-  Bash(composer:*), Bash(date:*), Read, Edit, Grep, Glob
+  Bash(vendor/bin/phpcs:*), Bash(git describe:*), Bash(git show:*), Bash(find:*), Bash(date:*),
+  Read, Edit, Grep, Glob
 ```
 
 - `disable-model-invocation: true`: la skill solo arranca cuando el usuario escribe `/nueva-version`. Preparar una versión nunca debe dispararse porque el modelo lo deduzca de la conversación.
@@ -58,7 +59,7 @@ php tools/nueva-version.php --comprobar
 ```
 
 - **Aplicar** (por defecto): lee los tres ficheros, exige que las tres versiones actuales coincidan, calcula la nueva, exige que `## [No publicado]` tenga contenido, escribe la versión en la cabecera, la constante y el `Stable tag`, y convierte `## [No publicado]` en `## [X.Y.Z] - fecha` con una `## [No publicado]` vacía encima. Imprime solo la versión nueva en la salida estándar. Cualquier error va a la salida de error con código 1 y sin escribir nada: primero se calculan los tres contenidos nuevos y solo después se escriben.
-- **`--simular`**: calcula la versión y valida todo sin escribir. La skill lo usa para conocer el número antes de redactar las entradas `= X.Y.Z =` del readme.
+- **`--simular`**: calcula la versión y valida todo sin escribir, salvo que `## [No publicado]` tenga contenido: solo exige que la sección exista. La skill lo usa en el paso 4, antes de haber escrito las novedades, para conocer el número con el que redactar las entradas `= X.Y.Z =` del readme; `[No publicado]` puede estar vacía en ese momento si todas las novedades salen de los commits.
 - **`--fecha`**: por defecto `date( 'Y-m-d' )`; existe para que las pruebas y la skill fijen la fecha.
 - **`--comprobar`**: no escribe nada. Lee la versión de la cabecera y verifica lo mismo que el job `publicar` del workflow: tres versiones iguales, sección con contenido en `CHANGELOG.md` y `= X.Y.Z =` en `readme.txt`. Imprime cada problema encontrado y termina con 1 si hay alguno.
 - La herramienta **no llama a git**. Así las pruebas siguen siendo funciones puras sobre texto, igual que las del resto de `tools/`. Las comprobaciones de rama, tags y árbol de trabajo las hace la skill.
@@ -84,7 +85,7 @@ Funciones puras, incluidas en `tests/ejecutar.php`:
 4. **Número.** Con el argumento, o con la propuesta según la spec. Se obtiene con `--simular`, que además valida coherencia y formato. Se comprueba que `vX.Y.Z` no existe con `git tag -l` y `git ls-remote --tags origin`.
 5. **Revisión.** Se muestran versión, sección de `CHANGELOG.md`, líneas de `readme.txt` y aviso de actualización, y se espera la respuesta. Nada se escribe antes.
 6. **Escritura.** Edit sustituye el contenido de `## [No publicado]` por el aceptado. Después se ejecuta `php tools/nueva-version.php X.Y.Z --fecha=$(date +%F)`, pasando la versión explícita ya confirmada para que no se recalcule. Por último, Edit inserta las dos entradas `= X.Y.Z =` en `readme.txt`.
-7. **Comprobaciones**, en este orden y deteniéndose en el primer fallo: `php tools/generar-pot.php`, `php tools/nueva-version.php --comprobar`, `composer test`, `composer lint` (si no existe `vendor/bin/phpcs`, se avisa y se pregunta), sintaxis de PHP y JS del plugin, `php tools/notas-release.php X.Y.Z` y `php tools/empaquetar.php`.
+7. **Comprobaciones**, en este orden y deteniéndose en el primer fallo: `php tools/generar-pot.php`, `php tools/nueva-version.php --comprobar`, las tres órdenes de `composer test` (`php tests/ejecutar.php`, `node tests/ejecutar.js`, `node tools/comprobar-contraste.js`) y `vendor/bin/phpcs` (si no existe, se avisa y se pregunta), llamadas directamente porque Composer no siempre está en el PATH aunque `vendor/` esté instalado, sintaxis de PHP y JS del plugin, `php tools/notas-release.php X.Y.Z` y `php tools/empaquetar.php`.
 8. **Commit.** `git add` con las cuatro rutas explícitas, nunca `-A` ni `.`, y `git commit -m "Release X.Y.Z"`.
 9. **Push.** Resumen y pregunta. Con un sí, `git push origin main` y el enlace `https://github.com/webprogramacion/escritoriowp/actions`. Si no, se dan `git push origin main` para más tarde y `git reset --soft HEAD~1` para deshacer conservando los cambios. Si el push se rechaza, nunca se usa `--force`.
 

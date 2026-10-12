@@ -36,6 +36,7 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
 ├── tools/generar-pot.php       Genera el .pot sin wp-cli.
 ├── tools/empaquetar.php        Crea el zip; con --wordpress-org, el del directorio oficial.
 ├── tools/notas-release.php     Extrae de CHANGELOG.md las notas de una versión.
+├── tools/nueva-version.php     Sube la versión en los tres sitios y cierra [No publicado].
 ├── docs/qa.md                  Lista de comprobación manual.
 ├── docs/publicar-wordpress-org.md   Cómo enviar el plugin al directorio oficial.
 └── escritoriowp/               EL PLUGIN
@@ -231,16 +232,32 @@ Limitación conocida de ese entorno: WooCommerce no crea sus tablas de pedidos s
 **No se empujan tags a mano.** Publica el push a `main`: el workflow detecta que la versión de la
 cabecera no tiene todavía su tag `vX.Y.Z`, lo crea y publica la release con el zip.
 
-1. Actualiza la versión en **tres sitios**: la cabecera de `escritoriowp/escritoriowp.php`, la
-   constante `VERSION` del mismo fichero y `Stable tag` en `escritoriowp/readme.txt`.
-2. Añade el changelog en **los dos sitios**: `CHANGELOG.md` (de donde salen las notas de la release
-   de GitHub) y `escritoriowp/readme.txt` (de donde sale la pantalla Acerca de). El workflow falla
-   si falta cualquiera de los dos.
+**El camino habitual es `/nueva-version [patch|minor|major|X.Y.Z]`** en Claude Code. La skill
+(`.claude/skills/nueva-version/`) comprueba que `main` está al día, redacta las novedades a partir de
+los commits desde el último tag y las enseña antes de escribir nada, propone el tipo de incremento si
+no se indica, hace los pasos 1 a 4 de abajo y el commit, y **pregunta antes del push**, que es lo que
+publica. Los números y la sección del changelog los escribe `tools/nueva-version.php`; la prosa de
+`readme.txt` la escribe la skill.
+
+A mano sigue valiendo:
+
+1. Anota las novedades en `## [No publicado]` de `CHANGELOG.md` y ejecuta
+   `php tools/nueva-version.php <patch|minor|major|X.Y.Z>`. Sube la versión en **los tres sitios**
+   (la cabecera de `escritoriowp/escritoriowp.php`, la constante `VERSION` del mismo fichero y
+   `Stable tag` en `escritoriowp/readme.txt`) y convierte `## [No publicado]` en `## [X.Y.Z] - fecha`.
+   Con `--simular` solo dice qué versión saldría.
+2. Añade las entradas `= X.Y.Z =` de `escritoriowp/readme.txt`, en `== Changelog ==` (de donde sale
+   la pantalla Acerca de) y en `== Upgrade Notice ==`. El workflow falla si falta el changelog en
+   `CHANGELOG.md` (de donde salen las notas de la release de GitHub) o en `readme.txt`.
 3. Regenera el `.pot`: `php tools/generar-pot.php`.
-4. Comprueba el paquete en local: `php tools/empaquetar.php`.
-5. Commit `Release X.Y.Z` y push a `main`. El workflow pasa sintaxis, `phpcs`, pruebas y Plugin
-   Check; después comprueba que las tres versiones coinciden y que hay changelog, crea el tag
-   `vX.Y.Z` y publica la release con `escritoriowp-X.Y.Z.zip`.
+4. Comprueba en local: `php tools/nueva-version.php --comprobar` (las mismas comprobaciones de
+   coherencia que hace el workflow antes de publicar), `composer test`, `composer lint` y
+   `php tools/empaquetar.php`.
+5. Commit `Release X.Y.Z` con solo los cuatro ficheros de la versión (`CHANGELOG.md`,
+   `escritoriowp/escritoriowp.php`, `escritoriowp/readme.txt` y `escritoriowp/languages/escritoriowp.pot`)
+   y push a `main`. El workflow pasa sintaxis, `phpcs`, pruebas y Plugin Check; después comprueba que
+   las tres versiones coinciden y que hay changelog, crea el tag `vX.Y.Z` y publica la release con
+   `escritoriowp-X.Y.Z.zip`.
 
 Un push a `main` cuya versión ya tiene tag solo ejecuta las comprobaciones: no publica nada, así
 que se puede empujar tantas veces como haga falta entre versiones.
