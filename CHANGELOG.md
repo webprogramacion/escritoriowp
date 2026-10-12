@@ -7,6 +7,30 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.3.0] - 2026-10-12
+
+### Añadido
+
+- `tools/nueva-version.php` sube la versión en los tres sitios donde vive y convierte
+  `## [No publicado]` de este fichero en la sección de la versión. Con `--simular` dice qué número
+  saldría sin escribir nada, y con `--comprobar` repite en local las comprobaciones de coherencia
+  que hace el workflow antes de publicar.
+- Skill `/nueva-version` para Claude Code. Prepara una versión entera en `main`: redacta las
+  novedades a partir de los commits desde el último tag, las enseña antes de escribir nada, sube la
+  versión, actualiza los dos changelogs, regenera el `.pot`, pasa las comprobaciones y hace el commit
+  `Release X.Y.Z`. Pregunta antes de empujar, porque el push es lo que publica la release.
+
+### Cambiado
+
+- Las skills y los comandos de OpenSpec para Claude Code se regeneran con OpenSpec 1.14.1, que
+  añade `/opsx:update` para revisar los artefactos de un cambio ya propuesto sin tocar el código.
+
+### Corregido
+
+- En pantallas de entre 800 y 1800 píxeles de ancho, que es donde caen casi todos los portátiles,
+  el escritorio se quedaba encajonado en la mitad o en un tercio de la pantalla. Las reglas de
+  columnas de WordPress ganaban a las del plugin; ahora la interfaz ocupa todo el ancho.
+
 ## [0.2.1] - 2026-09-13
 
 Versión de mantenimiento, sin cambios en el comportamiento del plugin.
