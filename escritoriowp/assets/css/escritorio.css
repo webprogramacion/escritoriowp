@@ -20,8 +20,19 @@
 	padding: 0;
 }
 
-.escritoriowp-activo #dashboard-widgets .postbox-container {
+/*
+ * WordPress reparte el escritorio en columnas con selectores de hasta tres identificadores, y entre
+ * 1500 y 1800 píxeles `#wpbody-content #dashboard-widgets #postbox-container-1` lo deja al 33 %
+ * aunque la disposición sea de una columna. Por eso hacen falta tres identificadores para ganarle.
+ */
+.escritoriowp-activo #wpbody #wpbody-content #dashboard-widgets .postbox-container {
+	float: none;
 	width: 100%;
+}
+
+/* Con una sola columna, las zonas vacías de las demás solo dejarían recuadros punteados debajo. */
+.escritoriowp-activo #dashboard-widgets .postbox-container .empty-container {
+	display: none;
 }
 
 .escritoriowp-activo #wpbody-content .metabox-holder {
