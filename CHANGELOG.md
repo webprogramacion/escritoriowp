@@ -7,6 +7,24 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+### Añadido
+
+- Ajuste «Posición en el menú», en la sección nueva «Menú» de EscritorioWP › Ajustes: un
+  desplegable con los menús de primer nivel del sitio para elegir debajo de cuál aparece
+  EscritorioWP, o «Al final». Si el menú elegido deja de existir, por ejemplo al desactivar
+  WooCommerce, EscritorioWP vuelve bajo el Escritorio y recupera su sitio cuando el menú vuelve.
+- Ajuste «Color de fondo en el menú», con el selector de color de WordPress: pinta el fondo de la
+  entrada EscritorioWP de la barra lateral para que destaque, sin tocar el resto del menú. El texto
+  y el icono se ponen en blanco o en negro para que el contraste nunca baje de 4,5:1, y al pasar el
+  ratón o con el foco del teclado la entrada responde como cualquier otra. Vacío por defecto.
+
+### Cambiado
+
+- El menú «EscritorioWP» aparece por defecto justo debajo del Escritorio en lugar de al final de la
+  barra lateral. Para dejarlo donde estaba, elige «Al final» en «Posición en el menú».
+- El saneado de ajustes trata cada ajuste según su tipo, en lugar de suponer que todo lo que no es
+  una casilla es el número de elementos por panel. Los ajustes guardados no cambian.
+
 ## [0.3.0] - 2026-10-12
 
 ### Añadido

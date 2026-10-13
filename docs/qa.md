@@ -8,6 +8,9 @@ escenario comprobable.
 - `[S]` Verificado en servidor con el arnés de PHP (rutas REST y pintado del escritorio) sobre
   WordPress 7.1 + WooCommerce 11.1.0 con SQLite. No necesita repetirse a mano.
 - `[N]` Cubierto por las pruebas unitarias (`php tests/ejecutar.php`, `node tests/ejecutar.js`).
+- `[C]` Verificado en Chrome sin interfaz con eventos reales de ratón y teclado (protocolo
+  DevTools), leyendo los estilos calculados y con capturas, sobre la misma instalación. No necesita
+  repetirse a mano.
 - `[M]` **Pendiente de comprobación manual en navegador.** Es lo único que hay que ejecutar.
 
 ## Entorno
@@ -23,7 +26,7 @@ Repite la lista con cada combinación:
 ## 1. Núcleo del plugin
 
 - [x] `[S]` El plugin se activa copiando solo el directorio `escritoriowp/`, sin `vendor/` ni build.
-- [x] `[S]` En la primera activación se crea la opción con los seis valores por defecto.
+- [x] `[S]` En la primera activación se crea la opción con los ocho valores por defecto.
 - [x] `[N]` Un ajuste ausente tras una actualización toma su valor por defecto sin perder el resto.
 - [x] `[N]` Un número de elementos por panel fuera de rango se ajusta al límite más cercano.
 - [x] `[S]` La página EscritorioWP › Ajustes existe, exige `manage_options` y publica en `options.php`
@@ -167,6 +170,51 @@ Repite la lista con cada combinación:
 - [x] `[S]` `ajustes.css` se encola en las dos pantallas del menú y en ninguna otra.
 - [ ] `[M]` Las dos pantallas se ven bien con tema claro, oscuro y automático.
 - [ ] `[M]` La pantalla Acerca de se lee bien a 400 px de ancho.
+
+### Posición del menú
+
+- [x] `[S]` Sin ajuste guardado, «EscritorioWP» aparece justo después de «Escritorio» y antes del
+  primer separador.
+- [x] `[N]` Una opción guardada por una versión anterior, sin la posición, toma «debajo de
+  Escritorio» sin cambiar el resto de ajustes.
+- [x] `[S]` Con «Debajo de Páginas» aparece inmediatamente después de «Páginas» y el resto de menús
+  mantiene su orden.
+- [x] `[S]` Con «Al final» es la última entrada de la barra lateral.
+- [x] `[S]` Con «Debajo de WooCommerce» aparece tras «WooCommerce», y el separador de WooCommerce
+  sigue en su sitio.
+- [x] `[S]` Al desactivar WooCommerce vuelve bajo «Escritorio» sin avisos de PHP y el ajuste sigue
+  guardado; al reactivarlo vuelve bajo «WooCommerce».
+- [x] `[S]` La sección «Menú» de Ajustes tiene el desplegable «Posición en el menú»: menús agrupados
+  bajo «Debajo de…» en el orden de la barra lateral, sin separadores ni «EscritorioWP», con
+  «Comentarios» sin el número de pendientes, «Escritorio» seleccionado y «Al final» aparte.
+- [x] `[S]` Si el menú guardado ya no existe, el desplegable lo conserva seleccionado como
+  «identificador (no disponible)».
+- [x] `[S]` Guardar desde el formulario un identificador con `&` (el de «Pagos» de WooCommerce) lo
+  conserva y lo aplica; `<script>` se guarda como «debajo de Escritorio».
+- [x] `[C]` Con la barra lateral plegada, el orden es el mismo que desplegada.
+
+### Color de la entrada del menú
+
+- [x] `[S]` Sin color, ninguna pantalla del administrador lleva reglas para
+  `#toplevel_page_escritoriowp` y la entrada se ve como las demás.
+- [x] `[S]` Con `#7a1f5c`, la hoja `admin-menu` lleva en línea el fondo `#7a1f5c` y el texto
+  `#ffffff` en el Escritorio y en Entradas.
+- [x] `[N]` Fondo oscuro (`#7a1f5c`, `#767676`) da texto blanco; fondo claro (`#ffd60a`, `#777777`)
+  da texto negro.
+- [x] `[N]` `rojo` y `#12345` se guardan vacíos; `#ABC` se guarda como `#aabbcc`.
+- [x] `[S]` La sección «Menú» tiene «Color de fondo en el menú» con el selector de WordPress, que se
+  encola en EscritorioWP › Ajustes y en ninguna otra pantalla.
+- [x] `[C]` En reposo, la entrada tiene el fondo elegido y el texto y el icono legibles; el resto de
+  entradas no cambia. Comprobado con los esquemas Predeterminado y Claro.
+- [x] `[C]` En EscritorioWP › Ajustes la entrada abierta conserva el color, también al pasar el
+  ratón por «Ajustes» y «Acerca de», y el submenú conserva el aspecto de WordPress.
+- [x] `[C]` Con la barra plegada, el cuadro del icono conserva el color.
+- [x] `[C]` Al pasar el ratón por la entrada en reposo cambia como cualquier otra entrada (mismos
+  estilos calculados que «Entradas»).
+- [x] `[C]` Al llegar con el tabulador, en reposo y abierta, la entrada cambia y el foco se ve
+  claramente (mismos estilos calculados que «Entradas» con foco).
+- [x] `[C]` El botón «Borrar» del selector vacía el campo y, al guardar, la entrada vuelve al aspecto
+  por defecto.
 
 ## 7. Pantalla Acerca de
 

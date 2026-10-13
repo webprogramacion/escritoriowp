@@ -71,6 +71,11 @@ final class Plugin {
 		$ajustes->registrar();
 
 		( new Activos( $ajustes ) )->registrar();
+
+		if ( is_admin() ) {
+			( new Menu( $ajustes ) )->registrar();
+		}
+
 		( new Escritorio( $ajustes ) )->registrar();
 		( new Lanzador( $ajustes ) )->registrar();
 		( new Rest( $ajustes ) )->registrar();

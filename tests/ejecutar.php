@@ -18,6 +18,7 @@ require_once $plugin . 'class-autoloader.php';
 require_once $plugin . 'class-ajustes.php';
 require_once $plugin . 'class-capacidades.php';
 require_once $plugin . 'class-changelog.php';
+require_once $plugin . 'class-menu.php';
 require_once $plugin . 'escritorio/class-preferencias.php';
 require_once $plugin . 'escritorio/class-resumen.php';
 require_once $plugin . 'escritorio/class-recientes.php';

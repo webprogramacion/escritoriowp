@@ -51,6 +51,7 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
     │   ├── class-activos.php         Registro de CSS/JS y catálogo de textos traducibles.
     │   ├── class-acerca-de.php       Pantalla «Acerca de»: versión, enlaces y novedades.
     │   ├── class-changelog.php       Lee el historial de cambios del readme.txt.
+    │   ├── class-menu.php            Posición del menú del plugin en la barra lateral.
     │   ├── actualizaciones/          ActualizadorGithub. Solo en la variante de GitHub.
     │   ├── escritorio/               Escritorio, Resumen, Recientes, Preferencias.
     │   ├── lanzador/                 Lanzador y CatalogoComandos.
@@ -59,7 +60,7 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
     │   ├── rest/                     Rest y cinco controladores.
     │   └── woo/class-woo.php         Todo lo que depende de WooCommerce.
     ├── assets/css/  comun.css (tokens) · escritorio.css · lanzador.css · ajustes.css
-    ├── assets/js/   comun.js (utilidades) · escritorio.js · lanzador.js
+    ├── assets/js/   comun.js (utilidades) · escritorio.js · lanzador.js · ajustes.js (selector de color)
     └── languages/escritoriowp.pot
 ```
 
@@ -146,6 +147,26 @@ repita el nombre. `AcercaDe::anadir_pagina()` añade la segunda entrada en `admi
 pantalla que le devolvió WordPress. La URL de ajustes es `Ajustes::url()`: nadie vuelve a escribirla
 a mano.
 
+**Dónde aparece.** Por defecto, justo debajo de «Escritorio»; el ajuste `menu_debajo_de` guarda el
+identificador del menú bajo el que va (cadena vacía, «Al final»). `add_menu_page()` se llama **sin
+posición** a propósito: `Menu` activa `custom_menu_order` y, en `menu_order` con prioridad
+`PHP_INT_MAX`, recoloca el menú con `Menu::recolocar()`. Así funciona con menús de plugins que se
+registran más tarde y se libra de que WordPress ordene las posiciones decimales como texto (`2.10`
+antes que `2.5`). Si el menú de referencia no existe, vuelve bajo «Escritorio» sin tocar el ajuste,
+para que reaparezca en su sitio cuando el menú vuelva. El desplegable de ajustes sale de
+`Menu::opciones()`, que lee `$menu` ya ordenado.
+
+**Color de la entrada.** El ajuste `menu_color_fondo` (vacío por defecto) pinta solo la entrada
+«EscritorioWP». `Menu::css()` genera las reglas a partir del valor **vuelto a sanear** y
+`Menu::encolar_color()` las añade con `wp_add_inline_style( 'admin-menu', … )`, la hoja del menú
+lateral que carga toda pantalla del administrador; sin color no añade nada. El texto y el icono los
+decide `Menu::color_texto()`: blanco si llega a 4,5:1 con el fondo, negro si no, y con eso nunca baja
+de 4,5:1. Las reglas excluyen el ratón y el foco en reposo, y solo el foco con la entrada abierta,
+para que en esos estados mande el esquema de colores de WordPress (y su indicador de foco); abierta
+no se excluye el ratón porque WordPress tampoco cambia una entrada abierta al pasar por ella. El
+campo es un texto que `assets/js/ajustes.js` convierte en el `wp-color-picker` de WordPress, encolado
+solo en la pantalla de ajustes.
+
 **Las actualizaciones.** La cabecera declara `Update URI: https://github.com/webprogramacion/escritoriowp`,
 así que WordPress deja de preguntar por el plugin a WordPress.org y pasa la decisión al filtro
 `update_plugins_github.com`, que responde `ActualizadorGithub`. El plugin solo devuelve los datos de
@@ -182,9 +203,12 @@ condicionado a una capacidad. Para comandos desde otro plugin, usa el filtro `es
 con prioridad 11 o posterior y `Ajustes::PAGINA` como padre, y guarda el identificador que devuelve
 `add_submenu_page()` para encolar su CSS. El lanzador la recoge sola al leer `$submenu`.
 
-**Un ajuste nuevo**: añádelo a `Ajustes::defectos()` (el saneado y el formulario lo recogen solos) y
-declara su campo en `Ajustes::registrar_ajustes()`. Las casillas necesitan su campo oculto con
-valor `0`, que ya pinta `pintar_campo()`.
+**Un ajuste nuevo**: añádelo a `Ajustes::defectos()` y declara su campo en
+`Ajustes::registrar_ajustes()` con su `tipo` (`casilla`, `numero`, `desplegable` o `color`), que es
+lo que `pintar_campo()` usa para decidir cómo pintarlo. Una casilla no necesita nada más: `sanear()`
+la interpreta como booleano y `pintar_campo()` le pone el campo oculto con valor `0`. Cualquier otro
+tipo necesita su rama en el `match` de `Ajustes::sanear()`; sin ella el ajuste conserva siempre su
+valor por defecto, para que nunca se guarde mal interpretado.
 
 ## 9. Cachés
 

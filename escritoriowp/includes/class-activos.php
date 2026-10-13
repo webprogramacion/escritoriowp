@@ -71,6 +71,7 @@ final class Activos {
 		wp_register_script( 'escritoriowp-comun', $js . 'comun.js', array(), $version, true );
 		wp_register_script( 'escritoriowp-escritorio', $js . 'escritorio.js', array( 'escritoriowp-comun' ), $version, true );
 		wp_register_script( 'escritoriowp-lanzador', $js . 'lanzador.js', array( 'escritoriowp-comun' ), $version, true );
+		wp_register_script( 'escritoriowp-ajustes', $js . 'ajustes.js', array( 'wp-color-picker' ), $version, true );
 
 		wp_add_inline_script(
 			'escritoriowp-comun',

@@ -43,11 +43,13 @@ buscador, y declara compatibilidad con el almacenamiento de pedidos de alto rend
 
 = El menú del plugin =
 
-EscritorioWP añade su propio menú en el administrador, con dos pantallas:
+EscritorioWP añade su propio menú en el administrador, justo debajo del Escritorio, con dos
+pantallas:
 
 * **Ajustes**: desactiva cada parte por separado. Sustituir o no el escritorio, conservar los
   widgets de otros plugins, desactivar o no la paleta de comandos nativa y activar o desactivar el
-  lanzador, también en el sitio público.
+  lanzador, también en el sitio público. También eliges debajo de qué menú aparece EscritorioWP,
+  o si va al final, y un color de fondo para que su entrada destaque en la barra lateral.
 * **Acerca de**: la versión instalada, los enlaces del proyecto, el estado de la actualización con
   un botón para comprobarla al momento, y las novedades de cada versión publicada.
 
