@@ -1,0 +1,34 @@
+{
+    // Color propio de este proyecto (azul corporativo del cliente #1FB5E5) para
+    // distinguir la ventana de VS Code de otros proyectos. Solo afecta a este
+    // workspace.
+    "workbench.colorCustomizations": {
+        // Barra superior de la ventana (Title Bar): fondo oscuro con un tinte
+        // azul discreto, texto azul y una línea fina debajo. La inactiva vuelve
+        // al fondo del tema (Catppuccin Frappé).
+        "titleBar.activeBackground": "#2B373B",
+        "titleBar.activeForeground": "#1FB5E5",
+        "titleBar.inactiveBackground": "#232634",
+        "titleBar.inactiveForeground": "#1FB5E580",
+        "titleBar.border": "#1FB5E566",
+
+        // Barra de actividad (Activity Bar): fondo azul con iconos oscuros. El
+        // icono seleccionado se invierte (fondo oscuro, icono azul) para que
+        // destaque.
+        "activityBar.background": "#1FB5E5",
+        "activityBar.foreground": "#1FB5E5",
+        "activityBar.inactiveForeground": "#232634CC",
+        "activityBar.activeBackground": "#232634",
+        "activityBar.activeBorder": "#1FB5E5",
+        "activityBar.activeFocusBorder": "#1FB5E5",
+        "activityBar.border": "#23263433",
+        "activityBarBadge.background": "#232634",
+        "activityBarBadge.foreground": "#1FB5E5",
+
+        // Botones: fondo azul con texto oscuro; al pasar el ratón, el azul
+        // baja 8 puntos de luminosidad.
+        "button.background": "#1FB5E5",
+        "button.foreground": "#232634",
+        "button.hoverBackground": "#179AC4"
+    }
+}
