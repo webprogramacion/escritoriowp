@@ -7,6 +7,8 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.4.0] - 2026-10-14
+
 ### Añadido
 
 - Ajuste «Posición en el menú», en la sección nueva «Menú» de EscritorioWP › Ajustes: un
@@ -52,11 +54,19 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   barra lateral. Para dejarlo donde estaba, elige «Al final» en «Posición en el menú».
 - El saneado de ajustes trata cada ajuste según su tipo, en lugar de suponer que todo lo que no es
   una casilla es el número de elementos por panel. Los ajustes guardados no cambian.
+- `tools/comprobar-contraste.js` comprueba también los colores que estrena la pantalla
+  Administradores: el texto secundario sobre el fondo, el texto de los resúmenes de alerta y de todo
+  correcto, y el del botón de peligro.
 
 ### Corregido
 
 - La pantalla EscritorioWP › Ajustes vuelve a mostrar el aviso «Ajustes guardados» al guardar: desde
   que vive en el menú propio, WordPress ya no lo pintaba por su cuenta.
+
+### Eliminado
+
+- Se retiran la orden `/opsx:update` de Claude Code y su skill `openspec-update-change`, que
+  llegaron en la 0.3.0 con las skills de OpenSpec.
 
 ## [0.3.0] - 2026-10-12
 

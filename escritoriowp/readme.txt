@@ -4,7 +4,7 @@ Tags: dashboard, escritorio, buscador, command palette, woocommerce
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -180,6 +180,15 @@ Política de privacidad: https://docs.github.com/site-policy/privacy-policies/gi
 
 == Changelog ==
 
+= 0.4.0 =
+* Nueva pantalla EscritorioWP › Administradores, que señala a los usuarios con permisos de administrador sin tener ese rol, a los que algún código oculta y los roles alterados, y permite retirar esos permisos.
+* Un número rojo en el menú avisa cuando hay usuarios que revisar.
+* Avisos por correo cuando alguien activa, desactiva, instala o borra un plugin, con destinatarios, asunto y mensaje configurables.
+* Elige qué indicadores y qué paneles muestra el escritorio a todos los usuarios.
+* Elige debajo de qué menú aparece EscritorioWP en la barra lateral, o al final, y dale un color de fondo para que destaque.
+* El menú EscritorioWP aparece ahora justo debajo del Escritorio.
+* La pantalla de ajustes vuelve a mostrar el aviso «Ajustes guardados» al guardar.
+
 = 0.3.0 =
 * El escritorio ocupa todo el ancho de la pantalla en portátiles y monitores de entre 800 y 1800 píxeles, donde antes se quedaba en la mitad o en un tercio.
 
@@ -205,6 +214,11 @@ Política de privacidad: https://docs.github.com/site-policy/privacy-policies/gi
 * Compatibilidad declarada con HPOS de WooCommerce.
 
 == Upgrade Notice ==
+
+= 0.4.0 =
+Añade la pantalla Administradores para detectar puertas traseras, avisos por correo de los cambios en
+los plugins y ajustes nuevos para el menú y el escritorio. El menú EscritorioWP pasa a aparecer
+justo debajo del Escritorio; si lo prefieres al final, elígelo en Ajustes › Posición en el menú.
 
 = 0.3.0 =
 Corrige el escritorio, que en la mayoría de portátiles ocupaba solo una parte de la pantalla. No
