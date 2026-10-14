@@ -10,9 +10,12 @@ declare(strict_types=1);
 namespace EscritorioWP;
 
 use EscritorioWP\Actualizaciones\ActualizadorGithub;
+use EscritorioWP\Avisos\AvisosPlugins;
 use EscritorioWP\Escritorio\Escritorio;
 use EscritorioWP\Lanzador\Lanzador;
 use EscritorioWP\Rest\Rest;
+use EscritorioWP\Seguridad\Administradores;
+use EscritorioWP\Seguridad\Detector;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -79,6 +82,14 @@ final class Plugin {
 		( new Escritorio( $ajustes ) )->registrar();
 		( new Lanzador( $ajustes ) )->registrar();
 		( new Rest( $ajustes ) )->registrar();
+
+		// Fuera del administrador también: un alta o un cambio de rol desde la tienda o la API REST
+		// tiene que invalidar el contador del menú.
+		Detector::registrar();
+		( new Administradores() )->registrar();
+
+		// También fuera del administrador: la API REST y WP-CLI activan, instalan y borran plugins.
+		( new AvisosPlugins( $ajustes ) )->registrar();
 
 		$actualizador = $this->actualizador();
 		$actualizador?->registrar();

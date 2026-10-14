@@ -3,10 +3,11 @@
     // distinguir la ventana de VS Code de otros proyectos. Solo afecta a este
     // workspace.
     "workbench.colorCustomizations": {
-        // Barra superior de la ventana (Title Bar): fondo oscuro con un tinte
-        // azul discreto, texto azul y una línea fina debajo. La inactiva vuelve
-        // al fondo del tema (Catppuccin Frappé).
-        "titleBar.activeBackground": "#2B373B",
+        // Barra superior de la ventana (Title Bar): azul oscuro de la familia
+        // del corporativo, texto azul y una línea fina debajo. El tono se
+        // desplaza un poco hacia el azul (205°) porque el cian oscurecido tira
+        // a verde. La inactiva vuelve al fondo del tema (Catppuccin Frappé).
+        "titleBar.activeBackground": "#0E334E",
         "titleBar.activeForeground": "#1FB5E5",
         "titleBar.inactiveBackground": "#232634",
         "titleBar.inactiveForeground": "#1FB5E580",

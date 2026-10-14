@@ -15,6 +15,13 @@ paleta de comandos de wp-admin por un lanzador que además busca contenido real 
   acciones rápidas y contenido por título, email, SKU o número de pedido.
 - **Personalización por usuario**: mostrar u ocultar paneles, reordenarlos y elegir tema claro,
   oscuro o automático.
+- **Revisión de administradores**: la pantalla EscritorioWP › Administradores lista a los
+  administradores y marca en rojo a quien tiene permisos de administrador sin el rol, guardados en la
+  base de datos, o está oculto en la pantalla Usuarios. Un número rojo en el menú avisa, y el botón
+  «Retirar permisos» quita los asignados directamente al usuario, tras confirmarlo.
+- **Avisos por correo**: un correo cada vez que alguien activa, desactiva, instala o borra un plugin,
+  con una casilla por evento, los destinatarios que elijas y un asunto y un mensaje con marcadores
+  (`{evento}`, `{plugins}`, `{usuario}`, `{ip}`…). Un cambio en lote manda un solo correo.
 - **WooCommerce opcional**: si está activo añade productos y pedidos; compatible con HPOS.
 
 ## Estructura del repositorio

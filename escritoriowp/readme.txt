@@ -12,7 +12,8 @@ Sustituye el escritorio de WordPress por una interfaz propia y la paleta de coma
 
 == Description ==
 
-EscritorioWP cambia dos cosas del día a día en el administrador de WordPress.
+EscritorioWP cambia dos cosas del día a día en el administrador de WordPress y añade una revisión de
+seguridad y avisos por correo de los cambios en los plugins.
 
 **Un escritorio útil.** Al entrar en el Escritorio, en lugar de los widgets de siempre verás:
 
@@ -36,6 +37,25 @@ Comando+K o Control+K, y que además busca:
 Todo se resuelve en el servidor respetando las capacidades de cada usuario: nadie ve resultados de
 contenido que no podría abrir en el administrador.
 
+**Una revisión de administradores.** Tras una intrusión es habitual dejar una puerta trasera
+discreta: dar permisos de administrador a un usuario normal escribiendo directamente en la base de
+datos, de modo que en la pantalla Usuarios aparece con su rol de siempre. La pantalla
+EscritorioWP › Administradores lista a los administradores y marca en rojo:
+
+* A los usuarios sin el rol Administrador que tienen algún permiso que da control del sitio
+  (cambiar ajustes, gestionar usuarios, instalar o editar plugins y temas, actualizar…), diciendo
+  de dónde les viene: asignado al propio usuario o heredado de un rol alterado.
+* A los usuarios que algún código esconde de la pantalla Usuarios.
+* Los roles, como «Suscriptor», a los que se han añadido permisos de administrador.
+
+Lee la base de datos directamente y calcula los permisos igual que WordPress, así que no la engaña
+el código que oculta usuarios. Si hay usuarios que revisar, un número rojo en el menú lo avisa. Los
+permisos del gestor de tienda de WooCommerce no cuentan.
+
+Si un usuario tiene permisos de administrador asignados directamente, el botón «Retirar permisos» se
+los quita tras una confirmación que lista exactamente cuáles, sin tocar su rol. Si lo alterado es un
+rol, la pantalla lo explica pero no lo modifica. Nadie puede retirarse sus propios permisos.
+
 = Compatibilidad con WooCommerce =
 
 WooCommerce es opcional. Si está activo, el plugin añade productos y pedidos al escritorio y al
@@ -43,15 +63,37 @@ buscador, y declara compatibilidad con el almacenamiento de pedidos de alto rend
 
 = El menú del plugin =
 
-EscritorioWP añade su propio menú en el administrador, justo debajo del Escritorio, con dos
+EscritorioWP añade su propio menú en el administrador, justo debajo del Escritorio, con tres
 pantallas:
 
 * **Ajustes**: desactiva cada parte por separado. Sustituir o no el escritorio, conservar los
   widgets de otros plugins, desactivar o no la paleta de comandos nativa y activar o desactivar el
   lanzador, también en el sitio público. También eliges debajo de qué menú aparece EscritorioWP,
-  o si va al final, y un color de fondo para que su entrada destaque en la barra lateral.
+  o si va al final, un color de fondo para que su entrada destaque en la barra lateral y los avisos
+  por correo.
+* **Administradores**: quién es administrador y quién tiene permisos de administrador sin serlo.
+  Solo para usuarios con `manage_options` y `list_users`.
 * **Acerca de**: la versión instalada, los enlaces del proyecto, el estado de la actualización con
   un botón para comprobarla al momento, y las novedades de cada versión publicada.
+
+= Avisos por correo =
+
+En EscritorioWP › Ajustes puedes pedir un correo cada vez que alguien activa, desactiva, instala o
+borra un plugin, con una casilla para cada caso. Vienen desactivados.
+
+* Elige a quién se envía: una o varias direcciones separadas por comas. Si no pones ninguna, va al
+  correo de administración del sitio.
+* Escribe el asunto y el mensaje con marcadores como `{evento}`, `{plugins}`, `{lista}`,
+  `{usuario}`, `{fecha}` o `{ip}`, que se sustituyen al enviar. La pantalla de ajustes los lista
+  todos.
+* Si se cambian varios plugins a la vez, llega un solo correo con todos. La pantalla Plugins borra
+  los plugins de uno en uno, así que un borrado en lote manda un correo por plugin.
+* Funciona igual desde la pantalla Plugins, la API REST o WP-CLI, y avisa también si alguien
+  desactiva EscritorioWP.
+
+El correo incluye el nombre de usuario y la IP de quien hizo el cambio, y solo se envía a las
+direcciones que configures. No avisa de los cambios hechos sin pasar por WordPress, como copiar
+ficheros por FTP.
 
 = Actualizaciones =
 
@@ -92,6 +134,12 @@ ve el panel de usuarios.
 = ¿Se puede volver al escritorio de siempre? =
 
 Sí. Desactiva «Sustituir el escritorio nativo» en EscritorioWP › Ajustes, o desactiva el plugin.
+
+= ¿Me avisa también de las actualizaciones de plugins? =
+
+No. Para actualizar un plugin, WordPress puede desactivarlo y volver a activarlo por dentro, y
+EscritorioWP no lo cuenta como una desactivación ni una activación. De las actualizaciones
+automáticas ya avisa WordPress por correo.
 
 == External services ==
 

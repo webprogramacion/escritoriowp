@@ -18,7 +18,13 @@ desarrollo y nunca se distribuye. Si creas un fichero nuevo, pregúntate si acom
 3. **Se actualiza solo desde GitHub**: WordPress avisa de las versiones nuevas y las instala con un
    clic, sin pasar por WordPress.org.
 
-Todo se gobierna desde el menú propio «EscritorioWP», con dos pantallas: Ajustes y Acerca de.
+4. **Señala posibles puertas traseras**: la pantalla Administradores lista a los administradores y
+   marca en rojo a quien tiene permisos de administrador sin el rol (§7 ter).
+5. **Avisa por correo de los cambios en los plugins**: al activar, desactivar, instalar o borrar
+   uno, con destinatarios y texto configurables en Ajustes (§7 quater).
+
+Todo se gobierna desde el menú propio «EscritorioWP», con tres pantallas: Ajustes, Administradores y
+Acerca de.
 
 WooCommerce es opcional: si está activo añade productos y pedidos.
 
@@ -53,11 +59,13 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
     │   ├── class-changelog.php       Lee el historial de cambios del readme.txt.
     │   ├── class-menu.php            Posición del menú del plugin en la barra lateral.
     │   ├── actualizaciones/          ActualizadorGithub. Solo en la variante de GitHub.
+    │   ├── avisos/                   Plantilla (funciones puras) y AvisosPlugins (enganches y envío).
     │   ├── escritorio/               Escritorio, Resumen, Recientes, Preferencias.
     │   ├── lanzador/                 Lanzador y CatalogoComandos.
     │   ├── busqueda/                 Fuente (interfaz), Buscador, Grupo, Resultado, 4 fuentes.
     │   ├── creacion/                 Creador, Errores y un creador por tipo.
     │   ├── rest/                     Rest y cinco controladores.
+    │   ├── seguridad/                Permisos (cálculo puro), Detector y la pantalla Administradores.
     │   └── woo/class-woo.php         Todo lo que depende de WooCommerce.
     ├── assets/css/  comun.css (tokens) · escritorio.css · lanzador.css · ajustes.css
     ├── assets/js/   comun.js (utilidades) · escritorio.js · lanzador.js · ajustes.js (selector de color)
@@ -142,8 +150,10 @@ Dos detalles que no se pueden perder de vista:
 
 **El menú.** `Ajustes::anadir_pagina()` crea el menú de primer nivel con `add_menu_page()` y añade
 su primera entrada con `add_submenu_page()` compartiendo identificador, que es lo que evita que se
-repita el nombre. `AcercaDe::anadir_pagina()` añade la segunda entrada en `admin_menu` con prioridad
-11, para que el menú ya exista. Cada clase encola su propio CSS comparando el identificador de
+repita el nombre. `Administradores::anadir_pagina()` y `AcercaDe::anadir_pagina()` añaden las otras
+dos en `admin_menu` con prioridad 11, para que el menú ya exista; Administradores pasa la posición `1`
+a `add_submenu_page()`, que la deja justo detrás de «Ajustes» sin depender del orden en que se
+registran los módulos. Administradores solo se registra si el usuario tiene también `list_users`. Cada clase encola su propio CSS comparando el identificador de
 pantalla que le devolvió WordPress. La URL de ajustes es `Ajustes::url()`: nadie vuelve a escribirla
 a mano.
 
@@ -186,6 +196,124 @@ Tres reglas que no se pueden perder de vista:
   pendientes que no son de código (el nombre no puede llevar «wp» y el readme tiene que estar en
   inglés).
 
+## 7 ter. Detección de administradores
+
+La pantalla EscritorioWP › Administradores busca puertas traseras: usuarios que, sin el rol
+Administrador, tienen guardados en la base de datos permisos que dan control del sitio. Todo vive en
+`includes/seguridad/`.
+
+**Qué cuenta como permiso de administrador.** `Permisos::CRITICOS`, una lista cerrada de 30 permisos
+que en una instalación estándar solo tiene el administrador (ajustes, usuarios y roles, plugins,
+temas, ficheros, actualizaciones y los de la red). Quedan fuera los que WooCommerce da al gestor de
+tienda (`import`, `export`, `list_users`, `edit_theme_options`, `level_9`) y `unfiltered_html`, que
+tiene el editor. **No tiene filtro a propósito**: en una herramienta de seguridad, lo primero que
+haría un atacante es vaciarla.
+
+**Se calcula como WordPress, no como su interfaz.** `Permisos::evaluar()` replica
+`WP_User::get_role_caps()` y `has_cap()`, y cada regla tiene su prueba en `tests/prueba-permisos.php`:
+
+- Es rol cada clave del metadato de permisos que coincide con un rol existente, **sea cual sea su
+  valor**: `{"administrator": false}` es un administrador.
+- Los permisos de los roles se fusionan en orden (`array_merge`) y encima van los guardados en el
+  usuario, que mandan: un `manage_options` en falso en el usuario anula el del rol.
+- Un permiso cuenta si su valor no está vacío (`"1"` sí; `0`, `""` y `"0"` no).
+- La clave de un rol que no existe es un permiso suelto más.
+- El origen de cada permiso es `usuario` o el último rol que lo define, que es el que aporta el valor.
+
+`Permisos::desserializar()` lee el metadato crudo con `allowed_classes => false`: un valor manipulado
+no puede instanciar objetos, cosa que el `maybe_unserialize()` de WordPress no evita.
+
+**Se lee la base de datos directamente.** `Detector` consulta `usermeta` y `users` con `$wpdb`, sin
+`get_users()`, `WP_User_Query`, `get_user_meta()` ni `get_userdata()`: un código que quiera esconder
+a un usuario filtra justo esas funciones (`pre_user_query`, `pre_get_users`, `get_user_metadata`) o
+reemplaza la última, que es reemplazable. Cada consulta lleva su `phpcs:ignore` con este motivo. Va
+en dos pasos: un filtro grueso con `LIKE` sobre el metadato serializado (`Permisos::patrones()`, que
+puede traer candidatos de más pero nunca de menos) y la lectura de su detalle quedándose con la
+primera fila de cada usuario, como WordPress cuando el metadato está repetido. Los roles sí salen de
+`wp_roles()`, porque es lo que WordPress usa para conceder.
+
+**El contador en el menú.** Con usuarios marcados, `Administradores::contador()` añade el mismo
+marcado que los contadores de WordPress (`awaiting-mod`, con texto para lectores de pantalla) al
+título de su entrada y, tocando `$menu`, al de «EscritorioWP», para que se vea con el menú cerrado.
+`CatalogoComandos::limpiar_titulo()` y `Menu::opciones()` ya quitan esos `<span>`. En su propia
+pantalla no se lee la caché: se analiza al registrar el menú (WordPress ya ha fijado `$plugin_page`)
+y pintar reutiliza ese informe, para que el contador y el resumen coincidan.
+
+**Usuarios ocultos.** Lo único que pasa a propósito por `get_users()`: los usuarios que se van a pintar
+se piden con `login__in` y los que faltan están ocultos. Por nombre de usuario y no con `include`,
+porque con `include` WordPress ignora `exclude`, que es otra forma de esconder a alguien.
+
+**El contador** del menú lee el transitorio `escritoriowp_administradores` (15 minutos). Lo invalidan
+los cambios del metadato de permisos, de la opción de roles y de los superadministradores, con
+enganches que `Plugin::arrancar()` registra también fuera del administrador. Un alta de usuario solo
+lo invalida si nace sospechosa: en una tienda, invalidar en cada registro obligaría a recalcular casi
+en cada pantalla.
+
+**Retirar permisos.** Solo los permisos críticos **sueltos** (`Detector::sueltos()`), nunca los que
+vienen de un rol: el plugin no modifica roles. El botón lleva a una confirmación que pinta el servidor
+(`&retirar={id}`), sin JavaScript, que no cambia nada y lista lo que se va a quitar; el formulario va
+por POST a `admin-post.php` con un nonce ligado al identificador del usuario. La acción
+(`Administradores::retirar()`) comprueba ella misma que el método es POST, porque `admin-post.php`
+también dispara la acción por GET, y repite las comprobaciones de la confirmación
+(`Administradores::motivo_rechazo()`): nadie se retira sus propios permisos, ni se tocan
+administradores o superadministradores, y hace falta `promote_user` sobre ese usuario. Vuelve a leer
+la base de datos y quita con `WP_User::remove_cap()`, no con SQL: así se disparan los enganches (la
+caché del contador se invalida sola y los registros de actividad lo anotan), se limpia la caché de
+objetos y WordPress recalcula `user_level`, el otro rastro que suele dejar una escalada a mano. El
+mensaje final nombra los permisos retirados para poder devolverlos si eran legítimos.
+
+**Qué no detecta.** Los permisos que un plugin concede solo en tiempo de ejecución (`user_has_cap`,
+`map_meta_cap`): no están en la base de datos y cualquier plugin legítimo usa esos filtros. Tampoco
+ve como oculto a un usuario que un código esconde solo cuando la página es `users.php`, aunque sí lo
+marca si tiene permisos críticos.
+
+## 7 quater. Avisos por correo
+
+Todo vive en `includes/avisos/`: `Plantilla` (marcadores, resumen de nombres y línea de cada plugin,
+funciones puras con pruebas) y `AvisosPlugins` (enganches y envío). Se compone en `Plugin::arrancar()`
+fuera de `is_admin()`, porque la API REST y WP-CLI también activan, instalan y borran plugins.
+`registrar()` solo engancha los eventos cuya casilla está marcada: con las cuatro apagadas, que es el
+valor por defecto, no engancha nada.
+
+**Qué se escucha** (comprobado en el código de WordPress 7.1):
+
+| Evento | Enganche | Detalle |
+|--------|----------|---------|
+| Activación | `activated_plugin` | |
+| Desactivación | `deactivated_plugin` | También la del propio EscritorioWP, que sigue cargado en esa petición. |
+| Instalación | `upgrader_process_complete` (`plugin`, `install`) | Se dispara también si falla: solo cuenta si `Plugin_Upgrader::plugin_info()` devuelve el fichero. |
+| Borrado | `delete_plugin` y `deleted_plugin` | El primero lee nombre y versión mientras el fichero existe; el segundo anota solo si se borró. |
+
+**Las actualizaciones no avisan, por diseño.** Al actualizar desde la pantalla o con WP-CLI,
+WordPress desactiva y reactiva el plugin en modo silencioso (`deactivate_plugins( …, true )`,
+`activate_plugin( …, true )`), que no dispara esos enganches; en cron ni siquiera lo desactiva. Por eso
+no se vigila la opción `active_plugins`: confundiría ese ciclo con un cambio real.
+
+**Se envía en `shutdown`, un correo por evento.** Cada plugin se anota por evento y fichero, y el envío
+espera al final de la petición (que corre también tras `exit` y `wp_die()`): una acción en lote manda
+un solo correo. No se usa cron porque, si lo desactivado es EscritorioWP, su callback ya no existiría
+al correr. La pantalla Plugins borra con AJAX de uno en uno, así que el borrado en lote manda un correo
+por plugin. Cada envío va en `try`/`catch`: si `wp_mail()` falla, el aviso se pierde sin tocar la
+acción.
+
+**Siempre texto plano.** `wp_mail()` aplica `wp_mail_content_type` después de leer la cabecera, así
+que durante el envío, y solo durante él, un filtro con prioridad `PHP_INT_MAX` devuelve `text/plain`;
+se quita en un `finally`.
+
+**Marcadores.** `Plantilla::rellenar()` sustituye en una sola pasada con `strtr()`: el nombre de un
+plugin que contenga `{sitio}` no se vuelve a interpretar, y un marcador desconocido se queda tal cual.
+`{ip}` es solo `REMOTE_ADDR`, porque las cabeceras de proxy las escribe el cliente, y «—» con WP-CLI,
+que rellena `REMOTE_ADDR` con `127.0.0.1`.
+
+**Textos predeterminados vacíos.** `aviso_asunto` y `aviso_mensaje` valen `''` y se traducen al
+enviar. El formulario los muestra rellenados (argumento `predeterminado`) y
+`Ajustes::sanear_formulario()` guarda `''` si llegan iguales al predeterminado: guardarlos los
+congelaría en el idioma y la versión del momento.
+
+**Qué no detecta.** La activación del propio EscritorioWP (en esa petición todavía no ha arrancado),
+los cambios hechos sin las funciones de WordPress (copiar ficheros por FTP, editar `active_plugins` en
+la base de datos), los `mu-plugins`, los complementos (`drop-ins`) y los temas.
+
 ## 8. Cómo añadir cosas
 
 **Una fuente de búsqueda nueva**: implementa `EscritorioWP\Busqueda\Fuente` en
@@ -204,11 +332,17 @@ con prioridad 11 o posterior y `Ajustes::PAGINA` como padre, y guarda el identif
 `add_submenu_page()` para encolar su CSS. El lanzador la recoge sola al leer `$submenu`.
 
 **Un ajuste nuevo**: añádelo a `Ajustes::defectos()` y declara su campo en
-`Ajustes::registrar_ajustes()` con su `tipo` (`casilla`, `numero`, `desplegable` o `color`), que es
-lo que `pintar_campo()` usa para decidir cómo pintarlo. Una casilla no necesita nada más: `sanear()`
-la interpreta como booleano y `pintar_campo()` le pone el campo oculto con valor `0`. Cualquier otro
-tipo necesita su rama en el `match` de `Ajustes::sanear()`; sin ella el ajuste conserva siempre su
-valor por defecto, para que nunca se guarde mal interpretado.
+`Ajustes::registrar_ajustes()` con su `tipo` (`casilla`, `numero`, `desplegable`, `color`, `correo`,
+`texto` o `area`), que es lo que `pintar_campo()` usa para decidir cómo pintarlo. Una casilla no
+necesita nada más: `sanear()` la interpreta como booleano y `pintar_campo()` le pone el campo oculto
+con valor `0`. Cualquier otro tipo necesita su rama en el `match` de `Ajustes::sanear()`; sin ella el
+ajuste conserva siempre su valor por defecto, para que nunca se guarde mal interpretado. El campo
+admite tres argumentos opcionales: `predeterminado` (lo que se muestra mientras el valor guardado está
+vacío), `ejemplo` (el `placeholder`) y `leyenda` (términos con su significado bajo la descripción).
+`sanear()` es pura; lo que necesita WordPress al guardar desde el formulario, como un aviso con
+`add_settings_error()` o guardar vacío un texto igual al predeterminado, va en
+`Ajustes::sanear_formulario()`, que es el `sanitize_callback`. La pantalla pinta esos avisos con
+`settings_errors()`, porque WordPress solo lo hace bajo Ajustes.
 
 ## 9. Cachés
 
@@ -217,6 +351,7 @@ valor por defecto, para que nunca se guarde mal interpretado.
 | `escritoriowp_resumen_woo` | Productos, pedidos e ingresos del mes | 5 min | Botón «Actualizar», crear un producto |
 | `escritoriowp_comandos_{id}` | Catálogo de comandos del usuario | 12 h | Cambio de versión del plugin |
 | `escritoriowp_actualizacion` | Última release publicada en GitHub | 12 h (1 h si falla) | Botón «Buscar actualizaciones ahora» |
+| `escritoriowp_administradores` | Número de usuarios marcados, para el contador del menú | 15 min | Cambios de permisos, roles o superadministradores; abrir la pantalla Administradores |
 
 El catálogo se cachea porque en el sitio público no existen `$menu` ni `$submenu`. Si no hay caché,
 el lanzador del front-end ofrece solo las acciones fijas y la búsqueda de contenido.

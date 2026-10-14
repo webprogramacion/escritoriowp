@@ -1,8 +1,8 @@
 /**
- * EscritorioWP · pantallas del menú del plugin (Ajustes y Acerca de).
+ * EscritorioWP · pantallas del menú del plugin (Ajustes, Administradores y Acerca de).
  *
- * Los colores salen de los tokens de comun.css, así que la pantalla Acerca de sigue el tema claro
- * u oscuro que cada usuario haya elegido para el escritorio.
+ * Los colores salen de los tokens de comun.css, así que las pantallas Administradores y Acerca de
+ * siguen el tema claro u oscuro que cada usuario haya elegido para el escritorio.
  */
 
 .escritoriowp-ajustes__intro {
@@ -30,6 +30,41 @@
 	padding-top: 14px;
 	border-top: 1px solid #dcdcde;
 	font-size: 15px;
+}
+
+/* Avisos por correo: el asunto, el mensaje y la leyenda de marcadores no pasan del ancho de lectura. */
+
+.escritoriowp-ajustes .large-text {
+	max-width: 640px;
+}
+
+.escritoriowp-ajustes__marcadores {
+	display: grid;
+	grid-template-columns: max-content minmax(0, 1fr);
+	gap: 6px 16px;
+	max-width: 640px;
+	margin: 10px 0 0;
+}
+
+.escritoriowp-ajustes__marcadores dt,
+.escritoriowp-ajustes__marcadores dd {
+	margin: 0;
+}
+
+.escritoriowp-ajustes__marcadores dd {
+	color: #50575e;
+}
+
+@media (max-width: 600px) {
+
+	.escritoriowp-ajustes__marcadores {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2px;
+	}
+
+	.escritoriowp-ajustes__marcadores dd {
+		margin-bottom: 8px;
+	}
 }
 
 /* Acerca de */
@@ -160,5 +195,301 @@
 	.escritoriowp-acerca__actualizacion {
 		flex-direction: column;
 		align-items: flex-start;
+	}
+}
+
+/* Administradores */
+
+/*
+ * Fondo propio: con el tema oscuro, los títulos y textos claros no se leerían sobre el gris claro
+ * del administrador de WordPress.
+ */
+.escritoriowp-administradores .escritoriowp {
+	max-width: 1100px;
+	box-sizing: border-box;
+	margin-top: 16px;
+	padding: 20px;
+	border-radius: var(--ewp-radio);
+	background: var(--ewp-fondo);
+	color: var(--ewp-texto);
+	font-family: var(--ewp-tipografia);
+}
+
+.escritoriowp-administradores__titulo:first-of-type {
+	margin-top: 24px;
+}
+
+.escritoriowp-administradores__intro,
+.escritoriowp-administradores__nota,
+.escritoriowp-administradores__vacio,
+.escritoriowp-administradores__restantes {
+	max-width: 720px;
+	margin: 0 0 16px;
+	color: var(--ewp-texto-suave);
+	font-size: 14px;
+}
+
+.escritoriowp-administradores__restantes {
+	margin-top: 12px;
+}
+
+.escritoriowp-administradores__resumen {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	padding: 16px 20px;
+	border: 1px solid var(--ewp-borde);
+	border-radius: var(--ewp-radio);
+	background: var(--ewp-superficie);
+}
+
+.escritoriowp-administradores__resumen[data-estado="alerta"] {
+	border-color: var(--ewp-rojo);
+	background: var(--ewp-rojo-suave);
+}
+
+.escritoriowp-administradores__resumen[data-estado="correcto"] {
+	border-color: var(--ewp-verde);
+	background: var(--ewp-verde-suave);
+}
+
+.escritoriowp-administradores__resumen .dashicons {
+	flex: none;
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+}
+
+.escritoriowp-administradores__resumen[data-estado="alerta"] .dashicons {
+	color: var(--ewp-rojo);
+}
+
+.escritoriowp-administradores__resumen[data-estado="correcto"] .dashicons {
+	color: var(--ewp-verde);
+}
+
+.escritoriowp-administradores__resumen p {
+	margin: 0;
+	color: var(--ewp-texto);
+	font-size: 14px;
+}
+
+.escritoriowp-administradores__resumen p + p {
+	margin-top: 4px;
+}
+
+.escritoriowp-administradores__resumen-titulo {
+	font-weight: 700;
+}
+
+.escritoriowp-administradores__resumen[data-estado="alerta"] .escritoriowp-administradores__resumen-titulo {
+	color: var(--ewp-rojo);
+}
+
+.escritoriowp-administradores__titulo {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 28px 0 12px;
+	padding-top: 16px;
+	border-top: 1px solid var(--ewp-borde);
+	color: var(--ewp-texto);
+	font-size: 16px;
+}
+
+.escritoriowp-administradores__cuenta {
+	padding: 1px 8px;
+	border-radius: 999px;
+	background: var(--ewp-superficie-2);
+	color: var(--ewp-texto-suave);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.escritoriowp-administradores__nombre {
+	display: block;
+	font-weight: 600;
+}
+
+.escritoriowp-administradores__login,
+.escritoriowp-administradores__origen {
+	display: block;
+	color: var(--ewp-texto-tenue);
+	font-size: 12px;
+}
+
+.escritoriowp-administradores__etiquetas {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.escritoriowp-administradores__etiquetas .escritoriowp-etiqueta {
+	margin-top: 4px;
+}
+
+.escritoriowp-administradores__permisos {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.escritoriowp-administradores__permisos li {
+	margin: 0 0 6px;
+}
+
+.escritoriowp-administradores__permisos li:last-child {
+	margin-bottom: 0;
+}
+
+.escritoriowp-administradores__explicacion {
+	max-width: 240px;
+	margin: 6px 0 0 auto;
+	color: var(--ewp-texto-tenue);
+	font-size: 12px;
+	text-align: right;
+	white-space: normal;
+}
+
+/* Retirar permisos: botón de peligro y confirmación. */
+
+.escritoriowp-boton--peligro,
+.escritoriowp-boton--peligro:hover,
+.escritoriowp-boton--peligro:focus {
+	background: var(--ewp-rojo);
+	color: var(--ewp-superficie);
+}
+
+.escritoriowp-boton--peligro:focus-visible {
+	outline-color: var(--ewp-rojo);
+}
+
+.escritoriowp-administradores__confirmacion {
+	max-width: 720px;
+	padding: 20px;
+	border: 1px solid var(--ewp-borde);
+	border-radius: var(--ewp-radio);
+	background: var(--ewp-superficie);
+}
+
+.escritoriowp-administradores__confirmacion p {
+	margin: 0 0 12px;
+	color: var(--ewp-texto);
+	font-size: 14px;
+}
+
+.escritoriowp-administradores__confirmacion .escritoriowp-administradores__permisos {
+	margin-bottom: 12px;
+}
+
+.escritoriowp-administradores__acciones {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.escritoriowp-tabla__acciones .escritoriowp-boton + .escritoriowp-boton {
+	margin-left: 6px;
+}
+
+/* Tabla con los tokens del plugin: las de WordPress no siguen el tema oscuro. */
+
+.escritoriowp-tabla {
+	width: 100%;
+	border: 1px solid var(--ewp-borde);
+	border-radius: var(--ewp-radio);
+	border-collapse: separate;
+	border-spacing: 0;
+	background: var(--ewp-superficie);
+	font-size: 13px;
+	overflow: hidden;
+}
+
+.escritoriowp-tabla th,
+.escritoriowp-tabla td {
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--ewp-borde);
+	color: var(--ewp-texto);
+	text-align: left;
+	vertical-align: top;
+}
+
+.escritoriowp-tabla th {
+	background: var(--ewp-superficie-2);
+	color: var(--ewp-texto-suave);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.escritoriowp-tabla tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.escritoriowp-tabla code {
+	padding: 1px 5px;
+	border-radius: 4px;
+	background: var(--ewp-superficie-2);
+	color: var(--ewp-texto);
+	font-size: 12px;
+}
+
+.escritoriowp-tabla td.escritoriowp-tabla__acciones {
+	text-align: right;
+	white-space: nowrap;
+}
+
+@media (max-width: 782px) {
+	.escritoriowp-administradores .escritoriowp {
+		padding: 12px;
+	}
+
+	.escritoriowp-tabla thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+
+	.escritoriowp-tabla,
+	.escritoriowp-tabla tbody,
+	.escritoriowp-tabla tr,
+	.escritoriowp-tabla td {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.escritoriowp-tabla tr {
+		padding: 8px 0;
+		border-bottom: 1px solid var(--ewp-borde);
+	}
+
+	.escritoriowp-tabla tbody tr:last-child {
+		border-bottom: 0;
+	}
+
+	.escritoriowp-tabla td {
+		padding: 4px 14px;
+		border-bottom: 0;
+	}
+
+	.escritoriowp-tabla td[data-columna]::before {
+		content: attr(data-columna);
+		display: block;
+		color: var(--ewp-texto-tenue);
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.escritoriowp-tabla td.escritoriowp-tabla__acciones,
+	.escritoriowp-administradores__explicacion {
+		text-align: left;
+	}
+
+	.escritoriowp-administradores__explicacion {
+		max-width: none;
+		margin-left: 0;
 	}
 }

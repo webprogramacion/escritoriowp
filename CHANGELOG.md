@@ -17,6 +17,26 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   entrada EscritorioWP de la barra lateral para que destaque, sin tocar el resto del menú. El texto
   y el icono se ponen en blanco o en negro para que el contraste nunca baje de 4,5:1, y al pasar el
   ratón o con el foco del teclado la entrada responde como cualquier otra. Vacío por defecto.
+- Pantalla EscritorioWP › Administradores, para detectar puertas traseras. Lista a los
+  administradores (y a los superadministradores en multisitio) y marca en rojo a los usuarios sin el
+  rol Administrador que tienen guardado algún permiso que da control del sitio, diciendo si lo tienen
+  asignado o lo heredan de un rol alterado; a los usuarios que algún código esconde de la pantalla
+  Usuarios; y los roles alterados. Lee la base de datos directamente y calcula los permisos como
+  WordPress, así que no la engaña el código que oculta usuarios. Solo para quien tiene
+  `manage_options` y `list_users`.
+- Contador rojo en el menú EscritorioWP y en su entrada Administradores cuando hay usuarios que
+  revisar.
+- Botón «Retirar permisos» en la pantalla Administradores: tras una confirmación que lista
+  exactamente qué se va a quitar, retira a un usuario los permisos de administrador que tiene
+  asignados directamente, sin tocar su rol ni el resto de sus permisos. Exige poder cambiar el rol de
+  ese usuario y nadie puede retirarse sus propios permisos.
+- Avisos por correo, en la sección nueva «Avisos por correo» de EscritorioWP › Ajustes: un correo
+  cada vez que alguien activa, desactiva, instala o borra un plugin, con una casilla por evento
+  (todas apagadas por defecto). Se eligen los destinatarios (el correo de administración si no se
+  pone ninguno) y un asunto y un mensaje comunes con marcadores: `{evento}`, `{plugins}`, `{lista}`,
+  `{cantidad}`, `{usuario}`, `{fecha}`, `{sitio}`, `{url}`, `{url_plugins}` e `{ip}`. Un cambio en
+  lote manda un solo correo con todos los plugins. Funciona desde la pantalla Plugins, la API REST y
+  WP-CLI, avisa también si se desactiva EscritorioWP y no avisa de las actualizaciones.
 
 ### Cambiado
 
@@ -24,6 +44,11 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   barra lateral. Para dejarlo donde estaba, elige «Al final» en «Posición en el menú».
 - El saneado de ajustes trata cada ajuste según su tipo, en lugar de suponer que todo lo que no es
   una casilla es el número de elementos por panel. Los ajustes guardados no cambian.
+
+### Corregido
+
+- La pantalla EscritorioWP › Ajustes vuelve a mostrar el aviso «Ajustes guardados» al guardar: desde
+  que vive en el menú propio, WordPress ya no lo pintaba por su cuenta.
 
 ## [0.3.0] - 2026-10-12
 

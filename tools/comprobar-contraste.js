@@ -50,6 +50,10 @@ const pares = [
   ['azul', 'azul-suave', 4.5, 'etiqueta azul'],
   ['morado', 'morado-suave', 4.5, 'etiqueta morada'],
   ['borde-fuerte', 'superficie', 3, 'borde de campo sobre tarjeta'],
+  ['texto-suave', 'fondo', 4.5, 'texto secundario sobre fondo'],
+  ['texto', 'rojo-suave', 4.5, 'texto del resumen de alerta'],
+  ['texto', 'verde-suave', 4.5, 'texto del resumen correcto'],
+  ['superficie', 'rojo', 4.5, 'texto del botón de peligro'],
 ];
 
 let fallos = 0;

@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace EscritorioWP;
 
+use EscritorioWP\Avisos\AvisosPlugins;
+use EscritorioWP\Avisos\Plantilla;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -50,6 +53,21 @@ final class Ajustes {
 	 * Longitud máxima del identificador del menú de referencia.
 	 */
 	private const MAX_LONGITUD_MENU = 200;
+
+	/**
+	 * Número máximo de destinatarios de los avisos por correo.
+	 */
+	public const MAX_DESTINATARIOS = 10;
+
+	/**
+	 * Longitud máxima, en caracteres, del asunto de los avisos.
+	 */
+	private const MAX_ASUNTO = 200;
+
+	/**
+	 * Longitud máxima, en caracteres, del mensaje de los avisos.
+	 */
+	private const MAX_MENSAJE = 5000;
 
 	/**
 	 * Instancia única.
@@ -94,6 +112,9 @@ final class Ajustes {
 	 * Valores por defecto de todos los ajustes.
 	 *
 	 * `menu_debajo_de` vacío significa «Al final»; `menu_color_fondo` vacío, sin color propio.
+	 * Los avisos por correo empiezan apagados; `aviso_destinatarios` vacío significa el correo de
+	 * administración del sitio, y `aviso_asunto` y `aviso_mensaje` vacíos, el texto predeterminado,
+	 * que se traduce al enviar en lugar de guardarse en el idioma de la activación.
 	 *
 	 * @return array<string, bool|int|string>
 	 */
@@ -107,6 +128,13 @@ final class Ajustes {
 			'elementos_por_panel'      => 5,
 			'menu_debajo_de'           => self::MENU_POR_DEFECTO,
 			'menu_color_fondo'         => '',
+			'aviso_activar'            => false,
+			'aviso_desactivar'         => false,
+			'aviso_instalar'           => false,
+			'aviso_borrar'             => false,
+			'aviso_destinatarios'      => '',
+			'aviso_asunto'             => '',
+			'aviso_mensaje'            => '',
 		);
 	}
 
@@ -137,6 +165,9 @@ final class Ajustes {
 				'elementos_por_panel' => self::sanear_elementos( $valor ),
 				'menu_debajo_de'      => self::sanear_menu_debajo_de( $valor ),
 				'menu_color_fondo'    => self::sanear_color( $valor ),
+				'aviso_destinatarios' => self::sanear_correos( $valor ),
+				'aviso_asunto'        => self::sanear_asunto( $valor ),
+				'aviso_mensaje'       => self::sanear_mensaje( $valor ),
 				default               => is_bool( $defecto ) ? self::a_booleano( $valor ) : $defecto,
 			};
 		}
@@ -206,6 +237,106 @@ final class Ajustes {
 		}
 
 		return '#' . $hex;
+	}
+
+	/**
+	 * Sanea la lista de destinatarios de los avisos.
+	 *
+	 * Admite direcciones separadas por comas, punto y coma o espacios. Descarta las no válidas y las
+	 * repetidas, y conserva como mucho `MAX_DESTINATARIOS`. Valida con `filter_var()` y no con
+	 * `is_email()` para no depender de WordPress; `wp_mail()` vuelve a validar al enviar.
+	 *
+	 * @param mixed $valor Valor recibido.
+	 * @return string Direcciones en minúsculas separadas por «, », o cadena vacía.
+	 */
+	public static function sanear_correos( mixed $valor ): string {
+		return implode( ', ', self::partir_correos( $valor )['validos'] );
+	}
+
+	/**
+	 * Direcciones que `sanear_correos()` descarta por no ser válidas, tal como se escribieron.
+	 *
+	 * @param mixed $valor Valor recibido.
+	 * @return array<int, string>
+	 */
+	public static function correos_descartados( mixed $valor ): array {
+		return self::partir_correos( $valor )['descartados'];
+	}
+
+	/**
+	 * Separa una lista de destinatarios en direcciones válidas y descartadas.
+	 *
+	 * @param mixed $valor Valor recibido.
+	 * @return array{validos: array<int, string>, descartados: array<int, string>}
+	 */
+	private static function partir_correos( mixed $valor ): array {
+		$validos     = array();
+		$descartados = array();
+		$trozos      = is_string( $valor ) ? preg_split( '/[\s,;]+/', $valor, -1, PREG_SPLIT_NO_EMPTY ) : array();
+
+		foreach ( (array) $trozos as $trozo ) {
+			$correo = strtolower( $trozo );
+
+			if ( false === filter_var( $correo, FILTER_VALIDATE_EMAIL ) ) {
+				$descartados[] = $trozo;
+				continue;
+			}
+
+			$validos[] = $correo;
+		}
+
+		return array(
+			'validos'     => array_slice( array_values( array_unique( $validos ) ), 0, self::MAX_DESTINATARIOS ),
+			'descartados' => array_values( array_unique( $descartados ) ),
+		);
+	}
+
+	/**
+	 * Sanea el asunto de los avisos: sin etiquetas, en una sola línea y con longitud máxima.
+	 *
+	 * @param mixed $valor Valor recibido.
+	 * @return string Asunto saneado, o cadena vacía para el predeterminado.
+	 */
+	public static function sanear_asunto( mixed $valor ): string {
+		if ( ! is_string( $valor ) ) {
+			return '';
+		}
+
+		return mb_substr( Plantilla::una_linea( self::sin_etiquetas( $valor ) ), 0, self::MAX_ASUNTO );
+	}
+
+	/**
+	 * Sanea el mensaje de los avisos: sin etiquetas, con saltos de línea `\n`, sin otros caracteres de
+	 * control que el tabulador y con longitud máxima.
+	 *
+	 * @param mixed $valor Valor recibido.
+	 * @return string Mensaje saneado, o cadena vacía para el predeterminado.
+	 */
+	public static function sanear_mensaje( mixed $valor ): string {
+		if ( ! is_string( $valor ) ) {
+			return '';
+		}
+
+		$texto = str_replace( array( "\r\n", "\r" ), "\n", self::sin_etiquetas( $valor ) );
+		$texto = (string) preg_replace( '/[\x00-\x08\x0B-\x1F\x7F]+/', '', $texto );
+
+		return trim( mb_substr( trim( $texto ), 0, self::MAX_MENSAJE ) );
+	}
+
+	/**
+	 * Quita las etiquetas HTML de un texto, y el contenido de las de `script` y `style`.
+	 *
+	 * Es lo que hace `wp_strip_all_tags()`, sin depender de WordPress para poder probarlo; el correo
+	 * es de texto plano, así que una etiqueta solo serviría para despistar.
+	 *
+	 * @param string $texto Texto recibido.
+	 * @return string
+	 */
+	private static function sin_etiquetas( string $texto ): string {
+		$texto = (string) preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $texto );
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- La línea anterior hace la parte que añade wp_strip_all_tags(), que no está disponible en las pruebas.
+		return strip_tags( $texto );
 	}
 
 	/**
@@ -339,7 +470,7 @@ final class Ajustes {
 			self::OPCION,
 			array(
 				'type'              => 'object',
-				'sanitize_callback' => array( __CLASS__, 'sanear' ),
+				'sanitize_callback' => array( $this, 'sanear_formulario' ),
 				'default'           => self::defectos(),
 			)
 		);
@@ -367,6 +498,15 @@ final class Ajustes {
 			__( 'Menú', 'escritoriowp' ),
 			static function (): void {
 				echo '<p>' . esc_html__( 'Controla dónde aparece EscritorioWP en la barra lateral del administrador y cómo se ve.', 'escritoriowp' ) . '</p>';
+			},
+			self::PAGINA
+		);
+
+		add_settings_section(
+			'escritoriowp_seccion_avisos',
+			__( 'Avisos por correo', 'escritoriowp' ),
+			static function (): void {
+				echo '<p>' . esc_html__( 'Recibe un correo cada vez que alguien activa, desactiva, instala o borra un plugin. Si se cambian varios a la vez, llega un solo correo con todos.', 'escritoriowp' ) . '</p>';
 			},
 			self::PAGINA
 		);
@@ -425,6 +565,56 @@ final class Ajustes {
 				'etiqueta'    => __( 'Color de fondo en el menú', 'escritoriowp' ),
 				'descripcion' => __( 'Pinta el fondo de la entrada EscritorioWP para que destaque. El texto se pone en blanco o en negro según lo que se lea mejor. Déjalo vacío para que se vea como las demás.', 'escritoriowp' ),
 			),
+			'aviso_activar'            => array(
+				'seccion'     => 'escritoriowp_seccion_avisos',
+				'tipo'        => 'casilla',
+				'etiqueta'    => __( 'Avisar al activar un plugin', 'escritoriowp' ),
+				'descripcion' => __( 'Desde la pantalla Plugins, en lote, por la API REST o con WP-CLI.', 'escritoriowp' ),
+			),
+			'aviso_desactivar'         => array(
+				'seccion'     => 'escritoriowp_seccion_avisos',
+				'tipo'        => 'casilla',
+				'etiqueta'    => __( 'Avisar al desactivar un plugin', 'escritoriowp' ),
+				'descripcion' => __( 'También si alguien desactiva EscritorioWP. Las actualizaciones no avisan, aunque WordPress desactive y reactive el plugin para actualizarlo.', 'escritoriowp' ),
+			),
+			'aviso_instalar'           => array(
+				'seccion'     => 'escritoriowp_seccion_avisos',
+				'tipo'        => 'casilla',
+				'etiqueta'    => __( 'Avisar al instalar un plugin', 'escritoriowp' ),
+				'descripcion' => __( 'Desde el directorio de plugins, subiendo un zip (también si sustituye a uno instalado), por la API REST o con WP-CLI.', 'escritoriowp' ),
+			),
+			'aviso_borrar'             => array(
+				'seccion'     => 'escritoriowp_seccion_avisos',
+				'tipo'        => 'casilla',
+				'etiqueta'    => __( 'Avisar al borrar un plugin', 'escritoriowp' ),
+				'descripcion' => __( 'Con el nombre y la versión que tenía. La pantalla Plugins borra los plugins de uno en uno, así que un borrado en lote manda un correo por plugin.', 'escritoriowp' ),
+			),
+			'aviso_destinatarios'      => array(
+				'seccion'     => 'escritoriowp_seccion_avisos',
+				'tipo'        => 'correo',
+				'etiqueta'    => __( 'Destinatarios', 'escritoriowp' ),
+				'descripcion' => sprintf(
+					/* translators: %d: número máximo de direcciones. */
+					__( 'Una o varias direcciones separadas por comas, hasta %d. Si lo dejas vacío, el aviso va al correo de administración del sitio.', 'escritoriowp' ),
+					self::MAX_DESTINATARIOS
+				),
+				'ejemplo'     => (string) get_option( 'admin_email' ),
+			),
+			'aviso_asunto'             => array(
+				'seccion'        => 'escritoriowp_seccion_avisos',
+				'tipo'           => 'texto',
+				'etiqueta'       => __( 'Asunto', 'escritoriowp' ),
+				'descripcion'    => __( 'Una sola línea. Vacíalo y guarda para volver al asunto predeterminado.', 'escritoriowp' ),
+				'predeterminado' => AvisosPlugins::asunto_por_defecto(),
+			),
+			'aviso_mensaje'            => array(
+				'seccion'        => 'escritoriowp_seccion_avisos',
+				'tipo'           => 'area',
+				'etiqueta'       => __( 'Mensaje', 'escritoriowp' ),
+				'descripcion'    => __( 'Texto plano, sin HTML. Vacíalo y guarda para volver al mensaje predeterminado. Puedes usar estos marcadores en el asunto y en el mensaje:', 'escritoriowp' ),
+				'predeterminado' => AvisosPlugins::mensaje_por_defecto(),
+				'leyenda'        => AvisosPlugins::marcadores(),
+			),
 		);
 
 		foreach ( $campos as $clave => $campo ) {
@@ -440,15 +630,67 @@ final class Ajustes {
 					'etiqueta'    => $campo['etiqueta'],
 					'descripcion' => $campo['descripcion'],
 					'label_for'   => 'escritoriowp-campo-' . $clave,
-				)
+				) + array_intersect_key( $campo, array_flip( array( 'predeterminado', 'ejemplo', 'leyenda' ) ) )
 			);
 		}
 	}
 
 	/**
+	 * Sanea lo que llega del formulario de ajustes.
+	 *
+	 * Además de `sanear()`, guarda vacíos el asunto y el mensaje que coinciden con su texto
+	 * predeterminado, para que quien guarda otro ajuste sin tocarlos siga recibiendo el predeterminado
+	 * de cada versión y en el idioma del momento. Y avisa de las direcciones descartadas: WordPress
+	 * puede llamar dos veces a esta función en un mismo guardado, así que el aviso se añade una vez.
+	 *
+	 * @param mixed $entrada Valores enviados por el formulario.
+	 * @return array<string, bool|int|string>
+	 */
+	public function sanear_formulario( mixed $entrada ): array {
+		$ajustes = self::sanear( $entrada );
+
+		if ( self::sanear_asunto( AvisosPlugins::asunto_por_defecto() ) === $ajustes['aviso_asunto'] ) {
+			$ajustes['aviso_asunto'] = '';
+		}
+
+		if ( self::sanear_mensaje( AvisosPlugins::mensaje_por_defecto() ) === $ajustes['aviso_mensaje'] ) {
+			$ajustes['aviso_mensaje'] = '';
+		}
+
+		$descartados = is_array( $entrada ) ? self::correos_descartados( $entrada['aviso_destinatarios'] ?? '' ) : array();
+		$codigo      = 'escritoriowp_correos_descartados';
+
+		if ( array() !== $descartados && ! in_array( $codigo, array_column( get_settings_errors( self::OPCION ), 'code' ), true ) ) {
+			add_settings_error(
+				self::OPCION,
+				$codigo,
+				esc_html(
+					sprintf(
+						/* translators: %s: direcciones de correo descartadas, separadas por comas. */
+						_n(
+							'Ajustes guardados, pero se ha quitado de los destinatarios esta dirección, que no es válida: %s',
+							'Ajustes guardados, pero se han quitado de los destinatarios estas direcciones, que no son válidas: %s',
+							count( $descartados ),
+							'escritoriowp'
+						),
+						implode( ', ', $descartados )
+					)
+				),
+				'warning'
+			);
+		}
+
+		return $ajustes;
+	}
+
+	/**
 	 * Pinta un campo del formulario de ajustes según el tipo que declara.
 	 *
-	 * @param array<string, string> $args Argumentos del campo.
+	 * Argumentos opcionales: `predeterminado`, el texto que se muestra mientras el valor guardado está
+	 * vacío; `ejemplo`, el texto de ayuda dentro del campo vacío; y `leyenda`, una lista de términos con
+	 * su significado que se pinta bajo la descripción.
+	 *
+	 * @param array<string, mixed> $args Argumentos del campo.
 	 * @return void
 	 */
 	public function pintar_campo( array $args ): void {
@@ -457,14 +699,25 @@ final class Ajustes {
 		$id     = 'escritoriowp-campo-' . $clave;
 		$nombre = self::OPCION . '[' . $clave . ']';
 
+		if ( '' === $valor && isset( $args['predeterminado'] ) ) {
+			$valor = (string) $args['predeterminado'];
+		}
+
 		match ( $args['tipo'] ) {
 			'casilla'     => $this->pintar_casilla( $id, $nombre, (bool) $valor, $args['etiqueta'] ),
 			'numero'      => $this->pintar_numero( $id, $nombre, (int) $valor ),
 			'desplegable' => $this->pintar_desplegable( $id, $nombre, (string) $valor ),
 			'color'       => $this->pintar_color( $id, $nombre, (string) $valor ),
+			'correo'      => $this->pintar_texto( $id, $nombre, (string) $valor, 'regular-text', (string) ( $args['ejemplo'] ?? '' ) ),
+			'texto'       => $this->pintar_texto( $id, $nombre, (string) $valor, 'large-text', (string) ( $args['ejemplo'] ?? '' ) ),
+			'area'        => $this->pintar_area( $id, $nombre, (string) $valor ),
 		};
 
 		printf( '<p class="description">%s</p>', esc_html( $args['descripcion'] ) );
+
+		if ( ! empty( $args['leyenda'] ) && is_array( $args['leyenda'] ) ) {
+			$this->pintar_leyenda( $args['leyenda'] );
+		}
 	}
 
 	/**
@@ -578,7 +831,68 @@ final class Ajustes {
 	}
 
 	/**
+	 * Pinta un campo de texto de una línea.
+	 *
+	 * @param string $id      Identificador del campo.
+	 * @param string $nombre  Nombre del campo en el formulario.
+	 * @param string $valor   Valor que se muestra.
+	 * @param string $clase   Clase de ancho de WordPress (`regular-text` o `large-text`).
+	 * @param string $ejemplo Texto de ayuda del campo vacío, o vacío para no ponerlo.
+	 * @return void
+	 */
+	private function pintar_texto( string $id, string $nombre, string $valor, string $clase, string $ejemplo ): void {
+		printf(
+			'<input type="text" id="%1$s" name="%2$s" value="%3$s" class="%4$s"%5$s>',
+			esc_attr( $id ),
+			esc_attr( $nombre ),
+			esc_attr( $valor ),
+			esc_attr( $clase ),
+			'' === $ejemplo ? '' : ' placeholder="' . esc_attr( $ejemplo ) . '"'
+		);
+	}
+
+	/**
+	 * Pinta un área de texto de varias líneas.
+	 *
+	 * @param string $id     Identificador del campo.
+	 * @param string $nombre Nombre del campo en el formulario.
+	 * @param string $valor  Valor que se muestra.
+	 * @return void
+	 */
+	private function pintar_area( string $id, string $nombre, string $valor ): void {
+		printf(
+			'<textarea id="%1$s" name="%2$s" rows="12" class="large-text escritoriowp-ajustes__area">%3$s</textarea>',
+			esc_attr( $id ),
+			esc_attr( $nombre ),
+			esc_textarea( $valor )
+		);
+	}
+
+	/**
+	 * Pinta una lista de términos con su significado, como la de los marcadores de los avisos.
+	 *
+	 * @param array<string, string> $leyenda Significado de cada término, sin llaves.
+	 * @return void
+	 */
+	private function pintar_leyenda( array $leyenda ): void {
+		echo '<dl class="escritoriowp-ajustes__marcadores">';
+
+		foreach ( $leyenda as $termino => $significado ) {
+			printf(
+				'<dt><code>{%1$s}</code></dt><dd>%2$s</dd>',
+				esc_html( (string) $termino ),
+				esc_html( (string) $significado )
+			);
+		}
+
+		echo '</dl>';
+	}
+
+	/**
 	 * Pinta la pantalla de ajustes.
+	 *
+	 * Los avisos de la Settings API («Ajustes guardados» o las direcciones descartadas) se pintan
+	 * aquí: WordPress solo los pinta por su cuenta en las pantallas que cuelgan de Ajustes.
 	 *
 	 * @return void
 	 */
@@ -590,6 +904,7 @@ final class Ajustes {
 		?>
 		<div class="wrap escritoriowp-ajustes">
 			<h1><?php echo esc_html__( 'Ajustes de EscritorioWP', 'escritoriowp' ); ?></h1>
+			<?php settings_errors(); ?>
 			<p class="escritoriowp-ajustes__intro">
 				<?php echo esc_html__( 'EscritorioWP sustituye el escritorio de WordPress y su paleta de comandos. Puedes desactivar cada parte por separado.', 'escritoriowp' ); ?>
 			</p>

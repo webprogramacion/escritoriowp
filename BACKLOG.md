@@ -22,6 +22,13 @@ Ideas evaluadas y descartadas para la versión 0.1.0, ordenadas por interés.
 - [ ] Modo "ir a" con prefijos (`>` acciones, `@` usuarios, `#` pedidos).
 - [ ] Registro de los comandos propios también en el store `core/commands` del editor de bloques.
 
+## Avisos por correo
+
+- [ ] Botón «Enviar un correo de prueba» en los ajustes, para comprobar que el sitio envía correo y
+      ver la plantilla rellenada.
+- [ ] Plantilla en HTML además de la de texto plano.
+- [ ] Avisar también de los cambios en temas y de las actualizaciones de plugins.
+
 ## Otros
 
 - [ ] Soporte del escritorio de red en instalaciones multisitio.

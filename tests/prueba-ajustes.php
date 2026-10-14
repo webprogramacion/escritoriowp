@@ -63,3 +63,80 @@ comprobar( 'upload.php', $menu['menu_debajo_de'], 'la posición se guarda como t
 comprobar( '#aabbcc', $menu['menu_color_fondo'], 'el color se guarda saneado' );
 comprobar( 'index.php', Ajustes::sanear( array( 'menu_debajo_de' => '<b>' ) )['menu_debajo_de'], 'el saneado general aplica el de la posición' );
 comprobar( '', Ajustes::sanear( array( 'menu_color_fondo' => 'rojo' ) )['menu_color_fondo'], 'el saneado general aplica el del color' );
+
+grupo( 'Ajustes · avisos por correo' );
+
+foreach ( array( 'aviso_activar', 'aviso_desactivar', 'aviso_instalar', 'aviso_borrar' ) as $clave ) {
+	comprobar( false, $defectos[ $clave ], "por defecto «{$clave}» está apagado" );
+}
+
+comprobar( '', $defectos['aviso_destinatarios'], 'por defecto no hay destinatarios: se usa el correo de administración' );
+comprobar( '', $defectos['aviso_asunto'], 'por defecto el asunto está vacío: se usa el predeterminado' );
+comprobar( '', $defectos['aviso_mensaje'], 'por defecto el mensaje está vacío: se usa el predeterminado' );
+
+comprobar(
+	'ana@ejemplo.es, luis@ejemplo.es',
+	Ajustes::sanear_correos( 'Ana@Ejemplo.es; luis@ejemplo.es' ),
+	'las direcciones se separan por punto y coma y pasan a minúsculas'
+);
+comprobar(
+	'ana@ejemplo.es',
+	Ajustes::sanear_correos( 'ana@ejemplo.es, no-es-un-correo, ana@ejemplo.es' ),
+	'se descartan la dirección no válida y la repetida'
+);
+comprobar(
+	array( 'no-es-un-correo' ),
+	Ajustes::correos_descartados( 'ana@ejemplo.es, no-es-un-correo, ana@ejemplo.es' ),
+	'correos_descartados() nombra la no válida'
+);
+comprobar(
+	array( 'No-Es-Un-Correo' ),
+	Ajustes::correos_descartados( 'No-Es-Un-Correo' ),
+	'la descartada se nombra tal como se escribió'
+);
+comprobar( '', Ajustes::sanear_correos( 'no-es-un-correo' ), 'sin ninguna válida queda vacío' );
+comprobar( 'a@ejemplo.es, b@ejemplo.es', Ajustes::sanear_correos( "a@ejemplo.es\n b@ejemplo.es" ), 'también se separan por saltos de línea y espacios' );
+
+$doce = array();
+for ( $i = 1; $i <= 12; $i++ ) {
+	$doce[] = "persona{$i}@ejemplo.es";
+}
+
+comprobar(
+	implode( ', ', array_slice( $doce, 0, 10 ) ),
+	Ajustes::sanear_correos( implode( ',', $doce ) ),
+	'doce direcciones se quedan en las diez primeras'
+);
+comprobar( '', Ajustes::sanear_correos( array( 'ana@ejemplo.es' ) ), 'un array no se acepta' );
+comprobar( '', Ajustes::sanear_correos( 123 ), 'un número no se acepta' );
+comprobar( array(), Ajustes::correos_descartados( array( 'x' ) ), 'un array no da direcciones descartadas' );
+
+comprobar( '[Mi web] Aviso importante', Ajustes::sanear_asunto( "[Mi web]\nAviso <b>importante</b>" ), 'el asunto queda en una línea y sin etiquetas' );
+comprobar( 200, mb_strlen( Ajustes::sanear_asunto( str_repeat( 'á', 300 ) ) ), 'un asunto de 300 caracteres se recorta a 200' );
+comprobar( '', Ajustes::sanear_asunto( array( 'x' ) ), 'un asunto que no es texto queda vacío' );
+
+comprobar( "Hola\n\n{lista}\nAdiós", Ajustes::sanear_mensaje( "Hola\r\n\r\n{lista}\r\nAdiós" ), 'el mensaje normaliza los saltos y conserva sus líneas' );
+comprobar( 'Antes  después', Ajustes::sanear_mensaje( 'Antes <script>alert(1)</script> después' ), 'el mensaje pierde las etiquetas script con su contenido' );
+comprobar( "a\tb", Ajustes::sanear_mensaje( "a\tb\x07" ), 'el mensaje conserva el tabulador y quita otros controles' );
+comprobar( 5000, mb_strlen( Ajustes::sanear_mensaje( str_repeat( 'é', 6000 ) ) ), 'un mensaje de 6000 caracteres se recorta a 5000' );
+comprobar( '', Ajustes::sanear_mensaje( '   ' ), 'un mensaje solo con espacios queda vacío' );
+
+$avisos = Ajustes::sanear(
+	array(
+		'elementos_por_panel' => 50,
+		'menu_debajo_de'      => 'upload.php',
+		'menu_color_fondo'    => '#ABC',
+		'aviso_activar'       => '1',
+		'aviso_borrar'        => '0',
+		'aviso_destinatarios' => 'ana@ejemplo.es, mal',
+		'aviso_asunto'        => "Uno\nDos",
+		'aviso_mensaje'       => "Uno\r\nDos",
+	)
+);
+
+comprobar( 20, $avisos['elementos_por_panel'], 'con los ajustes de los avisos, el número de elementos se sigue acotando' );
+comprobar( true, $avisos['aviso_activar'], 'la casilla de activar se guarda como verdadero' );
+comprobar( false, $avisos['aviso_borrar'], 'la casilla de borrar se guarda como falso' );
+comprobar( 'ana@ejemplo.es', $avisos['aviso_destinatarios'], 'el saneado general aplica el de los destinatarios' );
+comprobar( 'Uno Dos', $avisos['aviso_asunto'], 'el saneado general aplica el del asunto' );
+comprobar( "Uno\nDos", $avisos['aviso_mensaje'], 'el saneado general aplica el del mensaje' );
