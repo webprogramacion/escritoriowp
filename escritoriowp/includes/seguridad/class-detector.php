@@ -42,6 +42,16 @@ final class Detector {
 	private const LOTE = 500;
 
 	/**
+	 * Estado de quien tiene el rol de administrador o es superadministrador.
+	 */
+	public const ESTADO_ADMINISTRADOR = 'administrador';
+
+	/**
+	 * Estado de quien tiene algún permiso crítico sin ser administrador.
+	 */
+	public const ESTADO_MARCADO = 'marcado';
+
+	/**
 	 * Registra los enganches que invalidan la caché del contador.
 	 *
 	 * Cubren todo lo que cambia permisos pasando por WordPress: `set_role()`, `add_cap()`,
@@ -131,30 +141,19 @@ final class Detector {
 	 * @return array{administradores: array<int, array<string, mixed>>, marcados: array<int, array<string, mixed>>, total_marcados: int, restantes: int, roles_alterados: array<int|string, array{nombre: string, criticos: string[], usuarios: int}>, nombres_roles: array<int|string, string>}
 	 */
 	public static function analizar(): array {
-		$roles      = self::roles();
-		$alterados  = Permisos::roles_alterados( $roles );
-		$candidatos = self::candidatos( Permisos::patrones( $roles ) );
-		$usuarios   = self::detalle( $candidatos );
-
-		foreach ( $usuarios as $id => $usuario ) {
-			$evaluado = Permisos::evaluar( $usuario['permisos'], $roles );
-
-			unset( $usuarios[ $id ]['permisos'] );
-
-			$usuarios[ $id ]['roles']         = $evaluado['roles'];
-			$usuarios[ $id ]['criticos']      = $evaluado['criticos'];
-			$usuarios[ $id ]['administrador'] = $evaluado['administrador'];
-		}
-
-		$usuarios = self::anadir_superadministradores( $usuarios );
+		$roles     = self::roles();
+		$alterados = Permisos::roles_alterados( $roles );
+		$usuarios  = self::usuarios_evaluados();
 
 		$administradores = array();
 		$marcados        = array();
 
 		foreach ( $usuarios as $usuario ) {
-			if ( $usuario['administrador'] || $usuario['superadmin'] ) {
+			$estado = self::estado( $usuario );
+
+			if ( self::ESTADO_ADMINISTRADOR === $estado ) {
 				$administradores[] = $usuario;
-			} elseif ( array() !== $usuario['criticos'] ) {
+			} elseif ( self::ESTADO_MARCADO === $estado ) {
 				$marcados[] = $usuario;
 			}
 
@@ -201,6 +200,84 @@ final class Detector {
 			'roles_alterados' => $alterados,
 			'nombres_roles'   => $nombres,
 		);
+	}
+
+	/**
+	 * Todos los candidatos del sitio actual, evaluados, y los superadministradores de la red.
+	 *
+	 * Sin límite, sin comprobar quién está oculto y sin tocar la caché del contador: es la
+	 * clasificación en bruto que comparten la pantalla y la revisión periódica. Incluye candidatos que
+	 * al evaluarse no son administradores ni están marcados; `estado()` dice qué es cada uno.
+	 *
+	 * @return array<int, array<string, mixed>> Por identificador, con `roles`, `criticos`, `administrador` y `superadmin`.
+	 */
+	public static function usuarios_evaluados(): array {
+		$roles    = self::roles();
+		$usuarios = self::detalle( self::candidatos( Permisos::patrones( $roles ) ) );
+
+		foreach ( $usuarios as $id => $usuario ) {
+			$evaluado = Permisos::evaluar( $usuario['permisos'], $roles );
+
+			unset( $usuarios[ $id ]['permisos'] );
+
+			$usuarios[ $id ]['roles']         = $evaluado['roles'];
+			$usuarios[ $id ]['criticos']      = $evaluado['criticos'];
+			$usuarios[ $id ]['administrador'] = $evaluado['administrador'];
+		}
+
+		return self::anadir_superadministradores( $usuarios );
+	}
+
+	/**
+	 * Qué es un usuario evaluado: administrador (por rol o por ser superadministrador), marcado (sin
+	 * serlo, con algún permiso crítico) o nada.
+	 *
+	 * @param array<string, mixed> $usuario Usuario con `administrador`, `superadmin` y `criticos`.
+	 * @return string `ESTADO_ADMINISTRADOR`, `ESTADO_MARCADO` o cadena vacía.
+	 */
+	public static function estado( array $usuario ): string {
+		if ( ! empty( $usuario['administrador'] ) || ! empty( $usuario['superadmin'] ) ) {
+			return self::ESTADO_ADMINISTRADOR;
+		}
+
+		return empty( $usuario['criticos'] ) ? '' : self::ESTADO_MARCADO;
+	}
+
+	/**
+	 * Usuarios, de entre los dados, que siguen existiendo en la tabla de usuarios, con sus datos
+	 * básicos.
+	 *
+	 * @param int[] $ids Usuarios a comprobar.
+	 * @return array<int, array<string, mixed>> Por identificador; los que no existen no aparecen.
+	 */
+	public static function existentes( array $ids ): array {
+		global $wpdb;
+
+		$existentes = array();
+
+		foreach ( array_chunk( array_values( array_unique( array_map( 'intval', $ids ) ) ), self::LOTE ) as $lote ) {
+			$marcadores = implode( ',', array_fill( 0, count( $lote ), '%d' ) );
+
+			/*
+			 * Consulta directa por el mismo motivo que el resto: decir que un usuario se ha borrado no
+			 * puede depender de `get_userdata()`, que se puede reemplazar.
+			 */
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+			$filas = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT ID AS user_id, user_login, user_email, display_name, user_registered FROM {$wpdb->users} WHERE ID IN ({$marcadores})",
+					$lote
+				),
+				ARRAY_A
+			);
+			// phpcs:enable
+
+			foreach ( (array) $filas as $fila ) {
+				$existentes[ (int) $fila['user_id'] ] = self::usuario( $fila );
+			}
+		}
+
+		return $existentes;
 	}
 
 	/**
@@ -514,10 +591,10 @@ final class Detector {
 	 * superadministradores que no son miembros del sitio se buscan en toda la red, como hace su lista
 	 * de usuarios, para no darlos por ocultos solo porque no tienen rol aquí.
 	 *
-	 * @param array<int, array<string, mixed>> $usuarios Usuarios a comprobar.
+	 * @param array<int, array<string, mixed>> $usuarios Usuarios a comprobar, con `id`, `login` y `miembro`.
 	 * @return int[]
 	 */
-	private static function ocultos( array $usuarios ): array {
+	public static function ocultos( array $usuarios ): array {
 		$ocultos = array();
 
 		foreach ( array( true, false ) as $miembros ) {

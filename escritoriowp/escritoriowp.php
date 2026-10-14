@@ -134,3 +134,16 @@ register_activation_hook(
 		Ajustes::instancia()->asegurar_defectos();
 	}
 );
+
+/*
+ * Al desactivar se quita la revisión periódica de administradores y se conserva todo lo demás: al
+ * reactivar, el plugin la vuelve a programar y su primera revisión avisa de lo que cambió entre medias.
+ * El nombre va escrito tal cual (es `AvisosAdministradores::EVENTO`) para no cargar ninguna clase del
+ * plugin si no se cumplen los requisitos de PHP.
+ */
+register_deactivation_hook(
+	__FILE__,
+	static function (): void {
+		wp_clear_scheduled_hook( 'escritoriowp_revisar_administradores' );
+	}
+);

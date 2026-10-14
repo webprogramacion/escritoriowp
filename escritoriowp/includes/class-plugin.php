@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace EscritorioWP;
 
 use EscritorioWP\Actualizaciones\ActualizadorGithub;
+use EscritorioWP\Avisos\AvisosAdministradores;
 use EscritorioWP\Avisos\AvisosPlugins;
+use EscritorioWP\Avisos\Correo;
 use EscritorioWP\Escritorio\Escritorio;
 use EscritorioWP\Lanzador\Lanzador;
 use EscritorioWP\Rest\Rest;
@@ -89,7 +91,11 @@ final class Plugin {
 		( new Administradores() )->registrar();
 
 		// También fuera del administrador: la API REST y WP-CLI activan, instalan y borran plugins.
-		( new AvisosPlugins( $ajustes ) )->registrar();
+		$correo = new Correo( $ajustes );
+		( new AvisosPlugins( $ajustes, $correo ) )->registrar();
+
+		// También fuera del administrador: la revisión corre en WP-Cron.
+		( new AvisosAdministradores( $ajustes, $correo ) )->registrar();
 
 		$actualizador = $this->actualizador();
 		$actualizador?->registrar();

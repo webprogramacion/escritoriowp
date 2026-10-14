@@ -56,6 +56,13 @@ final class AvisosPlugins {
 	private Ajustes $ajustes;
 
 	/**
+	 * Envío de los correos.
+	 *
+	 * @var Correo
+	 */
+	private Correo $correo;
+
+	/**
 	 * Plugins afectados en esta petición, por evento y por fichero, a la espera de `shutdown`.
 	 *
 	 * @var array<string, array<string, array{nombre: string, version: string, red: bool}>>
@@ -73,9 +80,11 @@ final class AvisosPlugins {
 	 * Constructor.
 	 *
 	 * @param Ajustes $ajustes Ajustes del plugin.
+	 * @param Correo  $correo  Envío de los correos.
 	 */
-	public function __construct( Ajustes $ajustes ) {
+	public function __construct( Ajustes $ajustes, Correo $correo ) {
 		$this->ajustes = $ajustes;
+		$this->correo  = $correo;
 	}
 
 	/**
@@ -315,45 +324,10 @@ final class AvisosPlugins {
 		$asunto  = (string) $this->ajustes->obtener( 'aviso_asunto' );
 		$mensaje = (string) $this->ajustes->obtener( 'aviso_mensaje' );
 
-		$this->mandar(
+		$this->correo->enviar(
 			Plantilla::una_linea( Plantilla::rellenar( '' === $asunto ? self::asunto_por_defecto() : $asunto, $valores ) ),
 			Plantilla::rellenar( '' === $mensaje ? self::mensaje_por_defecto() : $mensaje, $valores )
 		);
-	}
-
-	/**
-	 * Envía un correo de texto plano a los destinatarios configurados.
-	 *
-	 * La cabecera no basta: `wp_mail()` aplica `wp_mail_content_type` después de leerla, así que un
-	 * plugin que pone todos los correos en HTML ganaría. Durante este envío, y solo durante él, manda
-	 * un filtro con la prioridad más alta.
-	 *
-	 * @param string $asunto  Asunto ya rellenado, en una línea.
-	 * @param string $mensaje Mensaje ya rellenado.
-	 * @return void
-	 */
-	private function mandar( string $asunto, string $mensaje ): void {
-		$texto_plano = static fn(): string => 'text/plain';
-
-		add_filter( 'wp_mail_content_type', $texto_plano, PHP_INT_MAX );
-
-		try {
-			wp_mail( $this->destinatarios(), $asunto, $mensaje, array( 'Content-Type: text/plain; charset=UTF-8' ) );
-		} finally {
-			remove_filter( 'wp_mail_content_type', $texto_plano, PHP_INT_MAX );
-		}
-	}
-
-	/**
-	 * Direcciones a las que se envía: las del ajuste o, si está vacío, el correo de administración
-	 * vigente en este momento.
-	 *
-	 * @return array<int, string>
-	 */
-	private function destinatarios(): array {
-		$correos = array_filter( array_map( 'trim', explode( ',', (string) $this->ajustes->obtener( 'aviso_destinatarios' ) ) ) );
-
-		return array() === $correos ? array( (string) get_option( 'admin_email' ) ) : array_values( $correos );
 	}
 
 	/**

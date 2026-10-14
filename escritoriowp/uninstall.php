@@ -2,8 +2,9 @@
 /**
  * Desinstalación de EscritorioWP.
  *
- * Borra todo lo que el plugin guarda: la opción de ajustes, las preferencias de cada usuario y los
- * transitorios propios. Desactivar el plugin no borra nada; solo el borrado desde Plugins lo hace.
+ * Borra todo lo que el plugin guarda: la opción de ajustes, la última revisión de administradores, las
+ * preferencias de cada usuario, los transitorios propios y la tarea de WP-Cron. Desactivar el plugin
+ * solo quita la tarea; el resto lo borra únicamente el borrado desde Plugins.
  *
  * @package EscritorioWP
  */
@@ -16,6 +17,10 @@ global $wpdb;
 
 delete_option( 'escritoriowp_ajustes' );
 delete_site_option( 'escritoriowp_ajustes' );
+
+// La última situación revisada del aviso de administradores y su tarea de WP-Cron, por si quedara.
+delete_option( 'escritoriowp_revision_administradores' );
+wp_clear_scheduled_hook( 'escritoriowp_revisar_administradores' );
 
 /*
  * Al desinstalar se borran los datos de todos los usuarios y todos los transitorios del plugin.

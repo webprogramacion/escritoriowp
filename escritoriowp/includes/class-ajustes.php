@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace EscritorioWP;
 
+use EscritorioWP\Avisos\AvisosAdministradores;
 use EscritorioWP\Avisos\AvisosPlugins;
 use EscritorioWP\Avisos\Plantilla;
 use EscritorioWP\Escritorio\Resumen;
@@ -137,6 +138,7 @@ final class Ajustes {
 			'aviso_desactivar'         => false,
 			'aviso_instalar'           => false,
 			'aviso_borrar'             => false,
+			'aviso_administradores'    => false,
 			'aviso_destinatarios'      => '',
 			'aviso_asunto'             => '',
 			'aviso_mensaje'            => '',
@@ -575,7 +577,7 @@ final class Ajustes {
 			'escritoriowp_seccion_avisos',
 			__( 'Avisos por correo', 'escritoriowp' ),
 			static function (): void {
-				echo '<p>' . esc_html__( 'Recibe un correo cada vez que alguien activa, desactiva, instala o borra un plugin. Si se cambian varios a la vez, llega un solo correo con todos.', 'escritoriowp' ) . '</p>';
+				echo '<p>' . esc_html__( 'Recibe un correo cada vez que alguien activa, desactiva, instala o borra un plugin, y cuando cambian los administradores del sitio. Si se cambian varios plugins a la vez, llega un solo correo con todos.', 'escritoriowp' ) . '</p>';
 			},
 			self::PAGINA
 		);
@@ -672,6 +674,12 @@ final class Ajustes {
 				'etiqueta'    => __( 'Avisar al borrar un plugin', 'escritoriowp' ),
 				'descripcion' => __( 'Con el nombre y la versión que tenía. La pantalla Plugins borra los plugins de uno en uno, así que un borrado en lote manda un correo por plugin.', 'escritoriowp' ),
 			),
+			'aviso_administradores'    => array(
+				'seccion'     => 'escritoriowp_seccion_avisos',
+				'tipo'        => 'casilla',
+				'etiqueta'    => __( 'Avisar de cambios en los administradores', 'escritoriowp' ),
+				'descripcion' => $this->descripcion_aviso_administradores(),
+			),
 			'aviso_destinatarios'      => array(
 				'seccion'     => 'escritoriowp_seccion_avisos',
 				'tipo'        => 'correo',
@@ -687,14 +695,14 @@ final class Ajustes {
 				'seccion'        => 'escritoriowp_seccion_avisos',
 				'tipo'           => 'texto',
 				'etiqueta'       => __( 'Asunto', 'escritoriowp' ),
-				'descripcion'    => __( 'Una sola línea. Vacíalo y guarda para volver al asunto predeterminado.', 'escritoriowp' ),
+				'descripcion'    => __( 'Solo para los avisos de plugins. Una sola línea. Vacíalo y guarda para volver al asunto predeterminado.', 'escritoriowp' ),
 				'predeterminado' => AvisosPlugins::asunto_por_defecto(),
 			),
 			'aviso_mensaje'            => array(
 				'seccion'        => 'escritoriowp_seccion_avisos',
 				'tipo'           => 'area',
 				'etiqueta'       => __( 'Mensaje', 'escritoriowp' ),
-				'descripcion'    => __( 'Texto plano, sin HTML. Vacíalo y guarda para volver al mensaje predeterminado. Puedes usar estos marcadores en el asunto y en el mensaje:', 'escritoriowp' ),
+				'descripcion'    => __( 'Solo para los avisos de plugins. Texto plano, sin HTML. Vacíalo y guarda para volver al mensaje predeterminado. Puedes usar estos marcadores en el asunto y en el mensaje:', 'escritoriowp' ),
 				'predeterminado' => AvisosPlugins::mensaje_por_defecto(),
 				'leyenda'        => AvisosPlugins::marcadores(),
 			),
@@ -723,6 +731,22 @@ final class Ajustes {
 				$args
 			);
 		}
+	}
+
+	/**
+	 * Descripción de la casilla del aviso de administradores: qué hace y, si está marcada, cuándo fue
+	 * la última revisión y cuándo toca la próxima, para ver que WP-Cron la está ejecutando.
+	 *
+	 * @return string
+	 */
+	private function descripcion_aviso_administradores(): string {
+		$descripcion = __( 'Revisa cada 6 horas quién es administrador y quién tiene permisos de administrador sin el rol, y avisa de lo que haya cambiado desde la revisión anterior. Lo que ya existe al marcar la casilla no avisa. Este correo tiene un texto fijo.', 'escritoriowp' );
+
+		if ( ! $this->obtener( 'aviso_administradores' ) ) {
+			return $descripcion;
+		}
+
+		return trim( $descripcion . ' ' . AvisosAdministradores::estado_revision() );
 	}
 
 	/**

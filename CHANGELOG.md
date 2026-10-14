@@ -7,6 +7,27 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+### Añadido
+
+- Aviso por correo de los cambios en los administradores, con la casilla nueva «Avisar de cambios en
+  los administradores» de la sección «Avisos por correo» (desmarcada por defecto). Mientras está
+  marcada, una revisión de WP-Cron cada 6 horas clasifica a los usuarios con el mismo criterio que la
+  pantalla Administradores y, si algo ha cambiado desde la revisión anterior, envía un solo correo
+  con los administradores nuevos, los usuarios nuevos con permisos de administrador sin el rol (con
+  sus permisos y su origen), los que dejan de ser administradores y los que dejan de tener esos
+  permisos, diciendo si el usuario se ha borrado y señalando a los que algún código esconde de la
+  pantalla Usuarios. Cada apartado lista como mucho 50 usuarios. Lo que ya existe al marcar la
+  casilla no avisa, y si el correo no se puede enviar, la revisión siguiente vuelve a avisar. Usa los
+  mismos destinatarios que los avisos de plugins, con un texto fijo, y la casilla muestra cuándo fue
+  la última revisión y cuándo toca la próxima.
+
+### Cambiado
+
+- Desactivar el plugin quita su tarea de WP-Cron, y desinstalarlo borra también la última revisión
+  guardada de los administradores.
+- El asunto y el mensaje configurables de los avisos por correo dicen que solo se aplican a los
+  avisos de plugins.
+
 ## [0.4.0] - 2026-10-14
 
 ### Añadido

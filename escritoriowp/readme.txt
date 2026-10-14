@@ -13,7 +13,7 @@ Sustituye el escritorio de WordPress por una interfaz propia y la paleta de coma
 == Description ==
 
 EscritorioWP cambia dos cosas del día a día en el administrador de WordPress y añade una revisión de
-seguridad y avisos por correo de los cambios en los plugins.
+seguridad y avisos por correo de los cambios en los plugins y en los administradores.
 
 **Un escritorio útil.** Al entrar en el Escritorio, en lugar de los widgets de siempre verás:
 
@@ -95,6 +95,24 @@ El correo incluye el nombre de usuario y la IP de quien hizo el cambio, y solo s
 direcciones que configures. No avisa de los cambios hechos sin pasar por WordPress, como copiar
 ficheros por FTP.
 
+También puedes pedir un aviso de los **cambios en los administradores**, con otra casilla, también
+desactivada al principio. Cada 6 horas, EscritorioWP revisa con el mismo criterio que la pantalla
+Administradores quién es administrador y quién tiene permisos de administrador sin el rol, y si algo
+ha cambiado desde la revisión anterior te envía un correo con:
+
+* Los administradores nuevos y los usuarios nuevos con permisos de administrador sin el rol, con sus
+  permisos y una señal si algún código los esconde de la pantalla Usuarios.
+* Los que han dejado de ser administradores o de tener esos permisos, diciendo si el usuario se ha
+  borrado o sigue existiendo.
+
+Lo que ya existe al marcar la casilla no avisa: la pantalla Administradores ya lo enseña. Como compara
+la situación de ahora con la de hace unas horas, descubre también los cambios hechos directamente en
+la base de datos, pero no sabe quién los hizo ni ve un administrador que se crea y se borra entre dos
+revisiones. Si el correo no se puede enviar, la revisión siguiente vuelve a avisar. Va a los mismos
+destinatarios que los avisos de plugins, con un texto fijo, e incluye nombres de usuario y correos.
+La revisión usa WP-Cron, así que depende de que el sitio reciba visitas o de que el servidor ejecute
+WP-Cron por su cuenta; junto a la casilla verás cuándo fue la última y cuándo toca la próxima.
+
 = Actualizaciones =
 
 El plugin se distribuye desde su repositorio público de GitHub. WordPress avisa cuando hay una
@@ -148,6 +166,14 @@ Sí. Desactiva «Sustituir el escritorio nativo» en EscritorioWP › Ajustes, o
 No. Para actualizar un plugin, WordPress puede desactivarlo y volver a activarlo por dentro, y
 EscritorioWP no lo cuenta como una desactivación ni una activación. De las actualizaciones
 automáticas ya avisa WordPress por correo.
+
+= ¿Por qué el aviso de un administrador nuevo llega horas después? =
+
+Porque no se envía al crear el usuario, sino en la revisión siguiente, que se hace cada 6 horas.
+Así descubre también los cambios que no pasan por las funciones de WordPress, como escribir
+directamente en la base de datos. Si la próxima revisión que muestra la casilla ya ha pasado, WP-Cron
+no se está ejecutando en tu sitio: suele pasar en sitios con pocas visitas o con `DISABLE_WP_CRON` y
+sin una tarea programada en el servidor.
 
 == External services ==
 

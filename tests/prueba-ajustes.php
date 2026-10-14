@@ -183,3 +183,25 @@ comprobar( false, $avisos['aviso_borrar'], 'la casilla de borrar se guarda como 
 comprobar( 'ana@ejemplo.es', $avisos['aviso_destinatarios'], 'el saneado general aplica el de los destinatarios' );
 comprobar( 'Uno Dos', $avisos['aviso_asunto'], 'el saneado general aplica el del asunto' );
 comprobar( "Uno\nDos", $avisos['aviso_mensaje'], 'el saneado general aplica el del mensaje' );
+
+grupo( 'Ajustes · aviso de cambios en los administradores' );
+
+comprobar( false, $defectos['aviso_administradores'], 'por defecto el aviso de administradores está apagado' );
+comprobar(
+	array( 'aviso_borrar', 'aviso_administradores', 'aviso_destinatarios' ),
+	array_slice( array_keys( $defectos ), array_search( 'aviso_borrar', array_keys( $defectos ), true ), 3 ),
+	'el aviso de administradores va detrás del de borrar y delante de los destinatarios'
+);
+comprobar( true, Ajustes::sanear( array( 'aviso_administradores' => '1' ) )['aviso_administradores'], 'la casilla marcada se guarda como verdadero' );
+comprobar( false, Ajustes::sanear( array( 'aviso_administradores' => '0' ) )['aviso_administradores'], 'la casilla desmarcada se guarda como falso' );
+
+$anterior = Ajustes::sanear(
+	array(
+		'aviso_activar'       => true,
+		'aviso_destinatarios' => 'ana@ejemplo.es',
+	)
+);
+
+comprobar( false, $anterior['aviso_administradores'], 'una opción guardada sin la clave toma el aviso apagado' );
+comprobar( true, $anterior['aviso_activar'], 'y conserva el resto de avisos guardados' );
+comprobar( 'ana@ejemplo.es', $anterior['aviso_destinatarios'], 'y conserva los destinatarios guardados' );

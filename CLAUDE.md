@@ -21,7 +21,8 @@ desarrollo y nunca se distribuye. Si creas un fichero nuevo, pregúntate si acom
 4. **Señala posibles puertas traseras**: la pantalla Administradores lista a los administradores y
    marca en rojo a quien tiene permisos de administrador sin el rol (§7 ter).
 5. **Avisa por correo de los cambios en los plugins**: al activar, desactivar, instalar o borrar
-   uno, con destinatarios y texto configurables en Ajustes (§7 quater).
+   uno, con destinatarios y texto configurables en Ajustes (§7 quater). Y, con otra casilla, de los
+   cambios en los administradores, con una revisión cada 6 horas (§7 quinquies).
 
 Todo se gobierna desde el menú propio «EscritorioWP», con tres pantallas: Ajustes, Administradores y
 Acerca de.
@@ -59,7 +60,8 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
     │   ├── class-changelog.php       Lee el historial de cambios del readme.txt.
     │   ├── class-menu.php            Posición del menú del plugin en la barra lateral.
     │   ├── actualizaciones/          ActualizadorGithub. Solo en la variante de GitHub.
-    │   ├── avisos/                   Plantilla (funciones puras) y AvisosPlugins (enganches y envío).
+    │   ├── avisos/                   Correo (envío en texto plano), Plantilla y CambiosAdministradores
+    │   │                             (funciones puras), AvisosPlugins y AvisosAdministradores.
     │   ├── escritorio/               Escritorio, Resumen, Recientes, Preferencias.
     │   ├── lanzador/                 Lanzador y CatalogoComandos.
     │   ├── busqueda/                 Fuente (interfaz), Buscador, Grupo, Resultado, 4 fuentes.
@@ -321,6 +323,52 @@ congelaría en el idioma y la versión del momento.
 los cambios hechos sin las funciones de WordPress (copiar ficheros por FTP, editar `active_plugins` en
 la base de datos), los `mu-plugins`, los complementos (`drop-ins`) y los temas.
 
+## 7 quinquies. Aviso de cambios en los administradores
+
+`AvisosAdministradores` revisa cada 6 horas a los administradores y a los usuarios marcados (§7 ter) y
+avisa de lo que haya cambiado desde la revisión anterior. Se compone en `Plugin::arrancar()` fuera de
+`is_admin()`, porque la revisión corre en WP-Cron. El envío en texto plano es el de `Correo`, que
+comparte con `AvisosPlugins` (§7 quater); los destinatarios son los mismos y el texto, fijo.
+
+**La clasificación es la de la pantalla.** `Detector::usuarios_evaluados()` es la primera mitad de
+`analizar()` (candidatos, detalle, `Permisos::evaluar()` y superadministradores), sin el límite de 100,
+sin buscar ocultos y sin tocar el transitorio; `Detector::estado()` dice si cada uno es
+`administrador`, `marcado` o nada, y `analizar()` reparte con esa misma función. Así la pantalla y el
+aviso no pueden discrepar. Los ocultos (`Detector::ocultos()`) y los borrados (`Detector::existentes()`,
+que lee `users` directamente) solo se consultan para los 50 usuarios que se listan en cada apartado.
+
+**Qué se guarda.** La opción `escritoriowp_revision_administradores`, sin carga automática, con la
+fecha de la revisión y, por usuario, solo su nombre de usuario y su estado. No es un transitorio a
+propósito: si desapareciera, la revisión siguiente lo tomaría como punto de partida y perdería sin
+avisar los cambios de ese intervalo. La comparación es pura (`CambiosAdministradores::comparar()`) y
+deja a cada usuario en un solo apartado: quien pasa de marcado a administrador solo es administrador
+nuevo, y quien pierde el rol pero conserva permisos críticos solo es marcado nuevo.
+
+**La programación.** WordPress no trae un intervalo de 6 horas: el filtro `cron_schedules` añade
+`escritoriowp_seis_horas` en toda petición, porque WP-Cron lo necesita para reprogramar. Con la casilla
+marcada, `init` programa la tarea `escritoriowp_revisar_administradores` si no existe, como hace el
+núcleo con `wp_schedule_update_checks()`; es lo que la recupera tras reactivar el plugin. El cambio de
+la casilla se ve en `update_option_escritoriowp_ajustes`: al marcarla se guarda la situación de ese
+momento sin avisar (lo que ya existía no avisa) y se programa la primera revisión para dentro de 6
+horas; al desmarcarla se quita la tarea y se borra la situación. Guardar otro ajuste no toca nada.
+
+**La situación solo avanza con el correo aceptado.** Si `wp_mail()` devuelve falso o lanza una
+excepción, no se guarda la situación nueva y la revisión siguiente vuelve a contar los mismos cambios
+con la misma fecha de comparación. Al revés que los avisos de plugins: allí el evento ya pasó; aquí
+la situación sigue ahí y perder el aviso de un administrador nuevo es justo lo que se quiere evitar.
+
+**El ciclo de vida.** El gancho de desactivación de `escritoriowp.php` quita la tarea con su nombre
+escrito tal cual (sin cargar clases, por si no se cumplen los requisitos de PHP) y conserva la
+situación: al reactivar, la primera revisión avisa de lo que cambió entre medias. `uninstall.php`
+borra la opción y la tarea.
+
+**Qué no detecta.** Quién hizo el cambio ni desde qué IP (compara estados, no ve acciones), un cambio
+que se deshace entre dos revisiones, más permisos críticos para quien ya estaba marcado y los permisos
+que solo se conceden en tiempo de ejecución. Depende de WP-Cron: sin visitas o con `DISABLE_WP_CRON`
+sin tarea en el servidor, la revisión se retrasa, y la casilla lo delata con una próxima revisión
+pasada. En multisitio, cada sitio con la casilla marcada avisa de los cambios de superadministradores,
+y al desactivar en toda la red solo se quita la tarea del sitio actual.
+
 ## 8. Cómo añadir cosas
 
 **Una fuente de búsqueda nueva**: implementa `EscritorioWP\Busqueda\Fuente` en
@@ -375,6 +423,9 @@ ajustes de paneles e indicadores. El campo admite además tres argumentos opcion
 
 El catálogo se cachea porque en el sitio público no existen `$menu` ni `$submenu`. Si no hay caché,
 el lanzador del front-end ofrece solo las acciones fijas y la búsqueda de contenido.
+
+La opción `escritoriowp_revision_administradores` no es una caché y no va en esta tabla: es la
+situación con la que se compara la revisión siguiente (§7 quinquies), y perderla haría perder avisos.
 
 ## 10. Pruebas
 

@@ -299,6 +299,23 @@ comprobar( array(), Detector::ordenar_marcados( array() ), 'sin marcados el orde
 comprobar( 100, Detector::LIMITE, 'se pintan como mucho 100 marcados' );
 comprobar( 900, Detector::CADUCIDAD, 'el contador se cachea 15 minutos' );
 
+// Estado: reparte a los usuarios evaluados entre administradores, marcados y el resto.
+grupo( 'Seguridad · estado de un usuario' );
+
+$evaluado = static fn( bool $administrador, bool $superadmin, array $criticos ): array => array(
+	'administrador' => $administrador,
+	'superadmin'    => $superadmin,
+	'criticos'      => $criticos,
+);
+
+comprobar( Detector::ESTADO_ADMINISTRADOR, Detector::estado( $evaluado( true, false, array( 'manage_options' => 'administrator' ) ) ), 'con el rol de administrador es administrador' );
+comprobar( Detector::ESTADO_ADMINISTRADOR, Detector::estado( $evaluado( false, true, array() ) ), 'un superadministrador sin rol en el sitio es administrador' );
+comprobar( Detector::ESTADO_MARCADO, Detector::estado( $evaluado( false, false, array( 'manage_options' => Permisos::ORIGEN_USUARIO ) ) ), 'sin el rol y con un permiso crítico está marcado' );
+comprobar( Detector::ESTADO_ADMINISTRADOR, Detector::estado( $evaluado( true, false, array( 'install_plugins' => Permisos::ORIGEN_USUARIO ) ) ), 'un administrador con permisos sueltos sigue siendo administrador' );
+comprobar( '', Detector::estado( $evaluado( false, false, array() ) ), 'sin el rol ni permisos críticos no es nada' );
+comprobar( 'administrador', Detector::ESTADO_ADMINISTRADOR, 'el estado de administrador se guarda como «administrador»' );
+comprobar( 'marcado', Detector::ESTADO_MARCADO, 'el estado de marcado se guarda como «marcado»' );
+
 // Sospechoso: decide si un alta de usuario invalida la caché del contador.
 grupo( 'Seguridad · altas sospechosas' );
 

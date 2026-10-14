@@ -26,7 +26,7 @@ Repite la lista con cada combinación:
 ## 1. Núcleo del plugin
 
 - [x] `[S]` El plugin se activa copiando solo el directorio `escritoriowp/`, sin `vendor/` ni build.
-- [x] `[S]` En la primera activación se crea la opción con los diecisiete valores por defecto.
+- [x] `[S]` En la primera activación se crea la opción con los dieciocho valores por defecto.
 - [x] `[N]` Un ajuste ausente tras una actualización toma su valor por defecto sin perder el resto.
 - [x] `[N]` Un número de elementos por panel fuera de rango se ajusta al límite más cercano.
 - [x] `[N]` Si los paneles activos llegan con un valor que no es una lista, quedan todos activos; si a
@@ -65,8 +65,11 @@ Repite la lista con cada combinación:
 - [ ] `[M]` Acceder por HTTP directamente a un fichero PHP del plugin no produce salida ni error.
 - [x] `[S]` Una petición REST sin sesión responde 401 sin datos.
 - [x] `[S]` Desactivar y reactivar el plugin conserva ajustes y preferencias.
+- [x] `[S]` Con el aviso de cambios en los administradores activado, desactivar el plugin quita su
+      tarea de WP-Cron y conserva la opción `escritoriowp_revision_administradores`.
 - [x] `[S]` Borrar el plugin no deja en la base de datos ninguna fila con prefijo `escritoriowp` en
-      `wp_options` ni en `wp_usermeta`.
+      `wp_options` ni en `wp_usermeta`, ni la tarea `escritoriowp_revisar_administradores` en WP-Cron
+      (comprobado con `wp plugin uninstall --deactivate` y el aviso de administradores activado).
 
 ## 2. Escritorio
 
@@ -509,3 +512,100 @@ captura cada correo en `phpmailer_init` y después hace fallar el envío.
 - [ ] `[M]` Con SMTP configurado, llegan los correos de activar, desactivar, instalar y borrar.
 - [ ] `[M]` En el cliente de correo, el texto se lee bien: tildes, la raya de «— en toda la red» y los
       saltos de línea.
+
+## 12. Avisos de cambios en los administradores
+
+Deriva de `openspec/changes/avisos-correo-administradores/specs/`. Lo marcado `[S]` se verificó sobre
+WordPress 7.1.3 con SQLite, wp-cli, el servidor interno de PHP con sesiones de `curl` y un mu-plugin
+que captura cada correo en `phpmailer_init` y hace que el envío falle o salga bien según una opción.
+La revisión se lanza sin esperar 6 horas con `wp cron event run escritoriowp_revisar_administradores`.
+Las comprobaciones de desactivar y desinstalar con la revisión programada están en §1.
+
+### Interruptor y programación
+
+- [x] `[N]` `[S]` En una instalación nueva o con una opción guardada sin la clave, el aviso está
+      apagado, no hay tarea `escritoriowp_revisar_administradores` en WP-Cron ni opción
+      `escritoriowp_revision_administradores`.
+- [x] `[S]` La casilla «Avisar de cambios en los administradores» aparece desmarcada en la sección
+      «Avisos por correo», detrás de «Avisar al borrar un plugin», y las descripciones de «Asunto» y
+      «Mensaje» dicen que solo se aplican a los avisos de plugins.
+- [x] `[S]` Marcarla y guardar programa la tarea con el intervalo `escritoriowp_seis_horas` (21.600
+      segundos) para dentro de 6 horas.
+- [x] `[S]` Guardar otro ajuste con la casilla marcada no cambia la próxima ejecución.
+- [x] `[S]` Si se borra la tarea con la casilla marcada, la siguiente carga de WordPress la vuelve a
+      programar.
+- [x] `[S]` Desactivar EscritorioWP quita la tarea; reactivarlo y cargar una página la vuelve a
+      programar para dentro de 6 horas.
+- [x] `[S]` Desmarcar la casilla y guardar quita la tarea y borra la opción con la situación guardada.
+
+### Punto de partida
+
+- [x] `[S]` Marcar la casilla guarda en `escritoriowp_revision_administradores`, sin carga
+      automática, la fecha y el nombre de usuario y el estado de cada administrador y usuario marcado,
+      sin enviar ningún correo.
+- [x] `[S]` Con administradores y un suscriptor con `manage_options` que ya existían al marcarla, la
+      primera revisión sin más cambios no envía nada y avanza la fecha guardada.
+- [x] `[S]` Desmarcar la casilla, crear un administrador y volver a marcarla: la primera revisión no
+      avisa de ese administrador.
+- [x] `[S]` Con la casilla marcada, desactivar el plugin, crear un administrador y reactivarlo: la
+      primera revisión lo nombra como nuevo.
+- [x] `[N]` Una situación guardada mal formada (sin fecha, o con usuarios que no son una lista) se
+      trata como si no existiera: la revisión la sustituye por la actual sin avisar.
+
+### Qué avisa
+
+- [x] `[N]` `[S]` Un administrador nuevo sale en «Administradores nuevos» con su nombre visible, su
+      nombre de usuario y su correo.
+- [x] `[N]` `[S]` Un suscriptor con `manage_options` que recibe el rol Administrador sale solo en
+      «Administradores nuevos», con «Antes tenía permisos de administrador sin el rol».
+- [x] `[N]` `[S]` Una administradora que pasa a Suscriptora con `install_plugins` suelto sale solo en
+      «Usuarios nuevos con permisos de administrador sin el rol», con «install_plugins (asignado al
+      usuario)» y «Antes era administrador».
+- [x] `[N]` `[S]` Un administrador borrado sale en «Ya no son administradores» con «Usuario borrado»;
+      uno que pasa a Editor, con «Sigue existiendo, sin permisos de administrador».
+- [x] `[S]` Retirar los permisos de un marcado desde la pantalla Administradores lo pone en «Ya no
+      tienen permisos de administrador».
+- [x] `[S]` Un administrador nuevo y un marcado nuevo que un código esconde en `pre_user_query` salen
+      con «Oculto en la pantalla Usuarios».
+- [x] `[S]` En multisitio, un superadministrador nuevo sin rol en el sitio sale en «Administradores
+      nuevos» con «Superadministrador de la red».
+- [x] `[N]` `[S]` Crear un administrador y borrar otro entre dos revisiones envía un solo correo con
+      los dos apartados; los apartados vacíos no aparecen.
+- [x] `[N]` `[S]` Una revisión sin cambios no envía nada.
+
+### Contenido y formato del correo
+
+- [x] `[S]` El asunto es «[Nombre del sitio] Cambios en los administradores» aunque el asunto
+      configurable de los avisos de plugins sea `Cambio en {plugins}`.
+- [x] `[S]` El correo dice la fecha de la revisión anterior en el formato del sitio y termina con el
+      enlace a la pantalla Administradores y la advertencia de que no dice quién hizo los cambios.
+- [x] `[N]` `[S]` Con el rol Suscriptor alterado con `manage_options` y 301 suscriptores, el apartado
+      dice «(301)», lista 50 usuarios con «manage_options (del rol «Subscriber»)» y termina en «… y 251
+      más»; al quitar el permiso, el apartado «Ya no tienen permisos de administrador» hace lo mismo.
+- [x] `[S]` Con los destinatarios vacíos va al correo de administración; con dos direcciones, a las
+      dos.
+- [x] `[S]` Con otro plugin forzando `text/html`, el aviso llega como `text/plain`.
+
+### Envío fallido y lo que no avisa
+
+- [x] `[S]` Con el envío fallando, la revisión que encuentra un administrador nuevo no cambia la
+      situación guardada; al recuperar el envío, la siguiente nombra a ese administrador y a un
+      marcado nuevo posterior, con la fecha de la última revisión guardada.
+- [x] `[S]` Un administrador creado y borrado entre dos revisiones no avisa.
+- [x] `[S]` Dar `install_plugins` a un usuario que ya tenía `manage_options` sin el rol no avisa.
+- [x] `[S]` La revisión no deja avisos de PHP del plugin en `debug.log`.
+
+### Estado en los ajustes
+
+- [x] `[S]` Con la casilla marcada, su descripción muestra «Última revisión» con el momento de
+      guardar y «Próxima» unas 6 horas después, en el formato de fecha y hora del sitio. Desmarcada,
+      no muestra fechas.
+- [ ] `[M]` La casilla y su descripción se ven bien con los esquemas de color Predeterminado y Claro
+      del administrador y a 400 px de ancho.
+
+### En un buzón real
+
+- [ ] `[M]` Con SMTP configurado y WP-Cron con visitas reales, el aviso de un administrador nuevo llega
+      unas 6 horas después de crearlo, no antes.
+- [ ] `[M]` En el cliente de correo, el aviso se lee bien: tildes, saltos de línea, las comillas
+      angulares de «del rol «…»» y los puntos suspensivos de «… y N más».

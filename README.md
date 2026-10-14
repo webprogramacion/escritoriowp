@@ -21,7 +21,10 @@ paleta de comandos de wp-admin por un lanzador que además busca contenido real 
   «Retirar permisos» quita los asignados directamente al usuario, tras confirmarlo.
 - **Avisos por correo**: un correo cada vez que alguien activa, desactiva, instala o borra un plugin,
   con una casilla por evento, los destinatarios que elijas y un asunto y un mensaje con marcadores
-  (`{evento}`, `{plugins}`, `{usuario}`, `{ip}`…). Un cambio en lote manda un solo correo.
+  (`{evento}`, `{plugins}`, `{usuario}`, `{ip}`…). Un cambio en lote manda un solo correo. Con otra
+  casilla, una revisión cada 6 horas (WP-Cron) avisa de los administradores nuevos o que dejan de
+  serlo y de los usuarios que ganan o pierden permisos de administrador sin el rol, con el mismo
+  criterio que la pantalla Administradores.
 - **WooCommerce opcional**: si está activo añade productos y pedidos; compatible con HPOS.
 
 ## Estructura del repositorio
