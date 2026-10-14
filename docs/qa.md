@@ -26,12 +26,32 @@ Repite la lista con cada combinación:
 ## 1. Núcleo del plugin
 
 - [x] `[S]` El plugin se activa copiando solo el directorio `escritoriowp/`, sin `vendor/` ni build.
-- [x] `[S]` En la primera activación se crea la opción con los quince valores por defecto.
+- [x] `[S]` En la primera activación se crea la opción con los diecisiete valores por defecto.
 - [x] `[N]` Un ajuste ausente tras una actualización toma su valor por defecto sin perder el resto.
 - [x] `[N]` Un número de elementos por panel fuera de rango se ajusta al límite más cercano.
+- [x] `[N]` Si los paneles activos llegan con un valor que no es una lista, quedan todos activos; si a
+      la lista le falta un panel, ese queda activo y el resto conserva el valor enviado.
 - [x] `[S]` La página EscritorioWP › Ajustes existe, exige `manage_options` y publica en `options.php`
       con nonce.
 - [ ] `[M]` Guardar «Sustituir el escritorio nativo» en No devuelve el escritorio nativo al recargar.
+- [x] `[S]` Sin WooCommerce, la sección Escritorio de los ajustes ofrece, entre «Ocultar los widgets
+      de otros plugins» y «Elementos por panel», «Indicadores» con cinco casillas (Entradas
+      publicadas, Páginas publicadas, Usuarios registrados, Comentarios pendientes y Actualizaciones
+      pendientes) y «Paneles» con tres (Entradas, Páginas y Usuarios), todas marcadas.
+- [x] `[S]` Con WooCommerce aparecen además Productos publicados, Pedidos este mes e Ingresos este
+      mes tras Usuarios registrados, y Productos y Pedidos al final de «Paneles».
+- [x] `[S]` Con «Pedidos» desmarcado, guardar los ajustes sin WooCommerce y reactivarlo deja
+      «Pedidos» desmarcado en los ajustes y fuera del escritorio.
+- [x] `[S]` Un envío con una clave de panel inventada la descarta, guarda el resto y no muestra avisos.
+- [x] `[S]` Cada grupo es un `fieldset` con `legend`, cada casilla tiene su `label` y su campo oculto
+      con valor `0`, y la cabecera de la fila no es una etiqueta de un campo inexistente.
+- [x] `[C]` El árbol de accesibilidad de Chrome pone cada casilla dentro de su grupo con nombre:
+      «Entradas» en el grupo «Paneles» e «Ingresos este mes» en el grupo «Indicadores».
+- [ ] `[M]` Con un lector de pantalla, al llegar a la primera casilla de «Paneles» se anuncia el
+      nombre del grupo y el del panel.
+- [x] `[C]` Los dos grupos de casillas quedan alineados con el resto de la tabla de ajustes.
+- [x] `[C]` Desmarcar «Usuarios» e «Ingresos este mes» y guardar desde el formulario los deja
+      desmarcados, con el aviso de ajustes guardados; volver a marcarlos y guardar los activa.
 - [ ] `[M]` Un usuario sin `manage_options` que abre la URL de ajustes recibe el aviso de permisos.
 - [x] `[S]` Sin WooCommerce no aparecen indicadores, paneles ni resultados de productos o pedidos, y
       no se emite ningún aviso.
@@ -74,10 +94,34 @@ Repite la lista con cada combinación:
 - [ ] `[M]` Si falla la carga de un panel, ese panel muestra «Reintentar» y el resto sigue operativo.
 - [x] `[S]` Un autor ve el panel de entradas y no ve los de páginas, usuarios, productos ni pedidos.
 - [x] `[S]` Un autor que llama a `recientes/usuarios` recibe 403 sin datos.
+- [x] `[S]` Tras actualizar sin haber guardado «Indicadores» ni «Paneles», el resumen de un
+      administrador, un editor, un autor y un gestor de tienda y el escritorio pintado son idénticos
+      a los de la versión anterior.
+- [x] `[S]` Con «Usuarios» desmarcado en «Paneles», nadie recibe el panel de usuarios y la cabecera
+      sigue ofreciendo «Nuevo usuario».
+- [x] `[C]` Con «Usuarios» desmarcado, «Nuevo usuario» abre la ventana de creación; sin ningún panel
+      activo, también la abren «Nueva entrada» y «Nueva página».
+- [x] `[S]` Con «Ingresos este mes» desmarcado, falta solo esa tarjeta: «Pedidos este mes» sigue,
+      también en la respuesta de la ruta REST `resumen`.
+- [x] `[S]` Con «Usuarios registrados» marcado, un autor sigue sin recibir esa tarjeta.
+- [x] `[S]` Sin ningún indicador activo no se pinta la fila de tarjetas; sin ningún panel activo no se
+      pinta la zona de paneles.
+- [x] `[S]` Con las tres tarjetas de WooCommerce desmarcadas, pedir el resumen no recorre los pedidos
+      del mes (no se crea el transitorio `escritoriowp_resumen_woo`).
+- [x] `[C]` Sin ningún indicador activo no hay hueco ni esqueleto de carga encima de los paneles (la
+      separación con la cabecera es la misma), y no se hace ninguna petición a `resumen`, tampoco al
+      pulsar «Actualizar».
+- [x] `[C]` Sin ningún panel activo, «Personalizar» solo ofrece el tema y «Restablecer».
+- [x] `[C]` Sin alguna de las dos zonas, el botón «Actualizar» y crear una entrada desde la cabecera
+      funcionan sin errores en la consola, como administrador y como autor, con WooCommerce y sin él.
 - [ ] `[M]` Ocultar el panel de páginas y recargar desde otro navegador lo mantiene oculto.
 - [ ] `[M]` Reordenar paneles con las flechas persiste al recargar.
 - [ ] `[M]` Con el tema en «automático» y el sistema en modo oscuro, la interfaz se ve oscura.
 - [ ] `[M]` «Restablecer» devuelve paneles y tema a sus valores por defecto.
+- [x] `[S]` Con «Páginas» desmarcado en «Paneles», la configuración del escritorio, de la que
+      «Personalizar» saca su lista, no incluye las páginas.
+- [x] `[S]` Un usuario que había ocultado «Páginas» lo sigue teniendo oculto, y en su posición, después
+      de que el administrador lo desactive y lo vuelva a activar: su metadato no cambia.
 - [ ] `[M]` A 400 px de ancho no hay desplazamiento horizontal y los paneles se apilan.
 - [ ] `[M]` Recorrer la interfaz con Tab da foco visible a todos los botones y enlaces en orden.
 

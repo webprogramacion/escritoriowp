@@ -67,10 +67,10 @@ EscritorioWP añade su propio menú en el administrador, justo debajo del Escrit
 pantallas:
 
 * **Ajustes**: desactiva cada parte por separado. Sustituir o no el escritorio, conservar los
-  widgets de otros plugins, desactivar o no la paleta de comandos nativa y activar o desactivar el
-  lanzador, también en el sitio público. También eliges debajo de qué menú aparece EscritorioWP,
-  o si va al final, un color de fondo para que su entrada destaque en la barra lateral y los avisos
-  por correo.
+  widgets de otros plugins, elegir qué indicadores y qué paneles muestra el escritorio a todos los
+  usuarios, desactivar o no la paleta de comandos nativa y activar o desactivar el lanzador, también
+  en el sitio público. También eliges debajo de qué menú aparece EscritorioWP, o si va al final, un
+  color de fondo para que su entrada destaque en la barra lateral y los avisos por correo.
 * **Administradores**: quién es administrador y quién tiene permisos de administrador sin serlo.
   Solo para usuarios con `manage_options` y `list_users`.
 * **Acerca de**: la versión instalada, los enlaces del proyecto, el estado de la actualización con
@@ -120,6 +120,14 @@ editor de entradas y del editor del sitio, Comando+K sigue abriendo la paleta na
 
 Por defecto se ocultan. Si desactivas «Ocultar los widgets de otros plugins» en los ajustes, se
 muestran debajo de la interfaz, bajo el título «Otros widgets».
+
+= ¿Puedo ocultar un panel o un indicador a todos los usuarios? =
+
+Sí. En EscritorioWP › Ajustes, sección Escritorio, desmarca lo que no quieras mostrar en
+«Indicadores» o en «Paneles» y nadie lo verá en el escritorio. Lo que dejes marcado lo sigue viendo
+cada usuario solo si su rol se lo permite. Es distinto de «Personalizar», en el propio escritorio:
+ahí cada usuario oculta o reordena paneles solo para sí, y entre los paneles que el sitio tenga
+activos.
 
 = ¿Necesita WooCommerce? =
 

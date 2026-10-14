@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace EscritorioWP\Escritorio;
 
+use EscritorioWP\Ajustes;
 use EscritorioWP\Capacidades;
 use EscritorioWP\Woo\Woo;
 
@@ -40,21 +41,60 @@ final class Resumen {
 	public const ESTADOS_INGRESO = array( 'completed', 'processing' );
 
 	/**
+	 * Indicadores del escritorio, en el orden en que se muestran, con el tipo de `Capacidades::MAPA`
+	 * que decide quién los ve y si dependen de WooCommerce.
+	 *
+	 * Es también la lista que ofrece el ajuste «Indicadores»: una tarjeta que no esté aquí no se
+	 * muestra.
+	 *
+	 * @var array<string, string>
+	 */
+	public const INDICADORES = array(
+		'entradas'        => 'entradas',
+		'paginas'         => 'paginas',
+		'usuarios'        => 'usuarios',
+		'productos'       => 'productos',
+		'pedidos'         => 'pedidos',
+		'ingresos'        => 'pedidos',
+		'comentarios'     => 'comentarios',
+		'actualizaciones' => 'actualizaciones',
+	);
+
+	/**
+	 * Claves de los indicadores que ve el usuario actual: los activos en el ajuste «Indicadores»
+	 * cuyo tipo puede ver. No cuenta nada, así que sirve para decidir qué pintar antes de calcular.
+	 *
+	 * @return string[]
+	 */
+	public static function claves_visibles(): array {
+		$ajustes = Ajustes::instancia();
+		$claves  = array();
+
+		foreach ( self::INDICADORES as $clave => $tipo ) {
+			if ( $ajustes->indicador_activo( $clave ) && Capacidades::puede_ver( $tipo ) ) {
+				$claves[] = $clave;
+			}
+		}
+
+		return $claves;
+	}
+
+	/**
 	 * Devuelve las tarjetas de indicadores visibles para el usuario actual.
 	 *
 	 * @param bool $refrescar Si es verdadero, recalcula los indicadores cacheados.
 	 * @return array<int, array<string, string>>
 	 */
 	public static function obtener( bool $refrescar = false ): array {
+		$visibles = self::claves_visibles();
 		$tarjetas = array();
 
-		if ( Capacidades::puede_ver( 'entradas' ) ) {
+		if ( in_array( 'entradas', $visibles, true ) ) {
 			$conteo     = wp_count_posts( 'post' );
 			$borradores = (int) ( $conteo->draft ?? 0 );
 
 			$tarjetas[] = self::tarjeta(
 				'entradas',
-				__( 'Entradas publicadas', 'escritoriowp' ),
 				(int) ( $conteo->publish ?? 0 ),
 				$borradores > 0
 					? sprintf(
@@ -68,12 +108,11 @@ final class Resumen {
 			);
 		}
 
-		if ( Capacidades::puede_ver( 'paginas' ) ) {
+		if ( in_array( 'paginas', $visibles, true ) ) {
 			$conteo = wp_count_posts( 'page' );
 
 			$tarjetas[] = self::tarjeta(
 				'paginas',
-				__( 'Páginas publicadas', 'escritoriowp' ),
 				(int) ( $conteo->publish ?? 0 ),
 				'',
 				Capacidades::url_listado( 'paginas' ),
@@ -81,12 +120,11 @@ final class Resumen {
 			);
 		}
 
-		if ( Capacidades::puede_ver( 'usuarios' ) ) {
+		if ( in_array( 'usuarios', $visibles, true ) ) {
 			$usuarios = count_users();
 
 			$tarjetas[] = self::tarjeta(
 				'usuarios',
-				__( 'Usuarios registrados', 'escritoriowp' ),
 				(int) ( $usuarios['total_users'] ?? 0 ),
 				'',
 				Capacidades::url_listado( 'usuarios' ),
@@ -94,17 +132,17 @@ final class Resumen {
 			);
 		}
 
-		if ( Capacidades::puede_ver( 'productos' ) || Capacidades::puede_ver( 'pedidos' ) ) {
-			$tarjetas = array_merge( $tarjetas, self::tarjetas_woo( $refrescar ) );
+		// Sin ninguna tarjeta de WooCommerce visible no se recorren los pedidos del mes.
+		if ( array() !== array_intersect( array( 'productos', 'pedidos', 'ingresos' ), $visibles ) ) {
+			$tarjetas = array_merge( $tarjetas, self::tarjetas_woo( $visibles, $refrescar ) );
 		}
 
-		if ( Capacidades::puede_ver( 'comentarios' ) ) {
+		if ( in_array( 'comentarios', $visibles, true ) ) {
 			$comentarios = wp_count_comments();
 			$pendientes  = (int) ( $comentarios->moderated ?? 0 );
 
 			$tarjetas[] = self::tarjeta(
 				'comentarios',
-				__( 'Comentarios pendientes', 'escritoriowp' ),
 				$pendientes,
 				'',
 				Capacidades::url_listado( 'comentarios' ),
@@ -112,13 +150,12 @@ final class Resumen {
 			);
 		}
 
-		if ( Capacidades::puede_ver( 'actualizaciones' ) ) {
+		if ( in_array( 'actualizaciones', $visibles, true ) ) {
 			$datos      = wp_get_update_data();
 			$pendientes = (int) ( $datos['counts']['total'] ?? 0 );
 
 			$tarjetas[] = self::tarjeta(
 				'actualizaciones',
-				__( 'Actualizaciones pendientes', 'escritoriowp' ),
 				$pendientes,
 				$pendientes > 0 ? '' : __( 'Todo al día', 'escritoriowp' ),
 				Capacidades::url_listado( 'actualizaciones' ),
@@ -132,10 +169,11 @@ final class Resumen {
 	/**
 	 * Calcula las tarjetas que dependen de WooCommerce, con caché.
 	 *
-	 * @param bool $refrescar Si es verdadero, ignora la caché y la reescribe.
+	 * @param string[] $visibles  Claves de los indicadores que ve el usuario.
+	 * @param bool     $refrescar Si es verdadero, ignora la caché y la reescribe.
 	 * @return array<int, array<string, string>>
 	 */
-	private static function tarjetas_woo( bool $refrescar ): array {
+	private static function tarjetas_woo( array $visibles, bool $refrescar ): array {
 		if ( ! Woo::activo() ) {
 			return array();
 		}
@@ -149,10 +187,9 @@ final class Resumen {
 
 		$tarjetas = array();
 
-		if ( Capacidades::puede_ver( 'productos' ) ) {
+		if ( in_array( 'productos', $visibles, true ) ) {
 			$tarjetas[] = self::tarjeta(
 				'productos',
-				__( 'Productos publicados', 'escritoriowp' ),
 				(int) $datos['productos'],
 				'',
 				Capacidades::url_listado( 'productos' ),
@@ -160,19 +197,20 @@ final class Resumen {
 			);
 		}
 
-		if ( Capacidades::puede_ver( 'pedidos' ) ) {
+		if ( in_array( 'pedidos', $visibles, true ) ) {
 			$tarjetas[] = self::tarjeta(
 				'pedidos',
-				__( 'Pedidos este mes', 'escritoriowp' ),
 				(int) $datos['pedidos'],
 				'',
 				Capacidades::url_listado( 'pedidos' ),
 				'verde'
 			);
+		}
 
+		if ( in_array( 'ingresos', $visibles, true ) ) {
 			$tarjetas[] = array(
 				'clave'    => 'ingresos',
-				'etiqueta' => __( 'Ingresos este mes', 'escritoriowp' ),
+				'etiqueta' => self::etiqueta( 'ingresos' ),
 				'valor'    => Woo::precio( (float) $datos['ingresos'] ),
 				'detalle'  => sprintf(
 					/* translators: %s: lista de estados de pedido que cuentan como ingresos. */
@@ -269,20 +307,39 @@ final class Resumen {
 	}
 
 	/**
+	 * Nombre de un indicador, el mismo en su tarjeta y en el ajuste «Indicadores».
+	 *
+	 * @param string $clave Clave del indicador.
+	 * @return string
+	 */
+	public static function etiqueta( string $clave ): string {
+		return match ( $clave ) {
+			'entradas'        => __( 'Entradas publicadas', 'escritoriowp' ),
+			'paginas'         => __( 'Páginas publicadas', 'escritoriowp' ),
+			'usuarios'        => __( 'Usuarios registrados', 'escritoriowp' ),
+			'productos'       => __( 'Productos publicados', 'escritoriowp' ),
+			'pedidos'         => __( 'Pedidos este mes', 'escritoriowp' ),
+			'ingresos'        => __( 'Ingresos este mes', 'escritoriowp' ),
+			'comentarios'     => __( 'Comentarios pendientes', 'escritoriowp' ),
+			'actualizaciones' => __( 'Actualizaciones pendientes', 'escritoriowp' ),
+			default           => $clave,
+		};
+	}
+
+	/**
 	 * Construye una tarjeta de indicador.
 	 *
-	 * @param string $clave    Identificador de la tarjeta.
-	 * @param string $etiqueta Texto descriptivo.
-	 * @param int    $valor    Valor numérico.
-	 * @param string $detalle  Texto secundario.
-	 * @param string $url      Pantalla a la que enlaza.
-	 * @param string $tono     Tono de color.
+	 * @param string $clave   Identificador de la tarjeta, que da también su nombre.
+	 * @param int    $valor   Valor numérico.
+	 * @param string $detalle Texto secundario.
+	 * @param string $url     Pantalla a la que enlaza.
+	 * @param string $tono    Tono de color.
 	 * @return array<string, string>
 	 */
-	private static function tarjeta( string $clave, string $etiqueta, int $valor, string $detalle, string $url, string $tono ): array {
+	private static function tarjeta( string $clave, int $valor, string $detalle, string $url, string $tono ): array {
 		return array(
 			'clave'    => $clave,
-			'etiqueta' => $etiqueta,
+			'etiqueta' => self::etiqueta( $clave ),
 			'valor'    => number_format_i18n( $valor ),
 			'detalle'  => $detalle,
 			'url'      => $url,

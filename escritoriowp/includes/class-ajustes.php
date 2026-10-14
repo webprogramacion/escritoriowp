@@ -11,6 +11,7 @@ namespace EscritorioWP;
 
 use EscritorioWP\Avisos\AvisosPlugins;
 use EscritorioWP\Avisos\Plantilla;
+use EscritorioWP\Escritorio\Resumen;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -79,7 +80,7 @@ final class Ajustes {
 	/**
 	 * Ajustes ya resueltos durante esta petición.
 	 *
-	 * @var array<string, bool|int|string>|null
+	 * @var array<string, bool|int|string|array<string, bool>>|null
 	 */
 	private ?array $cache = null;
 
@@ -111,12 +112,14 @@ final class Ajustes {
 	/**
 	 * Valores por defecto de todos los ajustes.
 	 *
-	 * `menu_debajo_de` vacío significa «Al final»; `menu_color_fondo` vacío, sin color propio.
-	 * Los avisos por correo empiezan apagados; `aviso_destinatarios` vacío significa el correo de
-	 * administración del sitio, y `aviso_asunto` y `aviso_mensaje` vacíos, el texto predeterminado,
-	 * que se traduce al enviar en lugar de guardarse en el idioma de la activación.
+	 * `indicadores_activos` y `paneles_activos` dicen, para todo el sitio, qué indicadores y paneles
+	 * muestra el escritorio: todos al principio. `menu_debajo_de` vacío significa «Al final»;
+	 * `menu_color_fondo` vacío, sin color propio. Los avisos por correo empiezan apagados;
+	 * `aviso_destinatarios` vacío significa el correo de administración del sitio, y `aviso_asunto` y
+	 * `aviso_mensaje` vacíos, el texto predeterminado, que se traduce al enviar en lugar de guardarse
+	 * en el idioma de la activación.
 	 *
-	 * @return array<string, bool|int|string>
+	 * @return array<string, bool|int|string|array<string, bool>>
 	 */
 	public static function defectos(): array {
 		return array(
@@ -126,6 +129,8 @@ final class Ajustes {
 			'lanzador_activo'          => true,
 			'lanzador_frontend'        => true,
 			'elementos_por_panel'      => 5,
+			'indicadores_activos'      => array_fill_keys( array_keys( Resumen::INDICADORES ), true ),
+			'paneles_activos'          => array_fill_keys( Capacidades::TIPOS_PANEL, true ),
 			'menu_debajo_de'           => self::MENU_POR_DEFECTO,
 			'menu_color_fondo'         => '',
 			'aviso_activar'            => false,
@@ -147,7 +152,7 @@ final class Ajustes {
 	 * Función pura: no usa funciones de WordPress, para poder probarla de forma aislada.
 	 *
 	 * @param mixed $entrada Valores sin sanear.
-	 * @return array<string, bool|int|string> Ajustes saneados y completos.
+	 * @return array<string, bool|int|string|array<string, bool>> Ajustes saneados y completos.
 	 */
 	public static function sanear( mixed $entrada ): array {
 		$entrada = is_array( $entrada ) ? $entrada : array();
@@ -163,6 +168,8 @@ final class Ajustes {
 
 			$salida[ $clave ] = match ( $clave ) {
 				'elementos_por_panel' => self::sanear_elementos( $valor ),
+				'indicadores_activos' => self::sanear_activos( $valor, array_keys( Resumen::INDICADORES ) ),
+				'paneles_activos'     => self::sanear_activos( $valor, Capacidades::TIPOS_PANEL ),
 				'menu_debajo_de'      => self::sanear_menu_debajo_de( $valor ),
 				'menu_color_fondo'    => self::sanear_color( $valor ),
 				'aviso_destinatarios' => self::sanear_correos( $valor ),
@@ -185,6 +192,28 @@ final class Ajustes {
 		$numero = is_numeric( $valor ) ? (int) $valor : (int) self::defectos()['elementos_por_panel'];
 
 		return max( self::MIN_ELEMENTOS, min( self::MAX_ELEMENTOS, $numero ) );
+	}
+
+	/**
+	 * Sanea una lista de casillas, como la de los paneles o los indicadores activos.
+	 *
+	 * Devuelve un booleano por cada clave conocida, en su orden. Una clave que no llega vale
+	 * verdadero, para que lo que añada una versión futura salga activo; las desconocidas se
+	 * descartan. El formulario envía `0` o `1` por cada casilla, igual que el tipo `casilla`.
+	 *
+	 * @param mixed    $valor  Valor recibido: clave => valor de la casilla.
+	 * @param string[] $claves Claves conocidas, en el orden en que se guardan.
+	 * @return array<string, bool>
+	 */
+	public static function sanear_activos( mixed $valor, array $claves ): array {
+		$valor  = is_array( $valor ) ? $valor : array();
+		$salida = array();
+
+		foreach ( $claves as $clave ) {
+			$salida[ $clave ] = ! array_key_exists( $clave, $valor ) || self::a_booleano( $valor[ $clave ] );
+		}
+
+		return $salida;
 	}
 
 	/**
@@ -356,7 +385,7 @@ final class Ajustes {
 	/**
 	 * Devuelve todos los ajustes, completados con los valores por defecto.
 	 *
-	 * @return array<string, bool|int|string>
+	 * @return array<string, bool|int|string|array<string, bool>>
 	 */
 	public function todos(): array {
 		if ( null === $this->cache ) {
@@ -369,13 +398,53 @@ final class Ajustes {
 	/**
 	 * Devuelve el valor de un ajuste concreto.
 	 *
+	 * Las listas de casillas se leen con `panel_activo()` e `indicador_activo()`, no con este método.
+	 *
 	 * @param string $clave Nombre del ajuste.
-	 * @return bool|int|string
+	 * @return bool|int|string|array<string, bool>
 	 */
-	public function obtener( string $clave ): bool|int|string {
+	public function obtener( string $clave ): bool|int|string|array {
 		$ajustes = $this->todos();
 
 		return $ajustes[ $clave ] ?? false;
+	}
+
+	/**
+	 * Indica si un panel del escritorio está activo en el sitio.
+	 *
+	 * No dice si el usuario actual puede verlo: eso lo decide `Capacidades`.
+	 *
+	 * @param string $tipo Clave del panel.
+	 * @return bool
+	 */
+	public function panel_activo( string $tipo ): bool {
+		return $this->activo( 'paneles_activos', $tipo );
+	}
+
+	/**
+	 * Indica si un indicador del escritorio está activo en el sitio.
+	 *
+	 * No dice si el usuario actual puede verlo: eso lo decide `Resumen::claves_visibles()`.
+	 *
+	 * @param string $clave Clave del indicador.
+	 * @return bool
+	 */
+	public function indicador_activo( string $clave ): bool {
+		return $this->activo( 'indicadores_activos', $clave );
+	}
+
+	/**
+	 * Lee una casilla de una lista de casillas. Una clave que no está en la lista vale verdadero,
+	 * como en `sanear_activos()`.
+	 *
+	 * @param string $ajuste Nombre del ajuste que guarda la lista.
+	 * @param string $clave  Clave de la casilla.
+	 * @return bool
+	 */
+	private function activo( string $ajuste, string $clave ): bool {
+		$lista = $this->obtener( $ajuste );
+
+		return ! is_array( $lista ) || ! array_key_exists( $clave, $lista ) || $lista[ $clave ];
 	}
 
 	/**
@@ -524,6 +593,20 @@ final class Ajustes {
 				'etiqueta'    => __( 'Ocultar los widgets de otros plugins', 'escritoriowp' ),
 				'descripcion' => __( 'Si lo desactivas, los widgets de otros plugins se muestran debajo, bajo el título «Otros widgets».', 'escritoriowp' ),
 			),
+			'indicadores_activos'      => array(
+				'seccion'     => 'escritoriowp_seccion_escritorio',
+				'tipo'        => 'casillas',
+				'etiqueta'    => __( 'Indicadores', 'escritoriowp' ),
+				'descripcion' => __( 'Las tarjetas de resumen de la parte de arriba del escritorio. Las que desmarques no las ve nadie; las marcadas, cada usuario solo si su rol le deja ver esa pantalla.', 'escritoriowp' ),
+				'opciones'    => self::opciones_indicadores(),
+			),
+			'paneles_activos'          => array(
+				'seccion'     => 'escritoriowp_seccion_escritorio',
+				'tipo'        => 'casillas',
+				'etiqueta'    => __( 'Paneles', 'escritoriowp' ),
+				'descripcion' => __( 'Los paneles con los últimos elementos. Los que desmarques no los ve nadie; los marcados, cada usuario solo si su rol se lo permite, y además puede ocultarlos para sí desde «Personalizar», en el propio escritorio.', 'escritoriowp' ),
+				'opciones'    => self::opciones_paneles(),
+			),
 			'elementos_por_panel'      => array(
 				'seccion'     => 'escritoriowp_seccion_escritorio',
 				'tipo'        => 'numero',
@@ -618,21 +701,64 @@ final class Ajustes {
 		);
 
 		foreach ( $campos as $clave => $campo ) {
+			$args = array(
+				'clave'       => $clave,
+				'tipo'        => $campo['tipo'],
+				'etiqueta'    => $campo['etiqueta'],
+				'descripcion' => $campo['descripcion'],
+			) + array_intersect_key( $campo, array_flip( array( 'predeterminado', 'ejemplo', 'leyenda', 'opciones' ) ) );
+
+			// Un grupo de casillas se nombra con su `legend`: con `label_for`, la cabecera de la fila
+			// sería la etiqueta de un campo que no existe.
+			if ( 'casillas' !== $campo['tipo'] ) {
+				$args['label_for'] = 'escritoriowp-campo-' . $clave;
+			}
+
 			add_settings_field(
 				'escritoriowp_campo_' . $clave,
 				$campo['etiqueta'],
 				array( $this, 'pintar_campo' ),
 				self::PAGINA,
 				$campo['seccion'],
-				array(
-					'clave'       => $clave,
-					'tipo'        => $campo['tipo'],
-					'etiqueta'    => $campo['etiqueta'],
-					'descripcion' => $campo['descripcion'],
-					'label_for'   => 'escritoriowp-campo-' . $clave,
-				) + array_intersect_key( $campo, array_flip( array( 'predeterminado', 'ejemplo', 'leyenda' ) ) )
+				$args
 			);
 		}
+	}
+
+	/**
+	 * Casillas del ajuste «Indicadores»: una por indicador disponible en esta instalación, con el
+	 * nombre de su tarjeta. Los de WooCommerce solo aparecen con WooCommerce activo.
+	 *
+	 * @return array<string, string>
+	 */
+	private static function opciones_indicadores(): array {
+		$opciones = array();
+
+		foreach ( Resumen::INDICADORES as $clave => $tipo ) {
+			if ( Capacidades::disponible( $tipo ) ) {
+				$opciones[ $clave ] = Resumen::etiqueta( $clave );
+			}
+		}
+
+		return $opciones;
+	}
+
+	/**
+	 * Casillas del ajuste «Paneles»: una por panel disponible en esta instalación, con el nombre de
+	 * su cabecera. Los de WooCommerce solo aparecen con WooCommerce activo.
+	 *
+	 * @return array<string, string>
+	 */
+	private static function opciones_paneles(): array {
+		$opciones = array();
+
+		foreach ( Capacidades::TIPOS_PANEL as $tipo ) {
+			if ( Capacidades::disponible( $tipo ) ) {
+				$opciones[ $tipo ] = Capacidades::etiqueta( $tipo );
+			}
+		}
+
+		return $opciones;
 	}
 
 	/**
@@ -643,10 +769,22 @@ final class Ajustes {
 	 * de cada versión y en el idioma del momento. Y avisa de las direcciones descartadas: WordPress
 	 * puede llamar dos veces a esta función en un mismo guardado, así que el aviso se añade una vez.
 	 *
+	 * Antes de sanear, completa las listas de casillas con lo guardado: sin WooCommerce no se pintan
+	 * sus casillas, y lo que no llega volvería a activarse. La segunda llamada recibe las listas ya
+	 * completas, así que la unión no cambia nada.
+	 *
 	 * @param mixed $entrada Valores enviados por el formulario.
-	 * @return array<string, bool|int|string>
+	 * @return array<string, bool|int|string|array<string, bool>>
 	 */
 	public function sanear_formulario( mixed $entrada ): array {
+		if ( is_array( $entrada ) ) {
+			foreach ( array( 'indicadores_activos', 'paneles_activos' ) as $clave ) {
+				if ( is_array( $entrada[ $clave ] ?? null ) ) {
+					$entrada[ $clave ] += (array) $this->obtener( $clave );
+				}
+			}
+		}
+
 		$ajustes = self::sanear( $entrada );
 
 		if ( self::sanear_asunto( AvisosPlugins::asunto_por_defecto() ) === $ajustes['aviso_asunto'] ) {
@@ -687,8 +825,8 @@ final class Ajustes {
 	 * Pinta un campo del formulario de ajustes según el tipo que declara.
 	 *
 	 * Argumentos opcionales: `predeterminado`, el texto que se muestra mientras el valor guardado está
-	 * vacío; `ejemplo`, el texto de ayuda dentro del campo vacío; y `leyenda`, una lista de términos con
-	 * su significado que se pinta bajo la descripción.
+	 * vacío; `ejemplo`, el texto de ayuda dentro del campo vacío; `leyenda`, una lista de términos con
+	 * su significado que se pinta bajo la descripción; y `opciones`, las casillas del tipo `casillas`.
 	 *
 	 * @param array<string, mixed> $args Argumentos del campo.
 	 * @return void
@@ -705,6 +843,7 @@ final class Ajustes {
 
 		match ( $args['tipo'] ) {
 			'casilla'     => $this->pintar_casilla( $id, $nombre, (bool) $valor, $args['etiqueta'] ),
+			'casillas'    => $this->pintar_casillas( $id, $nombre, is_array( $valor ) ? $valor : array(), (array) ( $args['opciones'] ?? array() ), $args['etiqueta'] ),
 			'numero'      => $this->pintar_numero( $id, $nombre, (int) $valor ),
 			'desplegable' => $this->pintar_desplegable( $id, $nombre, (string) $valor ),
 			'color'       => $this->pintar_color( $id, $nombre, (string) $valor ),
@@ -741,6 +880,37 @@ final class Ajustes {
 			checked( $valor, true, false ),
 			esc_html( $etiqueta )
 		);
+	}
+
+	/**
+	 * Pinta un grupo de casillas, una por opción, con el marcado de las pantallas de ajustes de
+	 * WordPress: un `fieldset` cuya `legend` da nombre al grupo para los lectores de pantalla.
+	 *
+	 * Cada casilla lleva delante su campo oculto con valor `0`, como `pintar_casilla()`, para que
+	 * desmarcarla viaje en el envío. Una opción sin valor guardado se pinta marcada, igual que la
+	 * interpreta `sanear_activos()`.
+	 *
+	 * @param string                $id       Prefijo del identificador de cada casilla.
+	 * @param string                $nombre   Nombre del campo en el formulario.
+	 * @param array<string, bool>   $valores  Valor guardado de cada opción.
+	 * @param array<string, string> $opciones Texto de cada opción.
+	 * @param string                $etiqueta Nombre del grupo.
+	 * @return void
+	 */
+	private function pintar_casillas( string $id, string $nombre, array $valores, array $opciones, string $etiqueta ): void {
+		printf( '<fieldset><legend class="screen-reader-text"><span>%s</span></legend>', esc_html( $etiqueta ) );
+
+		foreach ( $opciones as $clave => $texto ) {
+			printf(
+				'<input type="hidden" name="%1$s" value="0"><label for="%2$s"><input type="checkbox" id="%2$s" name="%1$s" value="1" %3$s> %4$s</label><br>',
+				esc_attr( $nombre . '[' . $clave . ']' ),
+				esc_attr( $id . '-' . $clave ),
+				checked( $valores[ $clave ] ?? true, true, false ),
+				esc_html( $texto )
+			);
+		}
+
+		echo '</fieldset>';
 	}
 
 	/**

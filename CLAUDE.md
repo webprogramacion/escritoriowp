@@ -116,6 +116,13 @@ que muestre la interfaz**: cada ruta REST repite la comprobación en su `permiss
 | comentarios | `moderate_comments` | — | — |
 | actualizaciones | `update_core`, `update_plugins` o `update_themes` | — | — |
 
+Los ajustes «Indicadores» y «Paneles» (`indicadores_activos` y `paneles_activos`) **no son control de
+acceso**: deciden qué muestra el escritorio a todo el sitio, y encima sigue mandando la capacidad.
+Por eso se aplican en `Escritorio` (paneles) y en `Resumen::claves_visibles()` (indicadores), y nunca
+en `Capacidades`. La ruta `recientes/{tipo}` sigue respondiendo a quien tiene la capacidad aunque su
+panel esté desactivado, porque esos datos están igualmente en el listado nativo. La ruta `resumen`
+sí los filtra, porque devuelve lo que pinta el escritorio y así no calcula lo que no se muestra.
+
 ## 6. Cómo se sustituye el escritorio
 
 En `wp_dashboard_setup` con prioridad `PHP_INT_MAX` (para llegar después de todos los plugins):
@@ -322,7 +329,14 @@ orden del array es el orden de los grupos en el lanzador.
 
 **Un panel nuevo en el escritorio**: añade el tipo a `Capacidades::MAPA` y a
 `Capacidades::TIPOS_PANEL`, y devuélvelo en `Recientes::obtener()`. Añade sus textos de estado vacío
-(`panelVacioX`, `crearPrimeroX`) al catálogo de `Activos::textos()`.
+(`panelVacioX`, `crearPrimeroX`) al catálogo de `Activos::textos()`. No hace falta nada más para el
+ajuste «Paneles»: el panel aparece solo en Ajustes y sale activo, también en los sitios que ya
+habían guardado el ajuste.
+
+**Un indicador nuevo**: añade su clave a `Resumen::INDICADORES`, con el tipo de `Capacidades::MAPA`
+que decide quién lo ve, su nombre a `Resumen::etiqueta()` y su tarjeta a `Resumen::obtener()`,
+condicionada a que la clave esté en `claves_visibles()`. Una tarjeta que no esté en `INDICADORES` no
+se muestra nunca. Como el panel, aparece sola en el ajuste «Indicadores» y sale activa.
 
 **Un comando fijo del lanzador**: añádelo en `CatalogoComandos::comandos_accion()`, siempre
 condicionado a una capacidad. Para comandos desde otro plugin, usa el filtro `escritoriowp_comandos`.
@@ -332,13 +346,19 @@ con prioridad 11 o posterior y `Ajustes::PAGINA` como padre, y guarda el identif
 `add_submenu_page()` para encolar su CSS. El lanzador la recoge sola al leer `$submenu`.
 
 **Un ajuste nuevo**: añádelo a `Ajustes::defectos()` y declara su campo en
-`Ajustes::registrar_ajustes()` con su `tipo` (`casilla`, `numero`, `desplegable`, `color`, `correo`,
-`texto` o `area`), que es lo que `pintar_campo()` usa para decidir cómo pintarlo. Una casilla no
-necesita nada más: `sanear()` la interpreta como booleano y `pintar_campo()` le pone el campo oculto
+`Ajustes::registrar_ajustes()` con su `tipo` (`casilla`, `casillas`, `numero`, `desplegable`, `color`,
+`correo`, `texto` o `area`), que es lo que `pintar_campo()` usa para decidir cómo pintarlo. Una casilla
+no necesita nada más: `sanear()` la interpreta como booleano y `pintar_campo()` le pone el campo oculto
 con valor `0`. Cualquier otro tipo necesita su rama en el `match` de `Ajustes::sanear()`; sin ella el
-ajuste conserva siempre su valor por defecto, para que nunca se guarde mal interpretado. El campo
-admite tres argumentos opcionales: `predeterminado` (lo que se muestra mientras el valor guardado está
-vacío), `ejemplo` (el `placeholder`) y `leyenda` (términos con su significado bajo la descripción).
+ajuste conserva siempre su valor por defecto, para que nunca se guarde mal interpretado. El tipo
+`casillas` es una lista `clave => bool` (como `paneles_activos`): su rama llama a
+`sanear_activos()` con las claves conocidas, que da `true` a la que falta y descarta las
+desconocidas, y el campo declara sus casillas en el argumento `opciones` (`clave => texto`). Se pinta
+como un `fieldset` con su `legend` y sin `label_for`. Si alguna casilla puede no pintarse, como las de
+WooCommerce, completa lo enviado con lo guardado en `sanear_formulario()`, como hacen los dos
+ajustes de paneles e indicadores. El campo admite además tres argumentos opcionales: `predeterminado`
+(lo que se muestra mientras el valor guardado está vacío), `ejemplo` (el `placeholder`) y `leyenda`
+(términos con su significado bajo la descripción).
 `sanear()` es pura; lo que necesita WordPress al guardar desde el formulario, como un aviso con
 `add_settings_error()` o guardar vacío un texto igual al predeterminado, va en
 `Ajustes::sanear_formulario()`, que es el `sanitize_callback`. La pantalla pinta esos avisos con

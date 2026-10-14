@@ -11,6 +11,8 @@
 
 	var config = global.escritoriowpEscritorio || {
 		paneles: [],
+		tipos: [],
+		indicadores: 4,
 		preferencias: { paneles_ocultos: [], orden_paneles: [], tema: 'auto' },
 		elementosPorPanel: 5,
 		roles: [],
@@ -42,6 +44,19 @@
 	}
 
 	/**
+	 * Devuelve la definición de un tipo que el usuario puede ver, aunque su panel esté desactivado
+	 * en el sitio: la creación rápida de la cabecera no depende de los paneles activos.
+	 *
+	 * @param {string} clave Clave del tipo.
+	 * @return {Object|null} Definición del tipo.
+	 */
+	function tipoPorClave( clave ) {
+		return ( config.tipos || config.paneles ).filter( function ( tipo ) {
+			return tipo.clave === clave;
+		} )[ 0 ] || null;
+	}
+
+	/**
 	 * Indica si un panel está oculto por preferencia del usuario.
 	 *
 	 * @param {string} clave Clave del panel.
@@ -66,10 +81,16 @@
 	/**
 	 * Carga y pinta las tarjetas de indicadores.
 	 *
+	 * Si el servidor no ha pintado la fila, porque no hay ningún indicador que mostrar, no pide nada.
+	 *
 	 * @param {boolean} refrescar Si debe ignorarse la caché del servidor.
 	 * @return {void}
 	 */
 	function cargarResumen( refrescar ) {
+		if ( ! nodos.resumen ) {
+			return;
+		}
+
 		pintarEsqueletoResumen();
 
 		EWP.obtener( 'resumen', { params: { refrescar: refrescar ? 1 : 0 } } )
@@ -84,14 +105,14 @@
 	}
 
 	/**
-	 * Pinta el esqueleto de carga de los indicadores.
+	 * Pinta el esqueleto de carga de los indicadores, con tantas tarjetas como van a llegar.
 	 *
 	 * @return {void}
 	 */
 	function pintarEsqueletoResumen() {
 		EWP.vaciar( nodos.resumen );
 
-		for ( var i = 0; i < 4; i++ ) {
+		for ( var i = 0; i < config.indicadores; i++ ) {
 			nodos.resumen.appendChild(
 				EWP.crear( 'div', { clase: 'escritoriowp-tarjeta escritoriowp-tarjeta--cargando' }, [
 					EWP.crear( 'div', { clase: 'escritoriowp-esqueleto', style: 'height:14px;width:55%' } ),
@@ -137,9 +158,15 @@
 	/**
 	 * Pinta todos los paneles visibles y carga su contenido.
 	 *
+	 * Si el servidor no ha pintado la zona, porque no hay ningún panel que mostrar, no hace nada.
+	 *
 	 * @return {void}
 	 */
 	function pintarPaneles() {
+		if ( ! nodos.paneles ) {
+			return;
+		}
+
 		EWP.vaciar( nodos.paneles );
 
 		estado.orden.forEach( function ( clave ) {
@@ -359,7 +386,10 @@
 			}
 		}, [ EWP.icono( 'dashicons-admin-generic' ), EWP.crear( 'span', { texto: EWP.t( 'personalizar' ) } ) ] );
 
-		panelMenu.appendChild( EWP.crear( 'p', { clase: 'escritoriowp-menu__titulo', texto: EWP.t( 'paneles' ) } ) );
+		// Sin paneles activos en el sitio, el menú solo ofrece el tema.
+		if ( estado.orden.length > 0 ) {
+			panelMenu.appendChild( EWP.crear( 'p', { clase: 'escritoriowp-menu__titulo', texto: EWP.t( 'paneles' ) } ) );
+		}
 
 		estado.orden.forEach( function ( clave, indice ) {
 			var panel = panelPorClave( clave );
@@ -598,7 +628,7 @@
 	function abrirModal( tipo, abridor ) {
 		cerrarModal();
 
-		var panel = panelPorClave( tipo );
+		var panel = tipoPorClave( tipo );
 
 		if ( ! panel ) {
 			return;
@@ -885,6 +915,10 @@
 	 * @return {void}
 	 */
 	function cargarPanelPorClave( clave ) {
+		if ( ! nodos.paneles ) {
+			return;
+		}
+
 		var seccion = nodos.paneles.querySelector( '[data-panel="' + clave + '"] .escritoriowp-panel__cuerpo' );
 
 		if ( seccion ) {

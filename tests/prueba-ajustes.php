@@ -8,6 +8,8 @@
 declare(strict_types=1);
 
 use EscritorioWP\Ajustes;
+use EscritorioWP\Capacidades;
+use EscritorioWP\Escritorio\Resumen;
 
 grupo( 'Ajustes' );
 
@@ -63,6 +65,47 @@ comprobar( 'upload.php', $menu['menu_debajo_de'], 'la posición se guarda como t
 comprobar( '#aabbcc', $menu['menu_color_fondo'], 'el color se guarda saneado' );
 comprobar( 'index.php', Ajustes::sanear( array( 'menu_debajo_de' => '<b>' ) )['menu_debajo_de'], 'el saneado general aplica el de la posición' );
 comprobar( '', Ajustes::sanear( array( 'menu_color_fondo' => 'rojo' ) )['menu_color_fondo'], 'el saneado general aplica el del color' );
+
+grupo( 'Ajustes · paneles e indicadores activos' );
+
+$indicadores = array_keys( Resumen::INDICADORES );
+$paneles     = Capacidades::TIPOS_PANEL;
+
+comprobar( array_fill_keys( $indicadores, true ), $defectos['indicadores_activos'], 'por defecto todos los indicadores están activos' );
+comprobar( array_fill_keys( $paneles, true ), $defectos['paneles_activos'], 'por defecto todos los paneles están activos' );
+
+$activos = Ajustes::sanear_activos( array( 'paginas' => '0', 'usuarios' => '1' ), $paneles );
+
+comprobar( false, $activos['paginas'], 'la casilla desmarcada llega como «0» y se guarda como falso' );
+comprobar( true, $activos['usuarios'], 'la casilla marcada llega como «1» y se guarda como verdadera' );
+comprobar( true, $activos['pedidos'], 'una clave que no llega queda activa' );
+comprobar( $paneles, array_keys( $activos ), 'se guarda una clave por cada panel conocido' );
+
+comprobar(
+	false,
+	array_key_exists( 'inventado', Ajustes::sanear_activos( array( 'inventado' => '1' ), $paneles ) ),
+	'una clave desconocida se descarta'
+);
+comprobar( array_fill_keys( $paneles, true ), Ajustes::sanear_activos( 'paginas', $paneles ), 'un texto deja todos activos' );
+comprobar( array_fill_keys( $paneles, true ), Ajustes::sanear_activos( null, $paneles ), 'un valor nulo deja todos activos' );
+comprobar(
+	$paneles,
+	array_keys( Ajustes::sanear_activos( array_fill_keys( array_reverse( $paneles ), '1' ), $paneles ) ),
+	'el resultado sigue el orden de la lista conocida aunque llegue desordenado'
+);
+
+$con_mapas = Ajustes::sanear(
+	array(
+		'elementos_por_panel' => 50,
+		'indicadores_activos' => array( 'ingresos' => '0' ),
+		'paneles_activos'     => array( 'usuarios' => '0' ),
+	)
+);
+
+comprobar( 20, $con_mapas['elementos_por_panel'], 'con los mapas, el número de elementos por panel se sigue acotando' );
+comprobar( false, $con_mapas['indicadores_activos']['ingresos'], 'el saneado general aplica el de los indicadores' );
+comprobar( true, $con_mapas['indicadores_activos']['pedidos'], 'desactivar los ingresos no desactiva los pedidos' );
+comprobar( false, $con_mapas['paneles_activos']['usuarios'], 'el saneado general aplica el de los paneles' );
 
 grupo( 'Ajustes · avisos por correo' );
 

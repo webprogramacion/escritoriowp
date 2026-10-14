@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use EscritorioWP\Capacidades;
 use EscritorioWP\Escritorio\Recientes;
 use EscritorioWP\Escritorio\Resumen;
 
@@ -61,6 +62,20 @@ comprobar( 0.0, Resumen::calcular_ingresos( array( 'no es un pedido' ) ), 'ignor
 
 comprobar( 'completed', Resumen::estado_sin_prefijo( 'wc-completed' ), 'quita el prefijo «wc-»' );
 comprobar( 'completed', Resumen::estado_sin_prefijo( 'completed' ), 'deja intacto el estado sin prefijo' );
+
+grupo( 'Resumen · lista de indicadores' );
+
+comprobar(
+	array( 'entradas', 'paginas', 'usuarios', 'productos', 'pedidos', 'ingresos', 'comentarios', 'actualizaciones' ),
+	array_keys( Resumen::INDICADORES ),
+	'los ocho indicadores, en el orden en que salen las tarjetas'
+);
+comprobar(
+	array(),
+	array_values( array_diff( Resumen::INDICADORES, Capacidades::tipos() ) ),
+	'el tipo de cada indicador existe en el mapa de capacidades'
+);
+comprobar( 'pedidos', Resumen::INDICADORES['ingresos'], 'los ingresos los ve quien ve los pedidos' );
 
 grupo( 'Recientes · tonos de estado' );
 

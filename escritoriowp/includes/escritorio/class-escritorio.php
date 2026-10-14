@@ -254,17 +254,20 @@ final class Escritorio {
 	/**
 	 * Configuración que necesita el script del escritorio.
 	 *
+	 * `paneles` son los que se pintan, en el orden del usuario. `tipos` son todos los que el usuario
+	 * puede ver, estén o no activos en el sitio: la creación rápida de la cabecera los necesita
+	 * aunque su panel esté desactivado, porque sus botones no dependen de ese ajuste.
+	 *
 	 * @return array<string, mixed>
 	 */
 	private function configuracion(): array {
 		$preferencias = Preferencias::obtener();
-		$visibles     = Capacidades::paneles_visibles();
-		$ordenados    = Preferencias::ordenar( $visibles, $preferencias['orden_paneles'] );
+		$ordenados    = Preferencias::ordenar( $this->paneles_visibles(), $preferencias['orden_paneles'] );
 
-		$paneles = array();
+		$tipos = array();
 
-		foreach ( $ordenados as $tipo ) {
-			$paneles[] = array(
+		foreach ( Capacidades::paneles_visibles() as $tipo ) {
+			$tipos[ $tipo ] = array(
 				'clave'         => $tipo,
 				'etiqueta'      => Capacidades::etiqueta( $tipo ),
 				'etiquetaNuevo' => Capacidades::etiqueta_nuevo( $tipo ),
@@ -277,13 +280,28 @@ final class Escritorio {
 			);
 		}
 
+		$paneles = array_map( static fn ( string $tipo ): array => $tipos[ $tipo ], $ordenados );
+
 		return array(
 			'paneles'           => $paneles,
+			'tipos'             => array_values( $tipos ),
+			'indicadores'       => count( Resumen::claves_visibles() ),
 			'preferencias'      => $preferencias,
 			'elementosPorPanel' => (int) $this->ajustes->obtener( 'elementos_por_panel' ),
 			'roles'             => self::roles_asignables(),
 			'categorias'        => self::categorias(),
 		);
+	}
+
+	/**
+	 * Paneles que ve el usuario actual: los que su capacidad le deja ver y están activos en el
+	 * ajuste «Paneles». El ajuste es de presentación y por eso se aplica aquí y no en `Capacidades`,
+	 * que sigue diciendo quién puede pedir los datos.
+	 *
+	 * @return string[]
+	 */
+	private function paneles_visibles(): array {
+		return array_values( array_filter( Capacidades::paneles_visibles(), array( $this->ajustes, 'panel_activo' ) ) );
 	}
 
 	/**
@@ -384,9 +402,13 @@ final class Escritorio {
 				</div>
 			</header>
 
-			<section class="escritoriowp__resumen" data-escritoriowp-resumen aria-label="<?php echo esc_attr__( 'Resumen del sitio', 'escritoriowp' ); ?>"></section>
+			<?php if ( array() !== Resumen::claves_visibles() ) : ?>
+				<section class="escritoriowp__resumen" data-escritoriowp-resumen aria-label="<?php echo esc_attr__( 'Resumen del sitio', 'escritoriowp' ); ?>"></section>
+			<?php endif; ?>
 
-			<section class="escritoriowp__paneles" data-escritoriowp-paneles aria-label="<?php echo esc_attr__( 'Últimos elementos', 'escritoriowp' ); ?>"></section>
+			<?php if ( array() !== $this->paneles_visibles() ) : ?>
+				<section class="escritoriowp__paneles" data-escritoriowp-paneles aria-label="<?php echo esc_attr__( 'Últimos elementos', 'escritoriowp' ); ?>"></section>
+			<?php endif; ?>
 
 			<noscript>
 				<p class="escritoriowp__aviso"><?php echo esc_html__( 'EscritorioWP necesita JavaScript para mostrar el escritorio.', 'escritoriowp' ); ?></p>

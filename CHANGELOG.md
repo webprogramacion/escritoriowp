@@ -37,6 +37,14 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   `{cantidad}`, `{usuario}`, `{fecha}`, `{sitio}`, `{url}`, `{url_plugins}` e `{ip}`. Un cambio en
   lote manda un solo correo con todos los plugins. Funciona desde la pantalla Plugins, la API REST y
   WP-CLI, avisa también si se desactiva EscritorioWP y no avisa de las actualizaciones.
+- Ajustes «Indicadores» y «Paneles», en la sección «Escritorio» de EscritorioWP › Ajustes: una
+  casilla por cada tarjeta de resumen y por cada panel de últimos elementos para elegir qué muestra
+  el escritorio a todos los usuarios. Vienen todas marcadas, así que nada cambia hasta que desmarques
+  alguna. Lo marcado lo sigue viendo cada usuario solo si su rol se lo permite, y «Personalizar» solo
+  ofrece los paneles activos, sin perder lo que cada usuario había ocultado. Sin indicadores activos
+  desaparece la fila de tarjetas, y con las tres de WooCommerce desmarcadas el escritorio deja de
+  recorrer los pedidos del mes. Las casillas de WooCommerce solo aparecen con WooCommerce activo y
+  mientras no lo está conservan su valor.
 
 ### Cambiado
 
