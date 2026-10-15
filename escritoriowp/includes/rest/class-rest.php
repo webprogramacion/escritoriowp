@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace EscritorioWP\Rest;
 
 use EscritorioWP\Ajustes;
+use EscritorioWP\Avisos\PantallaAvisos;
+use EscritorioWP\Avisos\Registro;
 use EscritorioWP\Busqueda\Buscador;
 use EscritorioWP\Capacidades;
 use EscritorioWP\Creacion\Creador;
@@ -147,6 +149,24 @@ final class Rest {
 
 		register_rest_route(
 			self::ESPACIO,
+			'/avisos',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( ControladorAvisos::class, 'obtener' ),
+				'permission_callback' => array( __CLASS__, 'exigir_ver_avisos' ),
+				'args'                => array(
+					'limite' => array(
+						'type'              => 'integer',
+						'required'          => false,
+						'default'           => Registro::LIMITE_DEFECTO,
+						'sanitize_callback' => array( Registro::class, 'limite' ),
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::ESPACIO,
 			'/preferencias',
 			array(
 				array(
@@ -218,6 +238,21 @@ final class Rest {
 		}
 
 		return Capacidades::puede_crear( $tipo ) ? true : self::error_acceso();
+	}
+
+	/**
+	 * Exige poder ver los avisos guardados, con la misma comprobación que su pantalla.
+	 *
+	 * @return true|WP_Error
+	 */
+	public static function exigir_ver_avisos(): bool|WP_Error {
+		$identificado = self::exigir_identificado();
+
+		if ( is_wp_error( $identificado ) ) {
+			return $identificado;
+		}
+
+		return PantallaAvisos::puede_ver() ? true : self::error_acceso();
 	}
 
 	/**

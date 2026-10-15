@@ -204,7 +204,8 @@
  * Fondo propio: con el tema oscuro, los títulos y textos claros no se leerían sobre el gris claro
  * del administrador de WordPress.
  */
-.escritoriowp-administradores .escritoriowp {
+.escritoriowp-administradores .escritoriowp,
+.escritoriowp-avisos .escritoriowp {
 	max-width: 1100px;
 	box-sizing: border-box;
 	margin-top: 16px;
@@ -393,6 +394,189 @@
 	margin-left: 6px;
 }
 
+/* Avisos */
+
+.escritoriowp-avisos__intro,
+.escritoriowp-avisos__vacio,
+.escritoriowp-avisos__total {
+	max-width: 720px;
+	margin: 0 0 16px;
+	color: var(--ewp-texto-suave);
+	font-size: 14px;
+}
+
+.escritoriowp-avisos__total {
+	margin-bottom: 12px;
+	font-size: 13px;
+}
+
+.escritoriowp-avisos .escritoriowp a:not(.escritoriowp-boton) {
+	color: var(--ewp-acento);
+}
+
+.escritoriowp-avisos__filtros {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	align-items: flex-end;
+	margin: 0 0 16px;
+}
+
+.escritoriowp-avisos__filtro {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.escritoriowp-avisos__filtro label {
+	color: var(--ewp-texto-suave);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+/*
+ * Los desplegables de WordPress son blancos y su flecha es una imagen gris: con el tema oscuro no se
+ * leerían. La flecha se dibuja con el color del texto para que siga al tema.
+ */
+.escritoriowp-avisos__filtro select {
+	min-width: 180px;
+	max-width: 100%;
+	padding-right: 28px;
+	border-color: var(--ewp-borde-fuerte);
+	background-color: var(--ewp-superficie);
+	background-image:
+		linear-gradient(45deg, transparent 50%, currentColor 50%),
+		linear-gradient(135deg, currentColor 50%, transparent 50%);
+	background-position: calc(100% - 15px) 55%, calc(100% - 10px) 55%;
+	background-size: 5px 5px, 5px 5px;
+	background-repeat: no-repeat;
+	color: var(--ewp-texto);
+}
+
+.escritoriowp-avisos__filtro select:hover {
+	color: var(--ewp-texto);
+}
+
+.escritoriowp-avisos__destinatarios {
+	overflow-wrap: anywhere;
+}
+
+@media (min-width: 783px) {
+	.escritoriowp-avisos__fecha {
+		white-space: nowrap;
+	}
+}
+
+.escritoriowp-avisos__paginas {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 16px;
+}
+
+.escritoriowp-avisos__paginas .page-numbers {
+	min-width: 32px;
+	box-sizing: border-box;
+	padding: 5px 10px;
+	border: 1px solid var(--ewp-borde);
+	border-radius: var(--ewp-radio-pequeno);
+	background: var(--ewp-superficie);
+	color: var(--ewp-texto);
+	font-size: 13px;
+	text-align: center;
+	text-decoration: none;
+}
+
+.escritoriowp-avisos .escritoriowp .escritoriowp-avisos__paginas a.page-numbers {
+	color: var(--ewp-acento);
+}
+
+.escritoriowp-avisos__paginas .page-numbers.current {
+	border-color: var(--ewp-acento);
+	background: var(--ewp-acento);
+	color: var(--ewp-acento-texto);
+	font-weight: 600;
+}
+
+.escritoriowp-avisos__paginas .page-numbers.dots {
+	border-color: transparent;
+	background: transparent;
+}
+
+.escritoriowp-avisos__volver {
+	margin: 0 0 16px;
+}
+
+.escritoriowp-avisos__asunto {
+	margin: 0 0 16px;
+	color: var(--ewp-texto);
+	font-size: 18px;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.escritoriowp-avisos__datos {
+	display: grid;
+	grid-template-columns: max-content minmax(0, 1fr);
+	gap: 8px 16px;
+	max-width: 900px;
+	margin: 0 0 20px;
+	font-size: 14px;
+}
+
+.escritoriowp-avisos__datos dt {
+	color: var(--ewp-texto-suave);
+	font-weight: 600;
+}
+
+.escritoriowp-avisos__datos dd {
+	margin: 0;
+	color: var(--ewp-texto);
+}
+
+.escritoriowp-avisos__nota {
+	display: block;
+	margin-top: 4px;
+	color: var(--ewp-texto-suave);
+	font-size: 13px;
+}
+
+.escritoriowp-avisos__titulo-mensaje {
+	margin: 0 0 8px;
+	color: var(--ewp-texto);
+	font-size: 14px;
+}
+
+.escritoriowp-avisos__mensaje {
+	max-width: 900px;
+	box-sizing: border-box;
+	padding: 14px 16px;
+	border: 1px solid var(--ewp-borde);
+	border-radius: var(--ewp-radio-pequeno);
+	background: var(--ewp-superficie);
+	color: var(--ewp-texto);
+	font-size: 13px;
+	line-height: 1.6;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+	.escritoriowp-avisos__datos {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2px;
+	}
+
+	.escritoriowp-avisos__datos dd {
+		margin-bottom: 8px;
+	}
+
+	.escritoriowp-avisos__filtro,
+	.escritoriowp-avisos__filtro select {
+		width: 100%;
+	}
+}
+
 /* Tabla con los tokens del plugin: las de WordPress no siguen el tema oscuro. */
 
 .escritoriowp-tabla {
@@ -440,7 +624,8 @@
 }
 
 @media (max-width: 782px) {
-	.escritoriowp-administradores .escritoriowp {
+	.escritoriowp-administradores .escritoriowp,
+	.escritoriowp-avisos .escritoriowp {
 		padding: 12px;
 	}
 

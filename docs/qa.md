@@ -97,8 +97,9 @@ Repite la lista con cada combinación:
 - [x] `[S]` Con el aviso de cambios en los administradores activado, desactivar el plugin quita su
       tarea de WP-Cron y conserva la opción `escritoriowp_revision_administradores`.
 - [x] `[S]` Borrar el plugin no deja en la base de datos ninguna fila con prefijo `escritoriowp` en
-      `wp_options` ni en `wp_usermeta`, ni la tarea `escritoriowp_revisar_administradores` en WP-Cron
-      (comprobado con `wp plugin uninstall --deactivate` y el aviso de administradores activado).
+      `wp_options` ni en `wp_usermeta`, ni la tarea `escritoriowp_revisar_administradores` en WP-Cron,
+      ni la tabla `wp_escritoriowp_avisos` (comprobado con `wp plugin uninstall --deactivate` y el aviso
+      de administradores activado; la tabla, en §13).
 
 ## 2. Escritorio
 
@@ -156,6 +157,43 @@ Repite la lista con cada combinación:
       de que el administrador lo desactive y lo vuelva a activar: su metadato no cambia.
 - [ ] `[M]` A 400 px de ancho no hay desplazamiento horizontal y los paneles se apilan.
 - [ ] `[M]` Recorrer la interfaz con Tab da foco visible a todos los botones y enlaces en orden.
+
+### Bloque de últimos avisos
+
+Deriva de `openspec/changes/registro-avisos/specs/escritorio-panel/`.
+
+- [x] `[C]` Con avisos guardados, un administrador ve el bloque «Avisos por correo» debajo de las
+      tarjetas y encima de los paneles, a todo el ancho, con los 5 avisos más recientes del más nuevo
+      al más antiguo (asunto, estado, tipo y cuánto hace) y «Ver todos» hacia EscritorioWP › Avisos.
+- [x] `[C]` Un aviso fallido sale con «Fallido» en una etiqueta roja, y su asunto enlaza a su detalle
+      en la pantalla Avisos.
+- [x] `[S]` Un editor no recibe el bloque ni ningún dato de avisos en la página ni en la
+      configuración del escritorio, y no se consulta la tabla de avisos.
+- [x] `[S]` Con «Sustituir el escritorio nativo» desactivado, el escritorio nativo no tiene el bloque.
+- [x] `[C]` El árbol de accesibilidad de Chrome tiene una región llamada «Avisos por correo», entre
+      «Resumen del sitio» y «Últimos elementos».
+- [ ] `[M]` Con un lector de pantalla, la lista de regiones del escritorio anuncia «Avisos por
+      correo».
+- [x] `[S]` Sin avisos guardados y con las cinco casillas de avisos desmarcadas, el bloque no se
+      pinta y la única consulta es la que comprueba si hay avisos.
+- [x] `[S]` `[C]` Con «Avisar al activar un plugin» marcada y sin avisos, el bloque se pinta sin
+      consultar la tabla y dice que todavía no se ha enviado ningún aviso.
+- [x] `[S]` Con avisos guardados y todas las casillas desmarcadas, el bloque se sigue pintando.
+- [x] `[S]` Con todas las casillas de «Paneles» desmarcadas y avisos guardados, el bloque se pinta y
+      `config.paneles` no lo incluye, así que «Personalizar» no lo ofrece para ocultarlo ni moverlo.
+- [x] `[C]` Si la ruta `avisos` falla, el bloque muestra el error con «Reintentar» y los indicadores y
+      los paneles cargan con normalidad.
+- [x] `[C]` Con el escritorio abierto, enviar un aviso y pulsar «Actualizar» lo pone el primero en el
+      bloque sin recargar la página.
+- [x] `[C]` Los paneles no cambian con el bloque: filas, estado vacío con su botón de crear y
+      «Reintentar» cuando su ruta falla.
+- [x] `[S]` Un editor que llama a la ruta `avisos` recibe 403 sin datos; sin sesión, 401 sin datos.
+- [x] `[S]` Un administrador recibe 5 avisos por defecto y, con `limite=500` y 60 guardados, los 20
+      más recientes.
+- [x] `[C]` Un plugin llamado `<img src=x onerror=alert(1)>` sale tal cual, como texto, en el asunto
+      del bloque, sin crear ninguna imagen ni abrir ningún diálogo.
+- [x] `[C]` A 400 px no hay desplazamiento horizontal y el asunto largo se corta con puntos
+      suspensivos; con el tema oscuro, el bloque y los títulos de los paneles se leen bien.
 
 ### Tipos de contenido personalizados
 
@@ -274,8 +312,9 @@ y lo marque en «Paneles».
 ## 6. Menú del plugin
 
 - [x] `[S]` El menú «EscritorioWP» aparece en la barra lateral con el icono del escritorio.
-- [x] `[S]` Su submenú tiene «Ajustes», «Administradores» y «Acerca de», en ese orden, las tres con
-      `manage_options` (Administradores, además, con `list_users`).
+- [x] `[S]` Su submenú tiene «Ajustes», «Administradores», «Avisos» y «Acerca de», en ese orden, las
+      cuatro con `manage_options` (Administradores, además, con `list_users`). Sin `list_users`, el
+      orden es «Ajustes», «Avisos» y «Acerca de», y no depende del orden en que se componen los módulos.
 - [x] `[S]` La subpágina antigua bajo Ajustes ya no existe.
 - [x] `[S]` `options-general.php?page=escritoriowp` ya no resuelve a ninguna pantalla del plugin.
 - [x] `[S]` Un usuario sin `manage_options` recibe el aviso de permisos al abrir cualquiera de las dos.
@@ -677,3 +716,109 @@ Las comprobaciones de desactivar y desinstalar con la revisión programada está
       unas 6 horas después de crearlo, no antes.
 - [ ] `[M]` En el cliente de correo, el aviso se lee bien: tildes, saltos de línea, las comillas
       angulares de «del rol «…»» y los puntos suspensivos de «… y N más».
+
+## 13. Registro de avisos
+
+Deriva de `openspec/changes/registro-avisos/specs/`.
+
+### Qué se guarda
+
+- [x] `[S]` Con «Desactivar» marcada, desactivar cinco plugins con la acción en lote de Plugins guarda
+      un solo registro de «Desactivación» cuyo mensaje lista los cinco.
+- [x] `[S]` Con «Instalar» y «Activar» marcadas, `wp plugin install hello-dolly --activate` guarda dos
+      registros: «Instalación» y «Activación».
+- [x] `[S]` Con el aviso de administradores marcado, la revisión que encuentra un administrador nuevo
+      guarda un registro de tipo «Administradores» con el correo de esa revisión.
+- [x] `[S]` Una revisión sin cambios no guarda nada, y activar un plugin con «Activar» desmarcada
+      tampoco.
+- [x] `[S]` Con el envío fallando, la revisión que encuentra un administrador nuevo guarda un registro
+      «Fallido» con él; al recuperar el envío y añadir un marcado, la siguiente guarda otro «Enviado»
+      con los dos, y la situación de la revisión solo avanza con la segunda.
+- [x] `[S]` El registro de una activación con dos destinatarios en el ajuste tiene el tipo
+      «Activación», el asunto y el mensaje idénticos a los del correo y las dos direcciones.
+- [x] `[S]` Con los destinatarios vacíos, el registro guarda el correo de administración.
+- [x] `[S]` Cambiar el asunto y el mensaje configurables después de un envío no cambia su registro.
+
+### Estado del envío
+
+- [x] `[S]` Un envío que `wp_mail()` acepta queda «Enviado».
+- [x] `[S]` Un envío que `wp_mail()` rechaza queda «Fallido» con el motivo de PHPMailer (comprobado con
+      SMTP en `127.0.0.1:1`: «SMTP Error: Could not connect to SMTP host. Failed to connect to server»).
+- [x] `[S]` Con `pre_wp_mail` devolviendo `false`, el registro queda «Fallido» con el motivo vacío.
+- [x] `[S]` Con un `exit` en `phpmailer_init`, el registro existe con su asunto, su mensaje y sus
+      destinatarios, y queda «Sin confirmar» (`pendiente`).
+- [x] `[S]` Con una excepción en `phpmailer_init`, el registro queda «Fallido» con el mensaje de la
+      excepción y la revisión de administradores no guarda la situación nueva.
+- [ ] `[M]` Con SMTP real, un aviso queda «Enviado» y llega al buzón; con el servidor SMTP apagado,
+      queda «Fallido» con el motivo que dé el servidor.
+
+### El registro no interfiere con el envío
+
+- [x] `[S]` Con la tabla borrada (y la versión de su esquema intacta), activar un plugin con «Activar»
+      marcada envía el correo, deja la redirección de Plugins intacta y no muestra errores aunque
+      `WP_DEBUG_DISPLAY` esté activo; el error de SQL queda en `debug.log`.
+- [x] `[S]` En esa misma situación, borrar un plugin por AJAX desde Plugins devuelve un JSON válido.
+
+### Registro disponible tras actualizar
+
+- [x] `[S]` Tras instalar el zip sobre una versión sin registro (la 0.4.0, sin tabla ni opción), sin
+      pasar por la activación (`wp plugin install <zip> --force`), la tabla no existe hasta que el
+      primer aviso posterior la crea, se guarda y aparece en la pantalla Avisos.
+- [ ] `[M]` En un multisitio con el plugin activado en la red, un aviso enviado desde el sitio 2
+      aparece en la pantalla Avisos del sitio 2 y no en la del sitio principal; cada sitio crea su tabla
+      con su primer aviso.
+- [ ] `[M]` En MySQL, la tabla se crea con `dbDelta()` con las columnas y los índices del esquema.
+
+### Pantalla Avisos
+
+- [x] `[S]` El menú «EscritorioWP» de un administrador tiene «Ajustes», «Administradores», «Avisos» y
+      «Acerca de», en ese orden; con `manage_options` y sin `list_users`, «Ajustes», «Avisos» y «Acerca
+      de». Mover la composición de `PantallaAvisos` antes o después de `AcercaDe` no cambia el orden.
+- [x] `[S]` Un editor no ve el menú y, al abrir `admin.php?page=escritoriowp-avisos`, recibe la
+      denegación de WordPress (403) sin ningún aviso en la página.
+- [x] `[S]` Tras borrar su transitorio `escritoriowp_comandos_{id}`, el catálogo del lanzador de un
+      administrador incluye la pantalla «Avisos» con su URL.
+- [ ] `[M]` Escribir «avisos» en el lanzador muestra la pantalla Avisos y al elegirla se abre el
+      listado; escribir «acerca» lleva a Acerca de.
+- [x] `[S]` La introducción de la sección «Avisos por correo» de Ajustes enlaza a EscritorioWP ›
+      Avisos y dice que cada aviso queda guardado, también si el correo falla.
+- [x] `[S]` Con 45 avisos, el listado muestra los 20 más recientes, «45 avisos guardados» y tres
+      páginas; cada fila tiene la fecha en el formato del sitio, el tipo, el asunto enlazado a su
+      detalle, los destinatarios y el estado.
+- [x] `[S]` «Fallido» sale en una etiqueta roja, «Enviado» en verde y «Sin confirmar» en ámbar.
+- [x] `[S]` Sin ningún aviso, el listado dice que todavía no se ha guardado ninguno y enlaza a los
+      ajustes, sin formulario de filtros.
+- [x] `[S]` El filtro de estado «Fallido» deja solo los fallidos, con su total.
+- [x] `[S]` Con 30 avisos de tipo «Administradores», la página 2 del filtro muestra los 10 restantes y
+      los enlaces de la paginación y del detalle conservan el filtro.
+- [x] `[S]` Un filtro sin coincidencias dice que ningún aviso coincide y ofrece «Quitar filtros».
+- [x] `[S]` Con `estado=<script>` en la URL se ven todos los avisos, sin errores, y la página no
+      repite el valor en ninguna forma (tampoco codificado en los enlaces de la paginación).
+- [x] `[S]` El detalle de un aviso fallido de tipo «Administradores» muestra fecha, tipo, estado,
+      destinatarios, el motivo del fallo y el mensaje completo con sus apartados en líneas separadas.
+- [x] `[S]` Un aviso fallido sin motivo muestra que la función de correo no aceptó el mensaje y no dio
+      ningún motivo.
+- [x] `[S]` `&aviso=999999` dice que el aviso no existe y enlaza al listado, sin avisos de PHP.
+- [x] `[S]` El enlace de vuelta de un detalle abierto desde la página 2 del filtro «Administradores»
+      vuelve a esa página con el filtro.
+- [x] `[S]` Activar con el aviso marcado un plugin llamado `<img src=x onerror=alert(1)>` deja ese
+      nombre como `&lt;img …&gt;` en el listado y en el detalle, nunca como etiqueta.
+- [x] `[S]` Desmarcar todas las casillas de avisos y guardar desde el formulario no borra ningún aviso:
+      la pantalla los sigue mostrando todos.
+- [x] `[S]` Desactivar y reactivar EscritorioWP no borra ningún aviso: la pantalla los sigue mostrando
+      todos.
+- [x] `[C]` La pantalla Avisos (listado y detalle) se ve bien con los esquemas de color Predeterminado
+      y Claro del administrador, con el tema oscuro de las preferencias y a 400 px de ancho, sin
+      desplazamiento horizontal: a 400 px la tabla pasa a una ficha por aviso y los filtros ocupan el
+      ancho; el desplegable dibuja su flecha con el color del texto en los dos temas.
+
+### Conservación y desinstalación
+
+- [x] `[S]` Con avisos guardados, desactivar y reactivar EscritorioWP conserva todos los avisos, la
+      tabla `wp_escritoriowp_avisos` y la opción `escritoriowp_avisos_bd`.
+- [x] `[S]` Borrar el plugin elimina la tabla `wp_escritoriowp_avisos` y la opción
+      `escritoriowp_avisos_bd` (comprobado con `wp plugin uninstall --deactivate` en una copia de la
+      instalación).
+- [ ] `[M]` En un multisitio con MySQL y el plugin activado en la red, con avisos en el sitio principal
+      y en el sitio 2, borrar el plugin elimina la tabla y la opción de los dos sitios, y no toca la
+      tabla de otra instalación que comparta la base de datos con otro prefijo.

@@ -34,6 +34,8 @@ require_once $plugin . 'seguridad/class-permisos.php';
 require_once $plugin . 'seguridad/class-detector.php';
 require_once $plugin . 'avisos/class-plantilla.php';
 require_once $plugin . 'avisos/class-cambios-administradores.php';
+require_once $plugin . 'avisos/class-avisos-plugins.php';
+require_once $plugin . 'avisos/class-registro.php';
 
 // Herramientas de desarrollo: incluirlas no ejecuta su punto de entrada de línea de órdenes.
 require_once $raiz . '/tools/notas-release.php';

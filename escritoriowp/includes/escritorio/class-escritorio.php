@@ -11,6 +11,10 @@ namespace EscritorioWP\Escritorio;
 
 use EscritorioWP\Activos;
 use EscritorioWP\Ajustes;
+use EscritorioWP\Avisos\AvisosAdministradores;
+use EscritorioWP\Avisos\AvisosPlugins;
+use EscritorioWP\Avisos\PantallaAvisos;
+use EscritorioWP\Avisos\Registro;
 use EscritorioWP\Capacidades;
 use EscritorioWP\Creacion\Creador;
 
@@ -413,6 +417,21 @@ final class Escritorio {
 				<section class="escritoriowp__resumen" data-escritoriowp-resumen aria-label="<?php echo esc_attr__( 'Resumen del sitio', 'escritoriowp' ); ?>"></section>
 			<?php endif; ?>
 
+			<?php if ( $this->mostrar_avisos() ) : ?>
+				<section class="escritoriowp-panel escritoriowp__avisos" data-escritoriowp-avisos aria-labelledby="escritoriowp-avisos-titulo">
+					<header class="escritoriowp-panel__cabecera">
+						<h3 class="escritoriowp-panel__titulo" id="escritoriowp-avisos-titulo">
+							<span class="dashicons dashicons-email-alt" aria-hidden="true"></span>
+							<span><?php echo esc_html__( 'Avisos por correo', 'escritoriowp' ); ?></span>
+						</h3>
+						<div class="escritoriowp-panel__acciones">
+							<a class="escritoriowp-boton escritoriowp-boton--enlace" href="<?php echo esc_url( PantallaAvisos::url() ); ?>"><?php echo esc_html__( 'Ver todos', 'escritoriowp' ); ?></a>
+						</div>
+					</header>
+					<div class="escritoriowp-panel__cuerpo" data-escritoriowp-avisos-cuerpo></div>
+				</section>
+			<?php endif; ?>
+
 			<?php if ( array() !== $this->paneles_visibles() ) : ?>
 				<section class="escritoriowp__paneles" data-escritoriowp-paneles aria-label="<?php echo esc_attr__( 'Últimos elementos', 'escritoriowp' ); ?>"></section>
 			<?php endif; ?>
@@ -426,6 +445,32 @@ final class Escritorio {
 			<h2 class="escritoriowp__otros-widgets"><?php echo esc_html__( 'Otros widgets', 'escritoriowp' ); ?></h2>
 		<?php endif; ?>
 		<?php
+	}
+
+	/**
+	 * Indica si se pinta el bloque de últimos avisos: solo para quien puede ver los avisos, y solo si
+	 * hay alguno guardado o alguna casilla de aviso marcada.
+	 *
+	 * No es un panel: no depende del ajuste «Paneles» ni de las preferencias del usuario. Con alguna
+	 * casilla marcada aparece aunque el registro esté vacío, para decir que aún no hay avisos; con
+	 * todas apagadas, solo se consulta el registro si no hay nada más que decida.
+	 *
+	 * @return bool
+	 */
+	private function mostrar_avisos(): bool {
+		if ( ! PantallaAvisos::puede_ver() ) {
+			return false;
+		}
+
+		$casillas = array_merge( array_values( AvisosPlugins::CASILLAS ), array( AvisosAdministradores::CASILLA ) );
+
+		foreach ( $casillas as $casilla ) {
+			if ( $this->ajustes->obtener( $casilla ) ) {
+				return true;
+			}
+		}
+
+		return Registro::hay_avisos();
 	}
 
 	/**

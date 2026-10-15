@@ -48,7 +48,7 @@ final class AvisosAdministradores {
 	/**
 	 * Casilla de ajustes que enciende el aviso.
 	 */
-	private const CASILLA = 'aviso_administradores';
+	public const CASILLA = 'aviso_administradores';
 
 	/**
 	 * Segundos entre dos revisiones.
@@ -231,9 +231,9 @@ final class AvisosAdministradores {
 		}
 
 		try {
-			$enviado = $this->correo->enviar( self::asunto(), self::mensaje( $cambios, $guardada, $usuarios ) );
+			$enviado = $this->correo->enviar( Registro::ADMINISTRADORES, self::asunto(), self::mensaje( $cambios, $guardada, $usuarios ) );
 		} catch ( \Throwable ) {
-			// Sin registro propio: `wp_mail()` ya dispara `wp_mail_failed` con el motivo.
+			// `Correo` ya ha dejado el aviso en el registro como fallido, con el mensaje del error.
 			$enviado = false;
 		}
 

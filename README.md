@@ -25,6 +25,11 @@ paleta de comandos de wp-admin por un lanzador que además busca contenido real 
   casilla, una revisión cada 6 horas (WP-Cron) avisa de los administradores nuevos o que dejan de
   serlo y de los usuarios que ganan o pierden permisos de administrador sin el rol, con el mismo
   criterio que la pantalla Administradores.
+- **Registro de avisos**: cada aviso por correo queda guardado en el sitio con el resultado del envío
+  («Enviado», «Fallido» con su motivo o «Sin confirmar»), también si el correo falla. La pantalla
+  EscritorioWP › Avisos los lista con filtros por tipo y estado y muestra el mensaje completo de cada
+  uno, y el escritorio de los administradores enseña los cinco últimos en el bloque «Avisos por
+  correo», entre los indicadores y los paneles.
 - **WooCommerce opcional**: si está activo añade productos y pedidos; compatible con HPOS.
 
 ## Estructura del repositorio

@@ -13,6 +13,7 @@ use EscritorioWP\Actualizaciones\ActualizadorGithub;
 use EscritorioWP\Avisos\AvisosAdministradores;
 use EscritorioWP\Avisos\AvisosPlugins;
 use EscritorioWP\Avisos\Correo;
+use EscritorioWP\Avisos\PantallaAvisos;
 use EscritorioWP\Escritorio\Escritorio;
 use EscritorioWP\Lanzador\Lanzador;
 use EscritorioWP\Rest\Rest;
@@ -99,6 +100,10 @@ final class Plugin {
 
 		$actualizador = $this->actualizador();
 		$actualizador?->registrar();
+
+		if ( is_admin() ) {
+			( new PantallaAvisos() )->registrar();
+		}
 
 		( new AcercaDe( $actualizador ) )->registrar();
 	}

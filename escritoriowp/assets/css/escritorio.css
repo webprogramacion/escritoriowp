@@ -176,6 +176,18 @@ a.escritoriowp-tarjeta:focus-visible {
 	padding-left: 16px;
 }
 
+/* --- Avisos por correo: un bloque a todo el ancho, fuera de la rejilla de paneles --- */
+
+.escritoriowp__avisos {
+	margin-top: var(--ewp-espacio);
+}
+
+.escritoriowp-fila__icono .dashicons {
+	width: 18px;
+	height: 18px;
+	font-size: 18px;
+}
+
 /* --- Paneles --- */
 
 .escritoriowp__paneles {
@@ -213,6 +225,15 @@ a.escritoriowp-tarjeta:focus-visible {
 	color: var(--ewp-texto);
 	font-size: 13px;
 	font-weight: 700;
+}
+
+/*
+ * WordPress pinta los h3 del escritorio con `#dashboard-widgets h3` y un color fijo. Con el tema claro
+ * coincide con el del plugin, pero con el oscuro dejaba ilegibles los títulos de los paneles y del
+ * bloque de avisos: hace falta un identificador para ganarle.
+ */
+#dashboard-widgets .escritoriowp-panel__titulo {
+	color: var(--ewp-texto);
 }
 
 .escritoriowp-panel__titulo .dashicons {

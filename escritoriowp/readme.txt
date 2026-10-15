@@ -116,6 +116,12 @@ destinatarios que los avisos de plugins, con un texto fijo, e incluye nombres de
 La revisión usa WP-Cron, así que depende de que el sitio reciba visitas o de que el servidor ejecute
 WP-Cron por su cuenta; junto a la casilla verás cuándo fue la última y cuándo toca la próxima.
 
+Cada aviso, de plugins o de administradores, queda además **guardado en el sitio** con su fecha, su
+asunto, su mensaje, sus destinatarios y el resultado del envío: «Enviado» si el sitio lo aceptó (que no
+es lo mismo que entregado), «Fallido» con el motivo que dé WordPress, o «Sin confirmar» si la petición
+terminó antes de saberlo. Así no se pierde aunque el correo falle o acabe en spam. Los encontrarás en
+EscritorioWP › Avisos, con filtros por tipo y por estado y el mensaje completo de cada uno.
+
 = Actualizaciones =
 
 El plugin se distribuye desde su repositorio público de GitHub. WordPress avisa cuando hay una
@@ -188,6 +194,14 @@ Así descubre también los cambios que no pasan por las funciones de WordPress, 
 directamente en la base de datos. Si la próxima revisión que muestra la casilla ya ha pasado, WP-Cron
 no se está ejecutando en tu sitio: suele pasar en sitios con pocas visitas o con `DISABLE_WP_CRON` y
 sin una tarea programada en el servidor.
+
+= ¿Qué guarda EscritorioWP en la base de datos? =
+
+Los ajustes, las preferencias del escritorio de cada usuario, unas cachés temporales y, si activas
+alguno de los avisos por correo, la última revisión de los administradores y una tabla propia con cada
+aviso enviado. Esos avisos guardan lo mismo que el correo, incluidas las IPs, los nombres de usuario y
+las direcciones de correo, y se conservan hasta que desinstalas el plugin: desactivarlo no borra nada,
+y borrarlo desde la pantalla Plugins lo elimina todo.
 
 == External services ==
 

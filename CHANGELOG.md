@@ -9,6 +9,18 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
 
 ### Añadido
 
+- Registro de los avisos por correo. Cada aviso que el plugin intenta enviar, de plugins o de
+  administradores, queda guardado en una tabla propia del sitio con la fecha, el tipo, el asunto y el
+  mensaje tal como se enviaron, los destinatarios y el resultado: «Enviado», «Fallido» con el motivo que
+  dé WordPress o «Sin confirmar» si la petición terminó antes de saberlo. Se guarda antes de enviar, así
+  que el aviso no se pierde aunque el correo falle, y guardarlo nunca impide el envío. Se conserva hasta
+  desinstalar el plugin, que borra la tabla. La pantalla nueva EscritorioWP › Avisos, entre
+  «Administradores» y «Acerca de» y solo para quien puede gestionar las opciones del sitio, lista los
+  avisos del más reciente al más antiguo, 20 por página, con filtros por tipo y por estado, y muestra el
+  detalle de cada uno con el mensaje completo, los destinatarios y el motivo del fallo. En el
+  escritorio, el bloque «Avisos por correo», entre los indicadores y los paneles, enseña a esos mismos
+  usuarios los cinco últimos avisos con su tipo, su estado y cuándo se enviaron. Aparece en cuanto hay
+  algún aviso guardado o algún aviso activado, y no depende del ajuste «Paneles».
 - Aviso por correo de los cambios en los administradores, con la casilla nueva «Avisar de cambios en
   los administradores» de la sección «Avisos por correo» (desmarcada por defecto). Mientras está
   marcada, una revisión de WP-Cron cada 6 horas clasifica a los usuarios con el mismo criterio que la
@@ -38,6 +50,11 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   avisos de plugins.
 - Los textos del estado vacío de cada panel llegan desde el servidor con el panel, en lugar de estar
   en el catálogo de textos del JavaScript. No cambia ningún texto visible.
+
+### Corregido
+
+- Con el tema oscuro, los títulos de los paneles del escritorio se pintaban oscuros sobre fondo oscuro
+  y casi no se leían.
 
 ## [0.4.0] - 2026-10-14
 

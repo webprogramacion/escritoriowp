@@ -33,6 +33,11 @@ Ideas evaluadas y descartadas para la versión 0.1.0, ordenadas por interés.
       que seguiría cubriendo los cambios hechos directamente en la base de datos.
 - [ ] Intervalo de la revisión de administradores configurable.
 - [ ] Botón «Revisar ahora» junto a la casilla del aviso de administradores.
+- [ ] Reenviar un aviso desde el registro de avisos.
+- [ ] Caducidad configurable del registro de avisos; hoy se conserva hasta desinstalar el plugin.
+- [ ] Exportador y borrador de datos personales de WordPress para el registro de avisos, que guarda
+      IPs, nombres de usuario y correos.
+- [ ] Contador de envíos fallidos en el menú del plugin.
 
 ## Otros
 

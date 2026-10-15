@@ -41,7 +41,7 @@ final class AvisosPlugins {
 	/**
 	 * Casilla de ajustes que enciende el aviso de cada evento.
 	 */
-	private const CASILLAS = array(
+	public const CASILLAS = array(
 		self::ACTIVACION    => 'aviso_activar',
 		self::DESACTIVACION => 'aviso_desactivar',
 		self::INSTALACION   => 'aviso_instalar',
@@ -263,7 +263,7 @@ final class AvisosPlugins {
 	 * Envía los avisos anotados en esta petición: un correo por evento, en el orden en que aparecieron.
 	 *
 	 * Corre en `shutdown`: un error aquí no puede deshacer la acción, pero sí ensuciar la respuesta, así
-	 * que cada envío va protegido. Si `wp_mail()` falla, el aviso se pierde sin más.
+	 * que cada envío va protegido. Si `wp_mail()` falla, el aviso queda en el registro como fallido.
 	 *
 	 * @return void
 	 */
@@ -275,7 +275,7 @@ final class AvisosPlugins {
 			try {
 				$this->enviar_evento( (string) $evento, $plugins );
 			} catch ( \Throwable ) {
-				// Sin reintentos ni registro propio: `wp_mail()` ya dispara `wp_mail_failed` con el motivo.
+				// Sin reintentos: `Correo` ya ha dejado el aviso en el registro como fallido, con su motivo.
 				continue;
 			}
 		}
@@ -325,6 +325,7 @@ final class AvisosPlugins {
 		$mensaje = (string) $this->ajustes->obtener( 'aviso_mensaje' );
 
 		$this->correo->enviar(
+			$evento,
 			Plantilla::una_linea( Plantilla::rellenar( '' === $asunto ? self::asunto_por_defecto() : $asunto, $valores ) ),
 			Plantilla::rellenar( '' === $mensaje ? self::mensaje_por_defecto() : $mensaje, $valores )
 		);

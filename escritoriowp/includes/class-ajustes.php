@@ -11,6 +11,7 @@ namespace EscritorioWP;
 
 use EscritorioWP\Avisos\AvisosAdministradores;
 use EscritorioWP\Avisos\AvisosPlugins;
+use EscritorioWP\Avisos\PantallaAvisos;
 use EscritorioWP\Avisos\Plantilla;
 use EscritorioWP\Escritorio\Resumen;
 
@@ -383,12 +384,13 @@ final class Ajustes {
 	 * Quita las etiquetas HTML de un texto, y el contenido de las de `script` y `style`.
 	 *
 	 * Es lo que hace `wp_strip_all_tags()`, sin depender de WordPress para poder probarlo; el correo
-	 * es de texto plano, así que una etiqueta solo serviría para despistar.
+	 * es de texto plano, así que una etiqueta solo serviría para despistar. También la usa el registro
+	 * de avisos con el motivo de un fallo.
 	 *
 	 * @param string $texto Texto recibido.
 	 * @return string
 	 */
-	private static function sin_etiquetas( string $texto ): string {
+	public static function sin_etiquetas( string $texto ): string {
 		$texto = (string) preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $texto );
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- La línea anterior hace la parte que añade wp_strip_all_tags(), que no está disponible en las pruebas.
@@ -619,7 +621,13 @@ final class Ajustes {
 			'escritoriowp_seccion_avisos',
 			__( 'Avisos por correo', 'escritoriowp' ),
 			static function (): void {
-				echo '<p>' . esc_html__( 'Recibe un correo cada vez que alguien activa, desactiva, instala o borra un plugin, y cuando cambian los administradores del sitio. Si se cambian varios plugins a la vez, llega un solo correo con todos.', 'escritoriowp' ) . '</p>';
+				echo '<p>' . esc_html__( 'Recibe un correo cada vez que alguien activa, desactiva, instala o borra un plugin, y cuando cambian los administradores del sitio. Si se cambian varios plugins a la vez, llega un solo correo con todos.', 'escritoriowp' ) . ' ';
+				printf(
+					/* translators: %s: enlace a la pantalla Avisos. */
+					esc_html__( 'Cada aviso queda guardado en %s, también si el correo falla.', 'escritoriowp' ),
+					'<a href="' . esc_url( PantallaAvisos::url() ) . '">' . esc_html__( 'EscritorioWP › Avisos', 'escritoriowp' ) . '</a>'
+				);
+				echo '</p>';
 			},
 			self::PAGINA
 		);

@@ -3,8 +3,9 @@
  * Desinstalación de EscritorioWP.
  *
  * Borra todo lo que el plugin guarda: la opción de ajustes, la última revisión de administradores, las
- * preferencias de cada usuario, los transitorios propios y la tarea de WP-Cron. Desactivar el plugin
- * solo quita la tarea; el resto lo borra únicamente el borrado desde Plugins.
+ * preferencias de cada usuario, los transitorios propios, la tarea de WP-Cron y, en cada sitio, la
+ * tabla de avisos guardados con la versión de su esquema. Desactivar el plugin solo quita la tarea; el
+ * resto lo borra únicamente el borrado desde Plugins.
  *
  * @package EscritorioWP
  */
@@ -38,5 +39,30 @@ $wpdb->query(
 		$wpdb->esc_like( '_transient_timeout_escritoriowp_' ) . '%'
 	)
 );
+
+/*
+ * La tabla de avisos guardados y la versión de su esquema, de cada sitio: en multisitio cada sitio
+ * tiene las suyas y las creó con su primer aviso. Los nombres se forman con el prefijo de cada sitio,
+ * sin cambiar de sitio y sin buscar tablas por patrón: en una base de datos compartida por dos
+ * instalaciones, un patrón borraría también la tabla de la otra.
+ */
+$escritoriowp_sitios = is_multisite()
+	? get_sites(
+		array(
+			'fields' => 'ids',
+			'number' => 0,
+		)
+	)
+	: array( get_current_blog_id() );
+
+foreach ( $escritoriowp_sitios as $escritoriowp_sitio ) {
+	$escritoriowp_prefijo = $wpdb->get_blog_prefix( (int) $escritoriowp_sitio );
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- La tabla es del plugin y WordPress no ofrece una API para borrar tablas.
+	$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $escritoriowp_prefijo . 'escritoriowp_avisos' ) );
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- La opción de otro sitio sin `switch_to_blog()`, que cargaría cada sitio solo para borrar una fila.
+	$wpdb->delete( $escritoriowp_prefijo . 'options', array( 'option_name' => 'escritoriowp_avisos_bd' ) );
+}
 
 wp_cache_flush();

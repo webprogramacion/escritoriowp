@@ -22,10 +22,11 @@ desarrollo y nunca se distribuye. Si creas un fichero nuevo, pregúntate si acom
    marca en rojo a quien tiene permisos de administrador sin el rol (§7 ter).
 5. **Avisa por correo de los cambios en los plugins**: al activar, desactivar, instalar o borrar
    uno, con destinatarios y texto configurables en Ajustes (§7 quater). Y, con otra casilla, de los
-   cambios en los administradores, con una revisión cada 6 horas (§7 quinquies).
+   cambios en los administradores, con una revisión cada 6 horas (§7 quinquies). Cada aviso queda
+   guardado en el sitio con el resultado del envío, también si el correo falla (§7 sexies).
 
-Todo se gobierna desde el menú propio «EscritorioWP», con tres pantallas: Ajustes, Administradores y
-Acerca de.
+Todo se gobierna desde el menú propio «EscritorioWP», con cuatro pantallas: Ajustes, Administradores,
+Avisos y Acerca de.
 
 WooCommerce es opcional: si está activo añade productos y pedidos.
 
@@ -62,7 +63,8 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
     │   ├── class-menu.php            Posición del menú del plugin en la barra lateral.
     │   ├── actualizaciones/          ActualizadorGithub. Solo en la variante de GitHub.
     │   ├── avisos/                   Correo (envío en texto plano), Plantilla y CambiosAdministradores
-    │   │                             (funciones puras), AvisosPlugins y AvisosAdministradores.
+    │   │                             (funciones puras), AvisosPlugins, AvisosAdministradores,
+    │   │                             Registro (la tabla de avisos guardados) y PantallaAvisos.
     │   ├── escritorio/               Escritorio, Resumen, Recientes, Preferencias.
     │   ├── lanzador/                 Lanzador y CatalogoComandos.
     │   ├── busqueda/                 Fuente (interfaz), Buscador, Grupo, Resultado, 4 fuentes.
@@ -134,6 +136,11 @@ panel esté desactivado, también `recientes/cpt-…` con un tipo personalizado 
 datos están igualmente en el listado nativo. La ruta `resumen`
 sí los filtra, porque devuelve lo que pinta el escritorio y así no calcula lo que no se muestra.
 
+Los avisos por correo guardados (§7 sexies) no son un tipo de esta tabla: los ve quien tiene
+`manage_options`, según `PantallaAvisos::puede_ver()`, fuera de `Capacidades`, igual que la pantalla
+Administradores tiene sus capacidades en su clase. La misma función decide la pantalla, el bloque del
+escritorio y la ruta `avisos`, que la repite en su `permission_callback` (`Rest::exigir_ver_avisos()`).
+
 ## 6. Cómo se sustituye el escritorio
 
 En `wp_dashboard_setup` con prioridad `PHP_INT_MAX` (para llegar después de todos los plugins):
@@ -148,6 +155,10 @@ En `wp_dashboard_setup` con prioridad `PHP_INT_MAX` (para llegar después de tod
    quita el marco, la cabecera y los controles.
 4. Se fuerza una columna con `get_user_option_screen_layout_dashboard` y se ocultan las opciones de
    pantalla.
+
+WordPress pinta los `h3` del escritorio con `#dashboard-widgets h3` y un color fijo, que gana a las
+clases del plugin: el color de `.escritoriowp-panel__titulo` se repite con `#dashboard-widgets` delante
+para que los títulos de los paneles y del bloque de avisos sigan el tema oscuro.
 
 ## 7. Cómo se desactiva la paleta nativa
 
@@ -171,8 +182,12 @@ su primera entrada con `add_submenu_page()` compartiendo identificador, que es l
 repita el nombre. `Administradores::anadir_pagina()` y `AcercaDe::anadir_pagina()` añaden las otras
 dos en `admin_menu` con prioridad 11, para que el menú ya exista; Administradores pasa la posición `1`
 a `add_submenu_page()`, que la deja justo detrás de «Ajustes» sin depender del orden en que se
-registran los módulos. Administradores solo se registra si el usuario tiene también `list_users`. Cada clase encola su propio CSS comparando el identificador de
-pantalla que le devolvió WordPress. La URL de ajustes es `Ajustes::url()`: nadie vuelve a escribirla
+registran los módulos. Administradores solo se registra si el usuario tiene también `list_users`.
+`PantallaAvisos::anadir_pagina()` va con prioridad **12** y la posición `Administradores::puede_ver()
+? 2 : 1`: en la 12 ya están «Administradores» y «Acerca de», así que «Avisos» cae siempre justo antes
+de «Acerca de». Con prioridad 11 dependería del orden en que `Plugin::arrancar()` compone los módulos:
+si «Acerca de» se registrara antes que las otras dos, «Avisos» acabaría la última. Cada clase encola su
+propio CSS comparando el identificador de pantalla que le devolvió WordPress. La URL de ajustes es `Ajustes::url()`: nadie vuelve a escribirla
 a mano.
 
 **Dónde aparece.** Por defecto, justo debajo de «Escritorio»; el ajuste `menu_debajo_de` guarda el
@@ -311,8 +326,8 @@ no se vigila la opción `active_plugins`: confundiría ese ciclo con un cambio r
 espera al final de la petición (que corre también tras `exit` y `wp_die()`): una acción en lote manda
 un solo correo. No se usa cron porque, si lo desactivado es EscritorioWP, su callback ya no existiría
 al correr. La pantalla Plugins borra con AJAX de uno en uno, así que el borrado en lote manda un correo
-por plugin. Cada envío va en `try`/`catch`: si `wp_mail()` falla, el aviso se pierde sin tocar la
-acción.
+por plugin. Cada envío va en `try`/`catch`: si `wp_mail()` falla, la acción no se entera y el aviso
+queda en el registro como fallido (§7 sexies).
 
 **Siempre texto plano.** `wp_mail()` aplica `wp_mail_content_type` después de leer la cabecera, así
 que durante el envío, y solo durante él, un filtro con prioridad `PHP_INT_MAX` devuelve `text/plain`;
@@ -377,6 +392,84 @@ que solo se conceden en tiempo de ejecución. Depende de WP-Cron: sin visitas o 
 sin tarea en el servidor, la revisión se retrasa, y la casilla lo delata con una próxima revisión
 pasada. En multisitio, cada sitio con la casilla marcada avisa de los cambios de superadministradores,
 y al desactivar en toda la red solo se quita la tarea del sitio actual.
+
+## 7 sexies. Registro de avisos
+
+Cada aviso que el plugin intenta enviar, de plugins o de administradores, queda en la tabla
+`{prefijo}escritoriowp_avisos`, una por sitio: fecha en UTC, tipo, estado, asunto y mensaje tal como
+se pasaron a `wp_mail()`, destinatarios y motivo del fallo. Todo vive en `Avisos\Registro`, una clase
+de métodos estáticos cuyas funciones puras (filtros, límite, paginación, motivo y tono) tienen sus
+pruebas en `tests/prueba-registro.php`.
+
+**Una tabla, no un tipo de contenido ni una opción.** Un tipo de contenido dispararía `save_post` y
+compañía, y los plugins de SEO, caché o actividad reaccionarían a algo que no es contenido. Una opción
+crecería sin límite, se reescribiría entera en cada aviso y dos peticiones a la vez (una acción en lote
+y la revisión de WP-Cron) se pisarían. `tipo` y `estado` guardan claves (`activacion`, …,
+`administradores`; `pendiente`, `enviado`, `fallido`) que se traducen al pintar, como los textos
+predeterminados. Se ordena por `id`, que es el orden de inserción.
+
+**Se crea al activar o con el primer aviso.** `Registro::instalar()` ejecuta `dbDelta()` y, si termina
+sin error de SQL, guarda la versión del esquema en `escritoriowp_avisos_bd`, con carga automática. Lo
+llaman el gancho de activación y `Registro::guardar()` cuando la versión no coincide: así la tabla
+aparece también tras actualizar sin activar, en cada sitio de una red activada en toda la red y en los
+sitios creados después. **Las lecturas no crean nada**: sin la versión, el registro está vacío sin
+consultar la tabla, y una pantalla nunca ejecuta `dbDelta()`. Un cambio de esquema sube
+`Registro::VERSION_ESQUEMA`.
+
+**Guardar, enviar, terminar.** `Correo::enviar( $tipo, $asunto, $mensaje )` calcula los destinatarios
+una vez, guarda el aviso como `pendiente`, envía y lo termina como `enviado` o `fallido`. Si la
+petición muere durante el envío (un SMTP que agota el tiempo, un `exit` en un filtro ajeno), el aviso
+se queda en «Sin confirmar», que es la verdad: no se sabe si salió, y no se limpia. Si `wp_mail()`
+lanza, se termina como fallido con el mensaje de la excepción y se vuelve a lanzar, porque los dos
+llamantes ya la capturan. «Enviado» quiere decir que `wp_mail()` lo aceptó, no que llegara. El tipo es
+el evento de `AvisosPlugins` o `Registro::ADMINISTRADORES`; nada más cambia en los llamantes, y la
+revisión de administradores sigue avanzando solo con el envío aceptado.
+
+**El motivo sale de `wp_mail_failed`**, escuchado con un cierre que se añade antes de `wp_mail()` y se
+quita en el mismo `finally` que el filtro de texto plano, así que solo recoge el error de este envío.
+`Registro::motivo()` lo deja en una línea, sin etiquetas y en 500 caracteres. Sin motivo (`pre_wp_mail`
+devuelve `false`, o un plugin que sustituye `wp_mail()` falla sin disparar el enganche) se guarda vacío
+y se pinta un texto genérico.
+
+**El registro nunca rompe el envío.** Cada operación va en `try`/`catch ( \Throwable )` y devuelve un
+valor neutro (0, `false`, lista vacía o `null`). Durante las consultas, `$wpdb->hide_errors()` y después
+el valor anterior: un error de SQL sigue llegando al `error_log`, pero no se imprime en una respuesta
+AJAX o REST ni rompe una redirección. No `suppress_errors()`, que tampoco lo anotaría. Si la tabla falta
+y no se puede crear, el correo sale igual y ese aviso se queda sin registro. Las consultas van directas
+contra la tabla propia, sin caché de objetos: los avisos se escriben y se leen en peticiones distintas y
+son muy pocos.
+
+**Se conserva sin caducidad**, por decisión del usuario: ni desactivar, ni actualizar, ni desmarcar las
+casillas borran nada. Solo `uninstall.php` borra la tabla y la opción de cada sitio, con el prefijo de
+cada uno (`get_blog_prefix()`) y no por patrón, que en una base de datos compartida por dos
+instalaciones borraría la tabla de la otra. Cada aviso guarda las IPs, los nombres de usuario y los
+correos que ya iban en el mensaje; `readme.txt` lo explica en una pregunta frecuente.
+
+**La pantalla EscritorioWP › Avisos** (`PantallaAvisos`, `manage_options`) pinta en el servidor, sin
+JavaScript, el listado (20 por página, del más reciente al más antiguo, con filtros por tipo y estado
+en un formulario GET) y el detalle (`&aviso={id}`) con el mensaje en un bloque `white-space: pre-wrap`.
+Los parámetros solo eligen qué se ve, así que no llevan nonce; los filtros pasan por
+`Registro::filtros()` y los números por `absint()`. Los enlaces del listado al detalle y de vuelta
+conservan `tipo`, `estado` y `paged`. La paginación es `paginate_links()` con los filtros en la base
+del enlace y no en `add_args`: esa función copia en los enlaces los parámetros de la URL actual que no
+estén en la base, y así un valor manipulado no pasaría a la página siguiente. Los nombres de tipos y
+estados se traducen en `PantallaAvisos::nombre_tipo()` y `nombre_estado()`.
+
+**El bloque del escritorio.** `Escritorio::pintar_app()` pinta, entre los indicadores y los paneles,
+una `<section data-escritoriowp-avisos aria-labelledby>` con la cabecera de panel («Avisos por correo»
+y «Ver todos») y un cuerpo vacío que `escritorio.js` rellena con `cargarAvisos()` desde la ruta
+`avisos?limite=5`, con el esqueleto de carga, el texto `avisosVacio` y «Reintentar» de los paneles;
+«Actualizar» también lo recarga. Las filas tienen la forma de las de los paneles más un `icono`
+(`PantallaAvisos::fila()`), y `pintarElementos()` las pinta para los dos. Solo se pinta si
+`PantallaAvisos::puede_ver()` y alguna casilla `aviso_*` está marcada o `Registro::hay_avisos()`, que
+solo se consulta con todas apagadas: sin avisos ni casillas no ocupa sitio ni pide nada. **No es un
+panel** a propósito: como panel entraría en el ajuste «Paneles», en «Personalizar» y en el catálogo
+de comandos de creación, que no tienen sentido para un registro. Ocupa todo el ancho, fuera de la
+rejilla, y no está en `config.paneles` ni en las preferencias.
+
+**Qué no registra.** Los correos que no son avisos del plugin, lo que no llega a intentar enviarse (una
+casilla desmarcada, una revisión sin cambios) y si el correo llegó al buzón (rebotes, spam). Tampoco
+reintenta: guarda lo que pasó, no vuelve a enviar.
 
 ## 8. Cómo añadir cosas
 
@@ -444,6 +537,8 @@ el lanzador del front-end ofrece solo las acciones fijas y la búsqueda de conte
 
 La opción `escritoriowp_revision_administradores` no es una caché y no va en esta tabla: es la
 situación con la que se compara la revisión siguiente (§7 quinquies), y perderla haría perder avisos.
+Tampoco lo es la tabla `{prefijo}escritoriowp_avisos`: es el registro de los avisos (§7 sexies), que se
+conserva hasta desinstalar.
 
 ## 10. Pruebas
 

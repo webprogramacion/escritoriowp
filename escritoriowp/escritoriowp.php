@@ -132,6 +132,7 @@ register_activation_hook(
 		require_once ESCRITORIOWP_DIR . 'includes/class-autoloader.php';
 		Autoloader::registrar( ESCRITORIOWP_DIR . 'includes/' );
 		Ajustes::instancia()->asegurar_defectos();
+		Avisos\Registro::instalar();
 	}
 );
 

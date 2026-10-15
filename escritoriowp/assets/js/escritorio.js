@@ -222,16 +222,7 @@
 	 * @return {void}
 	 */
 	function cargarPanel( clave, cuerpo ) {
-		EWP.vaciar( cuerpo );
-
-		for ( var i = 0; i < 3; i++ ) {
-			cuerpo.appendChild(
-				EWP.crear( 'div', { clase: 'escritoriowp-fila escritoriowp-fila--cargando' }, [
-					EWP.crear( 'div', { clase: 'escritoriowp-esqueleto', style: 'height:36px;width:36px;border-radius:8px' } ),
-					EWP.crear( 'div', { clase: 'escritoriowp-esqueleto', style: 'height:32px;flex:1' } )
-				] )
-			);
-		}
+		pintarCargando( cuerpo );
 
 		EWP.obtener( 'recientes/' + clave, { params: { limite: config.elementosPorPanel } } )
 			.then( function ( datos ) {
@@ -242,6 +233,25 @@
 					cargarPanel( clave, cuerpo );
 				} ) );
 			} );
+	}
+
+	/**
+	 * Pinta el esqueleto de carga de una lista de filas.
+	 *
+	 * @param {HTMLElement} cuerpo Contenedor del contenido.
+	 * @return {void}
+	 */
+	function pintarCargando( cuerpo ) {
+		EWP.vaciar( cuerpo );
+
+		for ( var i = 0; i < 3; i++ ) {
+			cuerpo.appendChild(
+				EWP.crear( 'div', { clase: 'escritoriowp-fila escritoriowp-fila--cargando' }, [
+					EWP.crear( 'div', { clase: 'escritoriowp-esqueleto', style: 'height:36px;width:36px;border-radius:8px' } ),
+					EWP.crear( 'div', { clase: 'escritoriowp-esqueleto', style: 'height:32px;flex:1' } )
+				] )
+			);
+		}
 	}
 
 	/**
@@ -284,6 +294,18 @@
 			return;
 		}
 
+		pintarElementos( cuerpo, elementos );
+	}
+
+	/**
+	 * Pinta una lista de filas: las de los paneles y las del bloque de avisos, que comparten forma.
+	 * Una fila con `icono` lo muestra en el lugar de la imagen o la inicial.
+	 *
+	 * @param {HTMLElement} cuerpo    Contenedor del contenido.
+	 * @param {Array}       elementos Filas devueltas por el servidor.
+	 * @return {void}
+	 */
+	function pintarElementos( cuerpo, elementos ) {
 		elementos.forEach( function ( elemento ) {
 			var metas = ( elemento.metas || [] ).map( function ( meta ) {
 				if ( meta.tono ) {
@@ -299,14 +321,7 @@
 
 			cuerpo.appendChild(
 				EWP.crear( 'div', { clase: 'escritoriowp-fila' }, [
-					elemento.imagen
-						? EWP.crear( 'img', {
-							clase: 'escritoriowp-fila__imagen',
-							src: elemento.imagen,
-							alt: '',
-							loading: 'lazy'
-						} )
-						: EWP.crear( 'span', { clase: 'escritoriowp-fila__inicial', texto: elemento.inicial } ),
+					miniatura( elemento ),
 					EWP.crear( 'span', { clase: 'escritoriowp-fila__textos' }, [
 						EWP.crear( 'a', {
 							clase: 'escritoriowp-fila__titulo',
@@ -328,6 +343,71 @@
 				] )
 			);
 		} );
+	}
+
+	/**
+	 * Imagen, icono o inicial que encabeza una fila.
+	 *
+	 * @param {Object} elemento Fila devuelta por el servidor.
+	 * @return {HTMLElement} Miniatura de la fila.
+	 */
+	function miniatura( elemento ) {
+		if ( elemento.imagen ) {
+			return EWP.crear( 'img', {
+				clase: 'escritoriowp-fila__imagen',
+				src: elemento.imagen,
+				alt: '',
+				loading: 'lazy'
+			} );
+		}
+
+		if ( elemento.icono ) {
+			return EWP.crear( 'span', { clase: 'escritoriowp-fila__inicial escritoriowp-fila__icono' }, [
+				EWP.icono( elemento.icono )
+			] );
+		}
+
+		return EWP.crear( 'span', { clase: 'escritoriowp-fila__inicial', texto: elemento.inicial } );
+	}
+
+	/* ------------------------------------------------------------------ Avisos por correo */
+
+	/**
+	 * Carga los últimos avisos guardados en su bloque, si el servidor lo ha pintado: solo lo hace
+	 * para quien puede ver los avisos y cuando hay alguno o algún aviso activado.
+	 *
+	 * @return {void}
+	 */
+	function cargarAvisos() {
+		var cuerpo = nodos.avisos;
+
+		if ( ! cuerpo ) {
+			return;
+		}
+
+		pintarCargando( cuerpo );
+
+		EWP.obtener( 'avisos', { params: { limite: 5 } } )
+			.then( function ( datos ) {
+				var elementos = datos.elementos || [];
+
+				EWP.vaciar( cuerpo );
+
+				if ( ! elementos.length ) {
+					cuerpo.appendChild(
+						EWP.crear( 'div', { clase: 'escritoriowp-vacio' }, [
+							EWP.crear( 'p', { texto: EWP.t( 'avisosVacio' ) } )
+						] )
+					);
+
+					return;
+				}
+
+				pintarElementos( cuerpo, elementos );
+			} )
+			.catch( function () {
+				EWP.vaciar( cuerpo ).appendChild( bloqueError( cargarAvisos ) );
+			} );
 	}
 
 	/**
@@ -1007,6 +1087,7 @@
 
 		nodos.resumen = nodos.raiz.querySelector( '[data-escritoriowp-resumen]' );
 		nodos.paneles = nodos.raiz.querySelector( '[data-escritoriowp-paneles]' );
+		nodos.avisos = nodos.raiz.querySelector( '[data-escritoriowp-avisos-cuerpo]' );
 		nodos.personalizar = nodos.raiz.querySelector( '[data-escritoriowp-personalizar]' );
 
 		estado.orden = ( function () {
@@ -1037,12 +1118,14 @@
 		if ( refrescar ) {
 			refrescar.addEventListener( 'click', function () {
 				cargarResumen( true );
+				cargarAvisos();
 				estado.orden.forEach( cargarPanelPorClave );
 			} );
 		}
 
 		pintarPersonalizar();
 		cargarResumen( false );
+		cargarAvisos();
 		pintarPaneles();
 	}
 
