@@ -136,6 +136,9 @@ final class Activos {
 			'editar'                => __( 'Editar', 'escritoriowp' ),
 			'verTodos'              => __( 'Ver todos', 'escritoriowp' ),
 			'avisosVacio'           => __( 'Todavía no se ha enviado ningún aviso por correo.', 'escritoriowp' ),
+			/* translators: %s: número de avisos sin leer. */
+			'avisosSinLeer'         => __( 'Avisos sin leer: %s', 'escritoriowp' ),
+			'sinLeer'               => __( 'Sin leer:', 'escritoriowp' ),
 			'obligatorio'           => __( 'Este campo es obligatorio.', 'escritoriowp' ),
 
 			// Personalización.

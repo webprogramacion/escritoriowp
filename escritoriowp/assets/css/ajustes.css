@@ -461,6 +461,21 @@
 	overflow-wrap: anywhere;
 }
 
+/* Avisos sin leer: punto rojo y asunto en negrita en la visita que los marca como leídos. */
+.escritoriowp-avisos__punto {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	margin-right: 6px;
+	border-radius: 50%;
+	background: var(--ewp-rojo);
+	vertical-align: middle;
+}
+
+.escritoriowp-avisos__fila--nueva a {
+	font-weight: 700;
+}
+
 @media (min-width: 783px) {
 	.escritoriowp-avisos__fecha {
 		white-space: nowrap;

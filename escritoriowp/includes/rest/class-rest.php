@@ -167,6 +167,16 @@ final class Rest {
 
 		register_rest_route(
 			self::ESPACIO,
+			'/avisos/leidos',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( ControladorAvisos::class, 'marcar_leidos' ),
+				'permission_callback' => array( __CLASS__, 'exigir_ver_avisos' ),
+			)
+		);
+
+		register_rest_route(
+			self::ESPACIO,
 			'/preferencias',
 			array(
 				array(

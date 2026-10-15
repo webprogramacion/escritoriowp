@@ -23,6 +23,14 @@ defined( 'ABSPATH' ) || exit;
 final class Menu {
 
 	/**
+	 * Partes del contador de la entrada «EscritorioWP», por módulo y en el orden en que llegan: cuántos
+	 * elementos y su texto para lectores de pantalla.
+	 *
+	 * @var array<string, array{total: int, texto: string}>
+	 */
+	private static array $contadores = array();
+
+	/**
 	 * Ajustes del plugin.
 	 *
 	 * @var Ajustes
@@ -51,6 +59,100 @@ final class Menu {
 		add_filter( 'custom_menu_order', '__return_true' );
 		add_filter( 'menu_order', array( $this, 'ordenar' ), PHP_INT_MAX );
 		add_action( 'admin_enqueue_scripts', array( $this, 'encolar_color' ) );
+
+		// Prioridad 99: las pantallas del plugin aportan su parte del contador en la 11 y la 12.
+		add_action( 'admin_menu', array( $this, 'anadir_contador' ), 99 );
+	}
+
+	/**
+	 * Marcado de un contador del menú, igual que el de comentarios o actualizaciones de WordPress, con
+	 * su texto para lectores de pantalla. Vacío si no hay ninguno.
+	 *
+	 * @param int    $total Elementos que cuenta.
+	 * @param string $texto Texto para lectores de pantalla, con el número.
+	 * @param string $parte Módulo al que pertenece, para que el JavaScript lo encuentre; vacío si no.
+	 * @return string
+	 */
+	public static function burbuja( int $total, string $texto, string $parte = '' ): string {
+		if ( $total <= 0 ) {
+			return '';
+		}
+
+		return sprintf(
+			' <span class="awaiting-mod count-%1$d"%2$s><span class="pending-count" aria-hidden="true">%3$s</span><span class="screen-reader-text">%4$s</span></span>',
+			$total,
+			'' === $parte ? '' : ' data-escritoriowp-contador="' . esc_attr( $parte ) . '"',
+			esc_html( number_format_i18n( $total ) ),
+			esc_html( $texto )
+		);
+	}
+
+	/**
+	 * Suma la parte de un módulo al contador de la entrada «EscritorioWP». Una parte a cero no cuenta.
+	 *
+	 * @param string $parte Módulo: `administradores` o `avisos`.
+	 * @param int    $total Elementos que cuenta.
+	 * @param string $texto Texto para lectores de pantalla, con el número.
+	 * @return void
+	 */
+	public static function sumar_contador( string $parte, int $total, string $texto ): void {
+		if ( $total > 0 ) {
+			self::$contadores[ $parte ] = array(
+				'total' => $total,
+				'texto' => $texto,
+			);
+		}
+	}
+
+	/**
+	 * Añade a la entrada «EscritorioWP» una sola burbuja con la suma de las partes, para que se vea con
+	 * el menú cerrado. WordPress nunca pone dos burbujas en una entrada.
+	 *
+	 * El texto para lectores de pantalla dice cada parte por separado, y cada una va en su propio
+	 * elemento con su número, para que el escritorio pueda quitar la de avisos al marcarlos como
+	 * leídos sin recargar.
+	 *
+	 * @return void
+	 */
+	public function anadir_contador(): void {
+		global $menu;
+
+		if ( array() === self::$contadores || ! is_array( $menu ) ) {
+			return;
+		}
+
+		$total  = (int) array_sum( array_column( self::$contadores, 'total' ) );
+		$textos = '';
+
+		foreach ( self::$contadores as $parte => $contador ) {
+			$textos .= sprintf(
+				'<span data-escritoriowp-parte="%1$s" data-total="%2$d">%3$s</span>',
+				esc_attr( $parte ),
+				$contador['total'],
+				esc_html( ( '' === $textos ? '' : ', ' ) . $contador['texto'] )
+			);
+		}
+
+		$burbuja = sprintf(
+			' <span class="awaiting-mod count-%1$d" data-escritoriowp-contador="total"><span class="pending-count" aria-hidden="true">%2$s</span><span class="screen-reader-text">%3$s</span></span>',
+			$total,
+			esc_html( number_format_i18n( $total ) ),
+			$textos
+		);
+
+		foreach ( $menu as $posicion => $elemento ) {
+			if ( is_array( $elemento ) && Ajustes::PAGINA === ( $elemento[2] ?? '' ) ) {
+				/*
+				 * WordPress no ofrece una API para cambiar el título de un menú ya registrado; el propio
+				 * núcleo añade así los contadores de «Comentarios» y «Plugins». Solo se toca la entrada
+				 * del plugin.
+				 */
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+				$menu[ $posicion ][0] .= $burbuja;
+
+				return;
+			}
+		}
 	}
 
 	/**

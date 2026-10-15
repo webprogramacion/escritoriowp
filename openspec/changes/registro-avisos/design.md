@@ -227,25 +227,37 @@ pantalla.
 - **Ruta** `escritoriowp/v1/avisos` (GET) en `Rest::registrar_rutas()`, con
   `permission_callback` `Rest::exigir_ver_avisos()` (identificado y `PantallaAvisos::puede_ver()`, con
   `error_acceso()`: 401 sin sesión y 403 con ella) y el argumento `limite` (por defecto 5, saneado con
-  `Registro::limite()`). Controlador `Rest\ControladorAvisos::obtener()` → `{ elementos: [...] }`.
+  `Registro::limite()`). Controlador `Rest\ControladorAvisos::obtener()` → `{ elementos: [...],
+  sinLeer: N }`, con los sin leer del usuario que pregunta (D11).
 - **Forma de cada fila**, la misma que la de los paneles para reutilizar su pintado: `titulo` (asunto),
   `urlEditar` (`PantallaAvisos::url_detalle()`), `urlVer` vacía, `imagen` vacía, `icono`
   (`dashicons-admin-plugins` para los cuatro tipos de plugins, `dashicons-shield` para administradores)
-  y `metas`: el estado con su `tono`, el tipo y la fecha relativa. La construye
-  `PantallaAvisos::fila()`, con los nombres traducidos en PHP.
-- **Esqueleto** en `Escritorio::pintar_app()`, entre la sección de resumen y la de paneles, solo si
-  `PantallaAvisos::puede_ver()` y (alguna casilla `aviso_*` está marcada o `Registro::hay_avisos()`;
-  la consulta solo se hace si todas están apagadas). Una `<section data-escritoriowp-avisos
-  aria-labelledby>` con la cabecera de panel (`h3` «Avisos por correo» y «Ver todos» a
-  `PantallaAvisos::url()`) pintada en PHP y un cuerpo vacío. Ocupa el ancho completo, fuera de la
-  rejilla de paneles, y no entra en `config.paneles` ni en las preferencias: «Personalizar» no lo ve.
+  `metas`: el estado con su `tono`, el tipo y la fecha relativa, y `nuevo` si está sin leer. La
+  construye `PantallaAvisos::fila()`, con los nombres traducidos en PHP.
+- **Esqueleto** en `Escritorio::pintar_app()`, solo si `PantallaAvisos::puede_ver()` y (alguna
+  casilla `aviso_*` está marcada o `Registro::hay_avisos()`; la consulta solo se hace si todas están
+  apagadas). Una `<section data-escritoriowp-avisos aria-labelledby>` con la cabecera de panel (la
+  campana, el `h3` «Avisos por correo», «Marcar como leídos» oculto y «Ver todos» a
+  `PantallaAvisos::url()`) pintada en PHP y un cuerpo vacío. No entra en `config.paneles` ni en las
+  preferencias: «Personalizar» no lo ve.
+- **Posición: arriba a la derecha.** La cabecera y la sección de resumen van dentro de
+  `escritoriowp__principal`, y esta y el bloque, dentro de `escritoriowp__superior`, que con el bloque
+  presente es una rejilla de dos columnas (`minmax(0, 1fr)` y hasta 360 px) a partir de 1101 px de
+  ancho de ventana. Por debajo se apila en el orden del DOM: cabecera, tarjetas, bloque y paneles. Sin
+  bloque, el envoltorio no cambia nada. El número del `h3` no va dentro del título, para que la región
+  se siga llamando «Avisos por correo».
+- **Sin leer.** Cada fila lleva `nuevo` (D11); el JS le pone un punto rojo sobre el icono, el asunto en
+  negrita y el texto «Sin leer» para lectores de pantalla. La respuesta lleva `sinLeer`, que pinta el
+  número rojo de la campana (con «Avisos sin leer: N» para lectores de pantalla) y muestra «Marcar como
+  leídos». Ese botón hace `POST avisos/leidos`, vuelve a pintar el bloque y quita la parte de avisos
+  de los contadores del menú lateral sin recargar.
 - **JavaScript.** Se extrae de `pintarFilas()` el pintado de una lista de filas (`pintarElementos(
   cuerpo, elementos )`), que aprende a pintar `icono` en el lugar de la inicial. `cargarAvisos()` pide
   `avisos?limite=5` con el esqueleto de carga de los paneles, pinta con `pintarElementos()`, muestra
   `EWP.t( 'avisosVacio' )` si no hay filas y `bloqueError()` con reintento si falla. «Actualizar»
   también lo llama. Si el nodo no existe, no se pide nada.
-- **Textos.** `avisosVacio` en `Activos::textos()`; `errorCarga` y `reintentar` ya existen. El resto
-  de textos del bloque llega pintado por PHP o en las filas.
+- **Textos.** `avisosVacio`, `avisosSinLeer` y `sinLeer` en `Activos::textos()`; `errorCarga` y
+  `reintentar` ya existen. El resto de textos del bloque llega pintado por PHP o en las filas.
 
 Descartado convertirlo en un panel más de `Capacidades::TIPOS_PANEL`: el usuario lo pidió como bloque
 propio, y como panel entraría en el ajuste «Paneles», en «Personalizar» y en el catálogo de comandos
@@ -266,7 +278,33 @@ las tablas con `SHOW TABLES LIKE '{base_prefix}%escritoriowp_avisos'`: en una ba
 por dos instalaciones (`wp_` y `wp_tienda_`) borraría la tabla de la otra. Las demás opciones siguen
 borrándose solo en el sitio actual, como hasta ahora.
 
-La desactivación no toca la tabla.
+La desactivación no toca la tabla. La desinstalación borra también la marca de leídos de cada usuario
+en cada sitio (D11), con su nombre literal y el prefijo de cada sitio.
+
+### D11. Avisos sin leer: una marca por usuario y sitio
+
+`Avisos\Lectura` guarda, por usuario, el identificador del último aviso que ha visto, con
+`update_user_option()` (`{prefijo del sitio}escritoriowp_avisos_vistos`): una marca por sitio, porque
+cada sitio tiene su tabla. Sin leer son los avisos con `id` mayor que la marca
+(`Registro::contar_desde()`, `COUNT(*)` por la clave primaria). Un usuario sin marca tiene todos sin
+leer.
+
+- **Se marcan todos a la vez**, al abrir la pantalla Avisos (listado o detalle) o con «Marcar como
+  leídos»: la marca pasa a `Registro::ultimo_id()`. Solo se escribe si sube. Descartado leer aviso a
+  aviso: obligaría a guardar por usuario la lista de leídos, que crece sin límite.
+- **La pantalla marca en `admin_menu`**, cuando WordPress ya ha fijado `$plugin_page`, igual que
+  Administradores analiza ahí: así el contador del menú de esa misma página ya sale a cero. Guarda la
+  marca anterior para pintar con punto rojo las filas que eran nuevas en esta visita.
+- **Contador del menú.** «Avisos» lleva su burbuja, la de WordPress (`awaiting-mod`), con «N avisos sin
+  leer» para lectores de pantalla. En «EscritorioWP» va una sola burbuja con la suma de Administradores
+  y Avisos: cada módulo aporta su parte con `Menu::sumar_contador()` y `Menu::anadir_contador()`, en
+  `admin_menu` con prioridad 99, escribe la burbuja con el total y un texto por parte
+  (`data-escritoriowp-parte`), que el JS puede quitar al marcar como leídos. Descartado poner dos
+  burbujas en la misma entrada: WordPress nunca lo hace y no caben con el menú estrecho.
+- **Ruta** `escritoriowp/v1/avisos/leidos` (POST, `Rest::exigir_ver_avisos()`), que devuelve
+  `{ sinLeer: 0 }`.
+- **Coste.** Una consulta por pantalla del administrador para quien tiene `manage_options` y el
+  registro instalado: el `COUNT` de la burbuja, sobre la clave primaria.
 
 ## Risks / Trade-offs
 
@@ -290,6 +328,10 @@ La desactivación no toca la tabla.
 - [El catálogo del lanzador está cacheado 12 horas] → Se invalida al cambiar de versión, que es como
   llega el cambio. En desarrollo hay que borrar el transitorio `escritoriowp_comandos_{id}` para ver la
   pantalla nueva en el lanzador.
+- [Un administrador nuevo ve todos los avisos antiguos sin leer] → Es lo que significa «sin leer»; una
+  visita a la pantalla Avisos los marca.
+- [Abrir la página 1 del listado marca también los de las páginas siguientes] → La marca es una sola
+  por usuario (D11); el punto rojo solo se ve en la visita que los marcó.
 - [Orden de archivado] → El delta de `menu-administracion` parte del texto que deja
   `pantalla-administradores`: hay que archivar ese cambio (y `tipos-contenido-personalizados`, que toca
   `escritorio-panel`) antes que este.

@@ -29,7 +29,8 @@ paleta de comandos de wp-admin por un lanzador que además busca contenido real 
   («Enviado», «Fallido» con su motivo o «Sin confirmar»), también si el correo falla. La pantalla
   EscritorioWP › Avisos los lista con filtros por tipo y estado y muestra el mensaje completo de cada
   uno, y el escritorio de los administradores enseña los cinco últimos en el bloque «Avisos por
-  correo», entre los indicadores y los paneles.
+  correo», arriba a la derecha. Los que cada administrador no ha visto se marcan en rojo: campana con
+  número, punto en cada aviso y contador en el menú lateral.
 - **WooCommerce opcional**: si está activo añade productos y pedidos; compatible con HPOS.
 
 ## Estructura del repositorio

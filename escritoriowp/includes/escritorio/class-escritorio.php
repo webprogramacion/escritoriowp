@@ -384,53 +384,49 @@ final class Escritorio {
 		$preferencias = Preferencias::obtener();
 		$lanzador     = (bool) $this->ajustes->obtener( 'lanzador_activo' );
 		$atajo        = Activos::es_mac() ? '⌘K' : 'Ctrl+K';
+		$avisos       = $this->mostrar_avisos();
 
 		?>
 		<div class="escritoriowp" id="escritoriowp-raiz" data-tema="<?php echo esc_attr( $preferencias['tema'] ); ?>">
-			<header class="escritoriowp__cabecera">
-				<div class="escritoriowp__saludo">
-					<h2 class="escritoriowp__titulo"><?php echo esc_html( self::saludo( $usuario->display_name ) ); ?></h2>
-					<p class="escritoriowp__fecha"><?php echo esc_html( self::fecha_larga() ); ?></p>
-				</div>
+			<div class="escritoriowp__superior<?php echo $avisos ? ' escritoriowp__superior--con-avisos' : ''; ?>">
+				<div class="escritoriowp__principal">
+					<header class="escritoriowp__cabecera">
+						<div class="escritoriowp__saludo">
+							<h2 class="escritoriowp__titulo"><?php echo esc_html( self::saludo( $usuario->display_name ) ); ?></h2>
+							<p class="escritoriowp__fecha"><?php echo esc_html( self::fecha_larga() ); ?></p>
+						</div>
 
-				<div class="escritoriowp__acciones">
-					<?php $this->pintar_botones_creacion(); ?>
+						<div class="escritoriowp__acciones">
+							<?php $this->pintar_botones_creacion(); ?>
 
-					<?php if ( $lanzador ) : ?>
-						<button type="button" class="escritoriowp-boton escritoriowp-boton--fantasma escritoriowp-abrir-lanzador">
-							<span class="dashicons dashicons-search" aria-hidden="true"></span>
-							<?php echo esc_html__( 'Buscar', 'escritoriowp' ); ?>
-							<kbd class="escritoriowp-atajo" data-escritoriowp-atajo><?php echo esc_html( $atajo ); ?></kbd>
-						</button>
-					<?php endif; ?>
+							<?php if ( $lanzador ) : ?>
+								<button type="button" class="escritoriowp-boton escritoriowp-boton--fantasma escritoriowp-abrir-lanzador">
+									<span class="dashicons dashicons-search" aria-hidden="true"></span>
+									<?php echo esc_html__( 'Buscar', 'escritoriowp' ); ?>
+									<kbd class="escritoriowp-atajo" data-escritoriowp-atajo><?php echo esc_html( $atajo ); ?></kbd>
+								</button>
+							<?php endif; ?>
 
-					<button type="button" class="escritoriowp-boton escritoriowp-boton--fantasma" data-escritoriowp-accion="refrescar">
-						<span class="dashicons dashicons-update" aria-hidden="true"></span>
-						<?php echo esc_html__( 'Actualizar', 'escritoriowp' ); ?>
-					</button>
+							<button type="button" class="escritoriowp-boton escritoriowp-boton--fantasma" data-escritoriowp-accion="refrescar">
+								<span class="dashicons dashicons-update" aria-hidden="true"></span>
+								<?php echo esc_html__( 'Actualizar', 'escritoriowp' ); ?>
+							</button>
 
-					<div class="escritoriowp-personalizar" data-escritoriowp-personalizar></div>
-				</div>
-			</header>
-
-			<?php if ( array() !== Resumen::claves_visibles() ) : ?>
-				<section class="escritoriowp__resumen" data-escritoriowp-resumen aria-label="<?php echo esc_attr__( 'Resumen del sitio', 'escritoriowp' ); ?>"></section>
-			<?php endif; ?>
-
-			<?php if ( $this->mostrar_avisos() ) : ?>
-				<section class="escritoriowp-panel escritoriowp__avisos" data-escritoriowp-avisos aria-labelledby="escritoriowp-avisos-titulo">
-					<header class="escritoriowp-panel__cabecera">
-						<h3 class="escritoriowp-panel__titulo" id="escritoriowp-avisos-titulo">
-							<span class="dashicons dashicons-email-alt" aria-hidden="true"></span>
-							<span><?php echo esc_html__( 'Avisos por correo', 'escritoriowp' ); ?></span>
-						</h3>
-						<div class="escritoriowp-panel__acciones">
-							<a class="escritoriowp-boton escritoriowp-boton--enlace" href="<?php echo esc_url( PantallaAvisos::url() ); ?>"><?php echo esc_html__( 'Ver todos', 'escritoriowp' ); ?></a>
+							<div class="escritoriowp-personalizar" data-escritoriowp-personalizar></div>
 						</div>
 					</header>
-					<div class="escritoriowp-panel__cuerpo" data-escritoriowp-avisos-cuerpo></div>
-				</section>
-			<?php endif; ?>
+
+					<?php if ( array() !== Resumen::claves_visibles() ) : ?>
+						<section class="escritoriowp__resumen" data-escritoriowp-resumen aria-label="<?php echo esc_attr__( 'Resumen del sitio', 'escritoriowp' ); ?>"></section>
+					<?php endif; ?>
+				</div>
+
+				<?php
+				if ( $avisos ) {
+					$this->pintar_avisos();
+				}
+				?>
+			</div>
 
 			<?php if ( array() !== $this->paneles_visibles() ) : ?>
 				<section class="escritoriowp__paneles" data-escritoriowp-paneles aria-label="<?php echo esc_attr__( 'Últimos elementos', 'escritoriowp' ); ?>"></section>
@@ -444,6 +440,38 @@ final class Escritorio {
 		<?php if ( $this->hay_widgets_ajenos ) : ?>
 			<h2 class="escritoriowp__otros-widgets"><?php echo esc_html__( 'Otros widgets', 'escritoriowp' ); ?></h2>
 		<?php endif; ?>
+		<?php
+	}
+
+	/**
+	 * Pinta el bloque de últimos avisos: la cabecera, con la campana de los avisos sin leer, un cuerpo
+	 * vacío que rellena el JavaScript y el pie con «Marcar como leídos», oculto hasta que haya alguno.
+	 *
+	 * La campana y su número van fuera del `h3`, para que la región se siga llamando «Avisos por
+	 * correo» para los lectores de pantalla; el número lleva su propio texto.
+	 *
+	 * @return void
+	 */
+	private function pintar_avisos(): void {
+		?>
+		<section class="escritoriowp-panel escritoriowp__avisos" data-escritoriowp-avisos aria-labelledby="escritoriowp-avisos-titulo">
+			<header class="escritoriowp-panel__cabecera">
+				<div class="escritoriowp-avisos__encabezado">
+					<span class="escritoriowp-campana" data-escritoriowp-avisos-campana>
+						<span class="dashicons dashicons-bell" aria-hidden="true"></span>
+						<span class="escritoriowp-campana__numero" data-escritoriowp-avisos-numero hidden></span>
+					</span>
+					<h3 class="escritoriowp-panel__titulo" id="escritoriowp-avisos-titulo"><?php echo esc_html__( 'Avisos por correo', 'escritoriowp' ); ?></h3>
+				</div>
+				<div class="escritoriowp-panel__acciones">
+					<a class="escritoriowp-boton escritoriowp-boton--enlace" href="<?php echo esc_url( PantallaAvisos::url() ); ?>"><?php echo esc_html__( 'Ver todos', 'escritoriowp' ); ?></a>
+				</div>
+			</header>
+			<div class="escritoriowp-panel__cuerpo" data-escritoriowp-avisos-cuerpo></div>
+			<footer class="escritoriowp-avisos__pie" data-escritoriowp-avisos-pie hidden>
+				<button type="button" class="escritoriowp-boton escritoriowp-boton--claro escritoriowp-boton--mini" data-escritoriowp-avisos-leidos><?php echo esc_html__( 'Marcar como leídos', 'escritoriowp' ); ?></button>
+			</footer>
+		</section>
 		<?php
 	}
 

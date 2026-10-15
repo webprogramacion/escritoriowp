@@ -299,7 +299,8 @@
 
 	/**
 	 * Pinta una lista de filas: las de los paneles y las del bloque de avisos, que comparten forma.
-	 * Una fila con `icono` lo muestra en el lugar de la imagen o la inicial.
+	 * Una fila con `icono` lo muestra en el lugar de la imagen o la inicial, y una fila `nuevo` lleva el
+	 * punto rojo de sin leer y lo dice a los lectores de pantalla.
 	 *
 	 * @param {HTMLElement} cuerpo    Contenedor del contenido.
 	 * @param {Array}       elementos Filas devueltas por el servidor.
@@ -320,9 +321,10 @@
 			} );
 
 			cuerpo.appendChild(
-				EWP.crear( 'div', { clase: 'escritoriowp-fila' }, [
+				EWP.crear( 'div', { clase: 'escritoriowp-fila' + ( elemento.nuevo ? ' escritoriowp-fila--nueva' : '' ) }, [
 					miniatura( elemento ),
 					EWP.crear( 'span', { clase: 'escritoriowp-fila__textos' }, [
+						elemento.nuevo ? EWP.crear( 'span', { clase: 'screen-reader-text', texto: EWP.t( 'sinLeer' ) } ) : null,
 						EWP.crear( 'a', {
 							clase: 'escritoriowp-fila__titulo',
 							href: elemento.urlEditar,
@@ -363,7 +365,8 @@
 
 		if ( elemento.icono ) {
 			return EWP.crear( 'span', { clase: 'escritoriowp-fila__inicial escritoriowp-fila__icono' }, [
-				EWP.icono( elemento.icono )
+				EWP.icono( elemento.icono ),
+				elemento.nuevo ? EWP.crear( 'span', { clase: 'escritoriowp-fila__punto', 'aria-hidden': 'true' } ) : null
 			] );
 		}
 
@@ -391,6 +394,7 @@
 			.then( function ( datos ) {
 				var elementos = datos.elementos || [];
 
+				pintarSinLeer( datos.sinLeer || 0 );
 				EWP.vaciar( cuerpo );
 
 				if ( ! elementos.length ) {
@@ -408,6 +412,92 @@
 			.catch( function () {
 				EWP.vaciar( cuerpo ).appendChild( bloqueError( cargarAvisos ) );
 			} );
+	}
+
+	/**
+	 * Muestra en la campana cuántos avisos hay sin leer, y «Marcar como leídos» si hay alguno.
+	 *
+	 * @param {number} total Avisos sin leer.
+	 * @return {void}
+	 */
+	function pintarSinLeer( total ) {
+		if ( nodos.avisosCampana ) {
+			nodos.avisosCampana.classList.toggle( 'escritoriowp-campana--activa', total > 0 );
+		}
+
+		if ( nodos.avisosNumero ) {
+			EWP.vaciar( nodos.avisosNumero );
+			nodos.avisosNumero.hidden = total <= 0;
+
+			if ( total > 0 ) {
+				nodos.avisosNumero.appendChild( EWP.crear( 'span', { 'aria-hidden': 'true', texto: total > 99 ? '99+' : String( total ) } ) );
+				nodos.avisosNumero.appendChild( EWP.crear( 'span', { clase: 'screen-reader-text', texto: EWP.tf( 'avisosSinLeer', total ) } ) );
+			}
+		}
+
+		if ( nodos.avisosPie ) {
+			nodos.avisosPie.hidden = total <= 0;
+		}
+	}
+
+	/**
+	 * Marca como leídos todos los avisos, quita su contador del menú lateral y vuelve a pintar el bloque.
+	 *
+	 * @param {HTMLElement} boton Botón pulsado.
+	 * @return {void}
+	 */
+	function marcarAvisosLeidos( boton ) {
+		boton.disabled = true;
+
+		EWP.enviar( 'avisos/leidos' )
+			.then( function () {
+				quitarContadorMenu();
+				cargarAvisos();
+			} )
+			.catch( function () {
+				boton.title = EWP.t( 'errorGuardar' );
+			} )
+			.then( function () {
+				boton.disabled = false;
+			} );
+	}
+
+	/**
+	 * Quita la parte de avisos de los contadores del menú lateral: el de «Avisos» y su parte del de
+	 * «EscritorioWP», que conserva la de Administradores si la hay. Cada parte lleva su número en
+	 * `data-total`, porque el visible está formateado en el idioma del sitio.
+	 *
+	 * @return {void}
+	 */
+	function quitarContadorMenu() {
+		var documento = global.document;
+
+		Array.prototype.forEach.call( documento.querySelectorAll( '[data-escritoriowp-contador="avisos"]' ), function ( burbuja ) {
+			burbuja.remove();
+		} );
+
+		var total = documento.querySelector( '[data-escritoriowp-contador="total"]' );
+		var parte = total ? total.querySelector( '[data-escritoriowp-parte="avisos"]' ) : null;
+
+		if ( ! parte ) {
+			return;
+		}
+
+		parte.remove();
+
+		var suma = 0;
+
+		Array.prototype.forEach.call( total.querySelectorAll( '[data-escritoriowp-parte]' ), function ( resto ) {
+			suma += parseInt( resto.getAttribute( 'data-total' ), 10 ) || 0;
+		} );
+
+		if ( suma <= 0 ) {
+			total.remove();
+			return;
+		}
+
+		total.className = 'awaiting-mod count-' + suma;
+		total.querySelector( '.pending-count' ).textContent = String( suma );
 	}
 
 	/**
@@ -1088,6 +1178,17 @@
 		nodos.resumen = nodos.raiz.querySelector( '[data-escritoriowp-resumen]' );
 		nodos.paneles = nodos.raiz.querySelector( '[data-escritoriowp-paneles]' );
 		nodos.avisos = nodos.raiz.querySelector( '[data-escritoriowp-avisos-cuerpo]' );
+		nodos.avisosCampana = nodos.raiz.querySelector( '[data-escritoriowp-avisos-campana]' );
+		nodos.avisosNumero = nodos.raiz.querySelector( '[data-escritoriowp-avisos-numero]' );
+		nodos.avisosPie = nodos.raiz.querySelector( '[data-escritoriowp-avisos-pie]' );
+
+		var leidos = nodos.raiz.querySelector( '[data-escritoriowp-avisos-leidos]' );
+
+		if ( leidos ) {
+			leidos.addEventListener( 'click', function () {
+				marcarAvisosLeidos( leidos );
+			} );
+		}
 		nodos.personalizar = nodos.raiz.querySelector( '[data-escritoriowp-personalizar]' );
 
 		estado.orden = ( function () {

@@ -54,6 +54,9 @@ const pares = [
   ['texto', 'rojo-suave', 4.5, 'texto del resumen de alerta'],
   ['texto', 'verde-suave', 4.5, 'texto del resumen correcto'],
   ['superficie', 'rojo', 4.5, 'texto del botón de peligro'],
+  ['superficie', 'rojo', 4.5, 'número de avisos sin leer de la campana'],
+  ['rojo', 'superficie', 3, 'punto de aviso sin leer sobre la fila'],
+  ['rojo', 'superficie-2', 3, 'campana roja sobre la cabecera del bloque'],
 ];
 
 let fallos = 0;

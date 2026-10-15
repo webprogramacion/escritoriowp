@@ -4,7 +4,7 @@
  *
  * Borra todo lo que el plugin guarda: la opción de ajustes, la última revisión de administradores, las
  * preferencias de cada usuario, los transitorios propios, la tarea de WP-Cron y, en cada sitio, la
- * tabla de avisos guardados con la versión de su esquema. Desactivar el plugin solo quita la tarea; el
+ * tabla de avisos guardados con la versión de su esquema y la marca de avisos leídos de cada usuario. Desactivar el plugin solo quita la tarea; el
  * resto lo borra únicamente el borrado desde Plugins.
  *
  * @package EscritorioWP
@@ -63,6 +63,10 @@ foreach ( $escritoriowp_sitios as $escritoriowp_sitio ) {
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- La opción de otro sitio sin `switch_to_blog()`, que cargaría cada sitio solo para borrar una fila.
 	$wpdb->delete( $escritoriowp_prefijo . 'options', array( 'option_name' => 'escritoriowp_avisos_bd' ) );
+
+	// La marca de avisos leídos de cada usuario en este sitio, una opción de usuario con su prefijo.
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+	$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => $escritoriowp_prefijo . 'escritoriowp_avisos_vistos' ) );
 }
 
 wp_cache_flush();

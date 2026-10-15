@@ -176,16 +176,121 @@ a.escritoriowp-tarjeta:focus-visible {
 	padding-left: 16px;
 }
 
-/* --- Avisos por correo: un bloque a todo el ancho, fuera de la rejilla de paneles --- */
+/* --- Avisos por correo: arriba a la derecha, fuera de la rejilla de paneles --- */
 
+/*
+ * Con el bloque de avisos, la cabecera y las tarjetas van a la izquierda y el bloque en una columna a la
+ * derecha, a la altura de las dos. En pantallas estrechas se apila en el orden del HTML: cabecera,
+ * tarjetas, avisos y paneles.
+ */
 .escritoriowp__avisos {
 	margin-top: var(--ewp-espacio);
+}
+
+@media screen and (min-width: 1101px) {
+	.escritoriowp__superior--con-avisos {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+		gap: var(--ewp-espacio);
+		align-items: stretch;
+	}
+
+	.escritoriowp__superior--con-avisos .escritoriowp__avisos {
+		margin-top: 0;
+	}
+}
+
+.escritoriowp__avisos .escritoriowp-panel__cuerpo {
+	flex: 1 1 auto;
+}
+
+.escritoriowp-avisos__encabezado {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	min-width: 0;
+}
+
+/* La campana: gris con todo leído; roja y con el número encima si hay avisos sin leer. */
+.escritoriowp-campana {
+	position: relative;
+	display: inline-flex;
+	flex: 0 0 auto;
+	color: var(--ewp-texto-suave);
+}
+
+.escritoriowp-campana .dashicons {
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+}
+
+.escritoriowp-campana--activa {
+	color: var(--ewp-rojo);
+}
+
+.escritoriowp-campana__numero {
+	position: absolute;
+	top: -7px;
+	right: -10px;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	border-radius: 9px;
+	background: var(--ewp-rojo);
+	box-shadow: 0 0 0 2px var(--ewp-superficie-2);
+	color: var(--ewp-superficie);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 18px;
+	text-align: center;
+}
+
+.escritoriowp-campana__numero[hidden],
+.escritoriowp-avisos__pie[hidden] {
+	display: none;
+}
+
+.escritoriowp-fila__icono {
+	position: relative;
 }
 
 .escritoriowp-fila__icono .dashicons {
 	width: 18px;
 	height: 18px;
 	font-size: 18px;
+}
+
+.escritoriowp-fila__punto {
+	position: absolute;
+	top: -3px;
+	right: -3px;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--ewp-rojo);
+	box-shadow: 0 0 0 2px var(--ewp-superficie);
+}
+
+/* En la columna, el asunto puede ocupar dos líneas; en negrita solo si está sin leer. */
+.escritoriowp__avisos .escritoriowp-fila__titulo {
+	display: -webkit-box;
+	font-weight: 500;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.escritoriowp__avisos .escritoriowp-fila--nueva .escritoriowp-fila__titulo {
+	font-weight: 700;
+}
+
+.escritoriowp-avisos__pie {
+	display: flex;
+	justify-content: flex-end;
+	padding: 10px 14px;
+	border-top: 1px solid var(--ewp-borde);
 }
 
 /* --- Paneles --- */

@@ -11,6 +11,7 @@ namespace EscritorioWP\Seguridad;
 
 use EscritorioWP\Ajustes;
 use EscritorioWP\Escritorio\Preferencias;
+use EscritorioWP\Menu;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -187,66 +188,32 @@ final class Administradores {
 			1
 		);
 
-		$this->anadir_contador_menu( $total );
+		Menu::sumar_contador( 'administradores', $total, self::texto_contador( $total ) );
 	}
 
 	/**
-	 * Marcado del contador de usuarios marcados, igual que el de comentarios o actualizaciones de
-	 * WordPress, con su texto para lectores de pantalla. Vacío si no hay ninguno.
+	 * Marcado del contador de usuarios marcados de su entrada del menú. Vacío si no hay ninguno. En
+	 * «EscritorioWP» va sumado al de los avisos sin leer (`Menu::anadir_contador()`).
 	 *
 	 * @param int $total Usuarios marcados.
 	 * @return string
 	 */
 	public static function contador( int $total ): string {
-		if ( $total <= 0 ) {
-			return '';
-		}
-
-		$numero = number_format_i18n( $total );
-
-		return sprintf(
-			' <span class="awaiting-mod count-%1$d"><span class="pending-count" aria-hidden="true">%2$s</span><span class="screen-reader-text">%3$s</span></span>',
-			$total,
-			esc_html( $numero ),
-			esc_html(
-				sprintf(
-					/* translators: %s: número de usuarios que requieren revisión. */
-					_n( '%s usuario que requiere revisión', '%s usuarios que requieren revisión', $total, 'escritoriowp' ),
-					$numero
-				)
-			)
-		);
+		return Menu::burbuja( $total, self::texto_contador( $total ) );
 	}
 
 	/**
-	 * Añade el contador a la entrada de primer nivel «EscritorioWP», para que se vea con el menú
-	 * cerrado.
+	 * Texto del contador para lectores de pantalla.
 	 *
 	 * @param int $total Usuarios marcados.
-	 * @return void
+	 * @return string
 	 */
-	private function anadir_contador_menu( int $total ): void {
-		global $menu;
-
-		$contador = self::contador( $total );
-
-		if ( '' === $contador || ! is_array( $menu ) ) {
-			return;
-		}
-
-		foreach ( $menu as $posicion => $elemento ) {
-			if ( is_array( $elemento ) && Ajustes::PAGINA === ( $elemento[2] ?? '' ) ) {
-				/*
-				 * WordPress no ofrece una API para cambiar el título de un menú ya registrado; el propio
-				 * núcleo añade así los contadores de «Comentarios» y «Plugins». Solo se toca la entrada
-				 * del plugin.
-				 */
-				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-				$menu[ $posicion ][0] .= $contador;
-
-				return;
-			}
-		}
+	private static function texto_contador( int $total ): string {
+		return sprintf(
+			/* translators: %s: número de usuarios que requieren revisión. */
+			_n( '%s usuario que requiere revisión', '%s usuarios que requieren revisión', $total, 'escritoriowp' ),
+			number_format_i18n( $total )
+		);
 	}
 
 	/**

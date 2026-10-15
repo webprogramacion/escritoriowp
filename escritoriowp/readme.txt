@@ -120,7 +120,11 @@ Cada aviso, de plugins o de administradores, queda además **guardado en el siti
 asunto, su mensaje, sus destinatarios y el resultado del envío: «Enviado» si el sitio lo aceptó (que no
 es lo mismo que entregado), «Fallido» con el motivo que dé WordPress, o «Sin confirmar» si la petición
 terminó antes de saberlo. Así no se pierde aunque el correo falle o acabe en spam. Los encontrarás en
-EscritorioWP › Avisos, con filtros por tipo y por estado y el mensaje completo de cada uno.
+EscritorioWP › Avisos, con filtros por tipo y por estado y el mensaje completo de cada uno, y los cinco
+últimos arriba a la derecha del escritorio. Los que todavía no has visto se marcan en rojo: una
+campana con el número en el escritorio, un punto en cada aviso y un contador en el menú lateral. Al
+abrir la pantalla Avisos, o con «Marcar como leídos», dejan de estarlo; cada administrador tiene los
+suyos.
 
 = Actualizaciones =
 
@@ -198,8 +202,8 @@ sin una tarea programada en el servidor.
 = ¿Qué guarda EscritorioWP en la base de datos? =
 
 Los ajustes, las preferencias del escritorio de cada usuario, unas cachés temporales y, si activas
-alguno de los avisos por correo, la última revisión de los administradores y una tabla propia con cada
-aviso enviado. Esos avisos guardan lo mismo que el correo, incluidas las IPs, los nombres de usuario y
+alguno de los avisos por correo, la última revisión de los administradores, una tabla propia con cada
+aviso enviado y, por cada administrador, hasta qué aviso ha visto. Esos avisos guardan lo mismo que el correo, incluidas las IPs, los nombres de usuario y
 las direcciones de correo, y se conservan hasta que desinstalas el plugin: desactivarlo no borra nada,
 y borrarlo desde la pantalla Plugins lo elimina todo.
 

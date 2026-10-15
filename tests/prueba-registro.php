@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use EscritorioWP\Avisos\Lectura;
 use EscritorioWP\Avisos\Registro;
 
 grupo( 'Avisos · filtros del registro' );
@@ -108,3 +109,13 @@ comprobar( 'verde', Registro::tono( 'enviado' ), 'enviado es verde' );
 comprobar( 'rojo', Registro::tono( 'fallido' ), 'fallido es rojo' );
 comprobar( 'ambar', Registro::tono( 'pendiente' ), 'sin confirmar es ámbar' );
 comprobar( 'neutro', Registro::tono( 'otro' ), 'un estado desconocido es neutro' );
+
+grupo( 'Avisos · marca de leídos' );
+
+comprobar( 5, Lectura::marca( '5' ), 'una marca guardada como texto se convierte' );
+comprobar( 12, Lectura::marca( 12 ), 'una marca entera se conserva' );
+comprobar( 0, Lectura::marca( 'abc' ), 'un texto no es una marca' );
+comprobar( 0, Lectura::marca( -3 ), 'una marca negativa es cero' );
+comprobar( 0, Lectura::marca( null ), 'sin marca es cero' );
+comprobar( 0, Lectura::marca( false ), 'la opción que no existe es cero' );
+comprobar( 0, Lectura::marca( array( 5 ) ), 'un array no es una marca' );

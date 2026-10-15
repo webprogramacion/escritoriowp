@@ -129,6 +129,35 @@ La pantalla EscritorioWP › Avisos (`admin.php?page=escritoriowp-avisos`) SHALL
 - **WHEN** un editor accede directamente a `admin.php?page=escritoriowp-avisos`
 - **THEN** WordPress deniega el acceso y no se muestra ningún aviso
 
+### Requirement: Avisos sin leer
+
+Cada usuario con `manage_options` SHALL tener su propio estado de lectura en cada sitio: un aviso está sin leer para él si se guardó después de la última vez que abrió la pantalla Avisos o pulsó «Marcar como leídos». Abrir la pantalla Avisos SHALL marcarlos todos como leídos para ese usuario. El menú lateral SHALL mostrar, con el mismo estilo que los contadores de WordPress, un contador rojo con los avisos sin leer en «EscritorioWP › Avisos» y sumado al de «EscritorioWP».
+
+#### Scenario: Contador en el menú
+
+- **WHEN** hay 2 avisos sin leer para un administrador y 1 usuario marcado en la pantalla Administradores, y abre cualquier pantalla del administrador
+- **THEN** «Avisos» muestra un 2 rojo, «Administradores» un 1 y «EscritorioWP» un solo contador con un 3, y un lector de pantalla anuncia los dos conceptos
+
+#### Scenario: Abrir la pantalla Avisos
+
+- **WHEN** con avisos sin leer, el administrador abre EscritorioWP › Avisos
+- **THEN** en esa misma pantalla el menú ya no muestra contador de avisos, las filas que estaban sin leer tienen el punto rojo y el asunto en negrita, y al volver a abrirla ya no lo tienen
+
+#### Scenario: Cada administrador con su marca
+
+- **WHEN** dos administradores tienen avisos sin leer y uno de ellos abre la pantalla Avisos
+- **THEN** el otro sigue viendo sus avisos sin leer
+
+#### Scenario: Aviso posterior
+
+- **WHEN** un administrador lo tiene todo leído y se guarda un aviso nuevo
+- **THEN** ese aviso queda sin leer para él y su contador vuelve a 1
+
+#### Scenario: Sin permisos
+
+- **WHEN** un editor carga el administrador
+- **THEN** no ve ningún contador de avisos y no se consulta el registro de avisos
+
 ### Requirement: Listado de avisos
 
 La pantalla Avisos SHALL listar todos los registros del más reciente al más antiguo, 20 por página con paginación y el total. Cada fila SHALL mostrar la fecha y hora en el formato y la zona horaria del sitio, el tipo, el asunto como enlace a su detalle, los destinatarios y el estado, con texto y color.

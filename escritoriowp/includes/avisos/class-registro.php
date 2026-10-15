@@ -373,6 +373,46 @@ KEY estado (estado)
 	}
 
 	/**
+	 * Identificador del aviso más reciente, o 0 si no hay ninguno.
+	 *
+	 * @return int
+	 */
+	public static function ultimo_id(): int {
+		return (int) self::protegido(
+			static function ( \wpdb $wpdb ): int {
+				if ( ! self::instalada() ) {
+					return 0;
+				}
+
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Tabla propia: no hay otra API.
+				return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT MAX(id) FROM %i', self::tabla() ) );
+			},
+			0
+		);
+	}
+
+	/**
+	 * Avisos guardados después de uno dado, por la clave primaria: los que no ha visto quien vio
+	 * hasta ese.
+	 *
+	 * @param int $id Último aviso visto; 0 cuenta todos.
+	 * @return int
+	 */
+	public static function contar_desde( int $id ): int {
+		return (int) self::protegido(
+			static function ( \wpdb $wpdb ) use ( $id ): int {
+				if ( ! self::instalada() ) {
+					return 0;
+				}
+
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Tabla propia: no hay otra API.
+				return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE id > %d', self::tabla(), max( 0, $id ) ) );
+			},
+			0
+		);
+	}
+
+	/**
 	 * Indica si hay algún aviso guardado.
 	 *
 	 * @return bool

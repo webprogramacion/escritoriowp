@@ -162,9 +162,12 @@ Repite la lista con cada combinación:
 
 Deriva de `openspec/changes/registro-avisos/specs/escritorio-panel/`.
 
-- [x] `[C]` Con avisos guardados, un administrador ve el bloque «Avisos por correo» debajo de las
-      tarjetas y encima de los paneles, a todo el ancho, con los 5 avisos más recientes del más nuevo
-      al más antiguo (asunto, estado, tipo y cuánto hace) y «Ver todos» hacia EscritorioWP › Avisos.
+- [x] `[C]` Con avisos guardados, a 1280 px un administrador ve el bloque «Avisos por correo» arriba a
+      la derecha, en una columna de 360 px a la altura de la cabecera y las tarjetas, con los paneles
+      debajo a todo el ancho; tiene los 5 avisos más recientes del más nuevo al más antiguo (asunto en
+      hasta dos líneas, estado, tipo y cuánto hace) y «Ver todos» hacia EscritorioWP › Avisos.
+- [x] `[C]` Sin el bloque (sin avisos ni casillas), la cabecera y las tarjetas ocupan todo el ancho, como
+      antes.
 - [x] `[C]` Un aviso fallido sale con «Fallido» en una etiqueta roja, y su asunto enlaza a su detalle
       en la pantalla Avisos.
 - [x] `[S]` Un editor no recibe el bloque ni ningún dato de avisos en la página ni en la
@@ -187,13 +190,26 @@ Deriva de `openspec/changes/registro-avisos/specs/escritorio-panel/`.
       bloque sin recargar la página.
 - [x] `[C]` Los paneles no cambian con el bloque: filas, estado vacío con su botón de crear y
       «Reintentar» cuando su ruta falla.
-- [x] `[S]` Un editor que llama a la ruta `avisos` recibe 403 sin datos; sin sesión, 401 sin datos.
+- [x] `[S]` Un editor que llama a la ruta `avisos` o a `avisos/leidos` recibe 403 sin datos y sin
+      cambiar ninguna marca; sin sesión, 401 sin datos.
+- [x] `[S]` La ruta `avisos` devuelve `sinLeer` y `nuevo` en las filas sin leer del usuario que
+      pregunta; tras `POST avisos/leidos`, `sinLeer` es 0 y ninguna fila es nueva.
 - [x] `[S]` Un administrador recibe 5 avisos por defecto y, con `limite=500` y 60 guardados, los 20
       más recientes.
 - [x] `[C]` Un plugin llamado `<img src=x onerror=alert(1)>` sale tal cual, como texto, en el asunto
       del bloque, sin crear ninguna imagen ni abrir ningún diálogo.
-- [x] `[C]` A 400 px no hay desplazamiento horizontal y el asunto largo se corta con puntos
-      suspensivos; con el tema oscuro, el bloque y los títulos de los paneles se leen bien.
+- [x] `[C]` A 400 px el bloque se apila debajo de las tarjetas y encima de los paneles, sin
+      desplazamiento horizontal; con el tema oscuro, el bloque, la campana y los títulos de los paneles
+      se leen bien.
+- [x] `[C]` Con 3 avisos sin leer, la campana de la cabecera del bloque es roja y lleva un 3 rojo
+      encima (con «Avisos sin leer: 3» para lectores de pantalla, fuera del título de la región), y las
+      filas de esos 3 avisos tienen un punto rojo sobre el icono, el asunto en negrita y «Sin leer:» para
+      lectores; el resto, sin punto y sin negrita. Con más de 99, la campana dice «99+».
+- [x] `[C]` «Marcar como leídos» quita sin recargar el número de la campana, los puntos, el propio
+      botón, la burbuja de «Avisos» y la parte de avisos de la de «EscritorioWP», que se queda con la de
+      Administradores.
+- [x] `[S]` `[C]` Sin avisos sin leer, la campana es gris, sin número, ninguna fila tiene punto y no
+      aparece «Marcar como leídos».
 
 ### Tipos de contenido personalizados
 
@@ -812,13 +828,33 @@ Deriva de `openspec/changes/registro-avisos/specs/`.
       desplazamiento horizontal: a 400 px la tabla pasa a una ficha por aviso y los filtros ocupan el
       ancho; el desplegable dibuja su flecha con el color del texto en los dos temas.
 
+### Avisos sin leer
+
+- [x] `[S]` Con 2 avisos sin leer y 3 usuarios marcados, el menú muestra 2 en «Avisos», 3 en
+      «Administradores» y una sola burbuja con 5 en «EscritorioWP», que dice a los lectores de pantalla
+      «3 usuarios que requieren revisión, 2 avisos sin leer». Con solo una de las dos, la burbuja de
+      «EscritorioWP» es la de esa parte.
+- [x] `[S]` Abrir EscritorioWP › Avisos pinta con punto rojo y en negrita las filas que estaban sin leer
+      y, en esa misma página, el menú ya no lleva contador de avisos; la visita siguiente no tiene
+      marcas.
+- [x] `[S]` Cada administrador tiene su marca: que uno abra la pantalla Avisos no cambia los avisos sin
+      leer de otro, y un usuario sin marca tiene todos sin leer.
+- [x] `[S]` Un aviso guardado después de leerlo todo deja el contador en 1.
+- [x] `[S]` Un editor no ve contadores de avisos y montar su menú no consulta la tabla de avisos; el de
+      un administrador hace una sola consulta, el `COUNT` por la clave primaria.
+- [x] `[S]` El catálogo del lanzador muestra «Avisos» y «Administradores» sin números.
+- [x] `[S]` La marca se guarda como opción de usuario del sitio (`wp_escritoriowp_avisos_vistos`) y
+      marcar sin avisos nuevos no escribe nada.
+- [ ] `[M]` En un multisitio, la marca de un administrador en el sitio 2 no cambia sus avisos sin leer
+      del sitio principal.
+
 ### Conservación y desinstalación
 
 - [x] `[S]` Con avisos guardados, desactivar y reactivar EscritorioWP conserva todos los avisos, la
       tabla `wp_escritoriowp_avisos` y la opción `escritoriowp_avisos_bd`.
-- [x] `[S]` Borrar el plugin elimina la tabla `wp_escritoriowp_avisos` y la opción
-      `escritoriowp_avisos_bd` (comprobado con `wp plugin uninstall --deactivate` en una copia de la
-      instalación).
+- [x] `[S]` Borrar el plugin elimina la tabla `wp_escritoriowp_avisos`, la opción
+      `escritoriowp_avisos_bd` y la marca de avisos leídos de cada usuario (comprobado con `wp plugin
+      uninstall --deactivate` en una copia de la instalación).
 - [ ] `[M]` En un multisitio con MySQL y el plugin activado en la red, con avisos en el sitio principal
       y en el sitio 2, borrar el plugin elimina la tabla y la opción de los dos sitios, y no toca la
       tabla de otra instalación que comparta la base de datos con otro prefijo.

@@ -2,12 +2,17 @@
 
 ### Requirement: Bloque de últimos avisos
 
-Para los usuarios con `manage_options`, el escritorio SHALL mostrar un bloque «Avisos por correo», entre los indicadores y los paneles, con los cinco avisos guardados más recientes y un enlace «Ver todos» a la pantalla Avisos. Cada fila SHALL mostrar el asunto como enlace a su detalle, el tipo, el estado con texto y color, y cuánto hace que se envió.
+Para los usuarios con `manage_options`, el escritorio SHALL mostrar un bloque «Avisos por correo» arriba a la derecha, en una columna junto a la cabecera y los indicadores, con los cinco avisos guardados más recientes y un enlace «Ver todos» a la pantalla Avisos. En pantallas estrechas SHALL apilarse debajo de los indicadores y encima de los paneles. Cada fila SHALL mostrar el asunto como enlace a su detalle, el tipo, el estado con texto y color, y cuánto hace que se envió.
 
 #### Scenario: Administrador con avisos
 
-- **WHEN** hay 8 avisos guardados y un administrador abre el Escritorio
-- **THEN** ve, debajo de las tarjetas de indicadores y encima de los paneles, el bloque «Avisos por correo» con los 5 avisos más recientes, del más nuevo al más antiguo, y el enlace «Ver todos» a EscritorioWP › Avisos
+- **WHEN** hay 8 avisos guardados y un administrador abre el Escritorio en una pantalla ancha
+- **THEN** ve, a la derecha de la cabecera y de las tarjetas de indicadores y encima de los paneles, el bloque «Avisos por correo» con los 5 avisos más recientes, del más nuevo al más antiguo, y el enlace «Ver todos» a EscritorioWP › Avisos
+
+#### Scenario: Pantalla estrecha
+
+- **WHEN** un administrador abre el Escritorio a 400 px de ancho
+- **THEN** el bloque de avisos aparece debajo de las tarjetas y encima de los paneles, sin desplazamiento horizontal
 
 #### Scenario: Aviso fallido en el bloque
 
@@ -28,6 +33,25 @@ Para los usuarios con `manage_options`, el escritorio SHALL mostrar un bloque «
 
 - **WHEN** un usuario de lector de pantalla recorre las regiones del Escritorio
 - **THEN** el lector anuncia una región llamada «Avisos por correo»
+
+### Requirement: Avisos sin leer en el bloque
+
+El bloque de avisos SHALL señalar los avisos que el usuario no ha leído: una campana con el número de avisos sin leer en rojo en su cabecera y, en cada fila sin leer, un punto rojo y el asunto en negrita. Con avisos sin leer SHALL ofrecer «Marcar como leídos», que los marca sin recargar la página.
+
+#### Scenario: Avisos nuevos
+
+- **WHEN** un administrador no ha abierto la pantalla Avisos desde que se guardaron 3 avisos y abre el Escritorio
+- **THEN** la campana del bloque muestra un 3 en rojo, las filas de esos 3 avisos tienen el punto rojo y el asunto en negrita, y un lector de pantalla anuncia «Sin leer» en cada una
+
+#### Scenario: Marcar como leídos desde el escritorio
+
+- **WHEN** con avisos sin leer, el administrador pulsa «Marcar como leídos»
+- **THEN** desaparecen el número de la campana, los puntos rojos y el botón, y el contador de avisos del menú lateral, sin recargar la página
+
+#### Scenario: Todo leído
+
+- **WHEN** el administrador no tiene avisos sin leer
+- **THEN** la campana no muestra ningún número, ninguna fila tiene punto rojo y no aparece «Marcar como leídos»
 
 ### Requirement: Cuándo aparece el bloque de avisos
 
@@ -69,12 +93,12 @@ El bloque de avisos SHALL cargar sus datos por separado del resto del escritorio
 
 ### Requirement: Ruta REST de los últimos avisos
 
-La ruta REST que alimenta el bloque SHALL devolver los avisos guardados más recientes, como mucho 20 aunque se pidan más, solo a usuarios con `manage_options`, y SHALL responder a los demás con un error de autorización sin datos.
+La ruta REST que alimenta el bloque SHALL devolver los avisos guardados más recientes, como mucho 20 aunque se pidan más, con cuáles están sin leer para el usuario y cuántos tiene sin leer en total, solo a usuarios con `manage_options`, y SHALL responder a los demás con un error de autorización sin datos. La ruta que marca los avisos como leídos SHALL tener la misma comprobación.
 
 #### Scenario: Petición sin capacidad
 
-- **WHEN** un editor llama directamente a la ruta REST de los últimos avisos
-- **THEN** recibe un error 403 sin datos
+- **WHEN** un editor llama directamente a la ruta REST de los últimos avisos o a la de marcarlos como leídos
+- **THEN** recibe un error 403 sin datos, y la marca de leídos no cambia
 
 #### Scenario: Petición sin sesión
 

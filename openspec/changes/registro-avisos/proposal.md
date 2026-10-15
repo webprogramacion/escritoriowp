@@ -24,10 +24,16 @@ quiso contarle quede guardado en el propio sitio y poder verlo al entrar en el e
   página, con filtros por tipo y por estado, y una vista de detalle con el mensaje completo, los
   destinatarios y el motivo del fallo.
 - **Bloque «Avisos por correo» en el escritorio**, visible solo para usuarios con `manage_options`,
-  entre los indicadores y los paneles: muestra los cinco últimos avisos con su tipo, su estado y cuándo
-  se enviaron, y enlaza a la pantalla Avisos. Es un bloque propio, fuera del ajuste «Paneles» y del
-  menú «Personalizar». No aparece mientras no haya ningún aviso guardado ni ningún aviso activado.
-- **Ruta REST nueva** `escritoriowp/v1/avisos` para el bloque, con la misma comprobación de
+  arriba a la derecha: en una columna junto a la cabecera y los indicadores (debajo de los indicadores
+  en pantallas estrechas). Muestra los cinco últimos avisos con su tipo, su estado y cuándo se
+  enviaron, y enlaza a la pantalla Avisos. Es un bloque propio, fuera del ajuste «Paneles» y del menú
+  «Personalizar». No aparece mientras no haya ningún aviso guardado ni ningún aviso activado.
+- **Avisos sin leer**, por administrador: una campana con el número en rojo en la cabecera del bloque,
+  un punto rojo en cada aviso sin leer (en el bloque y en la pantalla Avisos) y un contador rojo en
+  «EscritorioWP › Avisos» y en «EscritorioWP» del menú lateral. Abrir la pantalla Avisos o pulsar
+  «Marcar como leídos» en el bloque los marca todos como leídos para ese usuario.
+- **Rutas REST nuevas** `escritoriowp/v1/avisos` (los últimos avisos y cuántos hay sin leer) y
+  `escritoriowp/v1/avisos/leidos` (marcarlos como leídos) para el bloque, con la misma comprobación de
   `manage_options` en el servidor.
 
 ## Capabilities
@@ -55,15 +61,18 @@ quiso contarle quede guardado en el propio sitio y poder verlo al entrar en el e
   `wp_mail_failed`, y recibe el tipo del aviso desde `AvisosPlugins` y `AvisosAdministradores`. Pantalla
   nueva `Avisos\PantallaAvisos` en el menú del plugin, controlador REST nuevo en `includes/rest/`,
   bloque nuevo en `Escritorio::pintar_app()` y `assets/js/escritorio.js` (con sus textos en
-  `Activos::textos()`), estilos en `escritorio.css` y `ajustes.css`, `escritoriowp.php` (crear la tabla
+  `Activos::textos()`), estilos en `escritorio.css` y `ajustes.css`, `Avisos\Lectura` (la marca de
+  leídos de cada usuario), el contador de `Menu` que suman Administradores y Avisos, `escritoriowp.php` (crear la tabla
   al activar), `uninstall.php`, `readme.txt` y `languages/escritoriowp.pot`.
-- **Base de datos:** tabla nueva `{prefijo}escritoriowp_avisos` y una opción pequeña con la versión de
-  su esquema. En multisitio, una tabla por sitio. Cada aviso guarda IPs, nombres de usuario y correos
+- **Base de datos:** tabla nueva `{prefijo}escritoriowp_avisos`, una opción pequeña con la versión de
+  su esquema y, por usuario, una opción de usuario con el último aviso visto. En multisitio, una tabla y
+  una marca por sitio. Cada aviso guarda IPs, nombres de usuario y correos
   que ya iban en el mensaje, y no se borran solos.
 - **Desarrollo:** `tests/prueba-registro.php` (nueva), `tests/ejecutar.php`, `docs/qa.md`, `CLAUDE.md`,
   `README.md`, `CHANGELOG.md` y `BACKLOG.md`.
 - **Dependencias:** ninguna nueva.
 - **Fuera de alcance:** reenviar un aviso desde el registro, borrar avisos a mano o por antigüedad,
-  avisar en el administrador o con un contador en el menú cuando un envío falla, un widget para el
+  avisar en el administrador o con un contador propio cuando un envío falla (el contador del menú cuenta
+  los avisos sin leer, no los fallidos), marcar como leído un aviso suelto, un widget para el
   escritorio nativo y las herramientas de privacidad de WordPress (exportar y borrar datos personales).
   Reenviar, la caducidad configurable y el contador quedan en `BACKLOG.md`.

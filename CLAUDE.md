@@ -64,7 +64,8 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
     │   ├── actualizaciones/          ActualizadorGithub. Solo en la variante de GitHub.
     │   ├── avisos/                   Correo (envío en texto plano), Plantilla y CambiosAdministradores
     │   │                             (funciones puras), AvisosPlugins, AvisosAdministradores,
-    │   │                             Registro (la tabla de avisos guardados) y PantallaAvisos.
+    │   │                             Registro (la tabla de avisos guardados), Lectura (avisos sin
+    │   │                             leer de cada usuario) y PantallaAvisos.
     │   ├── escritorio/               Escritorio, Resumen, Recientes, Preferencias.
     │   ├── lanzador/                 Lanzador y CatalogoComandos.
     │   ├── busqueda/                 Fuente (interfaz), Buscador, Grupo, Resultado, 4 fuentes.
@@ -266,9 +267,11 @@ primera fila de cada usuario, como WordPress cuando el metadato está repetido. 
 `wp_roles()`, porque es lo que WordPress usa para conceder.
 
 **El contador en el menú.** Con usuarios marcados, `Administradores::contador()` añade el mismo
-marcado que los contadores de WordPress (`awaiting-mod`, con texto para lectores de pantalla) al
-título de su entrada y, tocando `$menu`, al de «EscritorioWP», para que se vea con el menú cerrado.
-`CatalogoComandos::limpiar_titulo()` y `Menu::opciones()` ya quitan esos `<span>`. En su propia
+marcado que los contadores de WordPress (`awaiting-mod`, con texto para lectores de pantalla, hecho
+por `Menu::burbuja()`) al título de su entrada, y aporta su parte al de «EscritorioWP» con
+`Menu::sumar_contador()`, para que se vea con el menú cerrado. Esa entrada lleva una sola burbuja con la
+suma de Administradores y de los avisos sin leer (§7 sexies), que escribe `Menu::anadir_contador()`
+tocando `$menu`. `CatalogoComandos::limpiar_titulo()` y `Menu::opciones()` ya quitan esos `<span>`. En su propia
 pantalla no se lee la caché: se analiza al registrar el menú (WordPress ya ha fijado `$plugin_page`)
 y pintar reutiliza ese informe, para que el contador y el resumen coincidan.
 
@@ -455,17 +458,36 @@ del enlace y no en `add_args`: esa función copia en los enlaces los parámetros
 estén en la base, y así un valor manipulado no pasaría a la página siguiente. Los nombres de tipos y
 estados se traducen en `PantallaAvisos::nombre_tipo()` y `nombre_estado()`.
 
-**El bloque del escritorio.** `Escritorio::pintar_app()` pinta, entre los indicadores y los paneles,
-una `<section data-escritoriowp-avisos aria-labelledby>` con la cabecera de panel («Avisos por correo»
-y «Ver todos») y un cuerpo vacío que `escritorio.js` rellena con `cargarAvisos()` desde la ruta
-`avisos?limite=5`, con el esqueleto de carga, el texto `avisosVacio` y «Reintentar» de los paneles;
-«Actualizar» también lo recarga. Las filas tienen la forma de las de los paneles más un `icono`
+**El bloque del escritorio.** `Escritorio::pintar_avisos()` pinta una `<section data-escritoriowp-avisos
+aria-labelledby>` con la cabecera de panel (la campana, «Avisos por correo» y «Ver todos»), un cuerpo
+vacío que `escritorio.js` rellena con `cargarAvisos()` desde la ruta `avisos?limite=5`, con el
+esqueleto de carga, el texto `avisosVacio` y «Reintentar» de los paneles, y un pie con «Marcar como
+leídos»; «Actualizar» también lo recarga. Va **arriba a la derecha**: la cabecera y el resumen van en
+`escritoriowp__principal`, y esta y el bloque en `escritoriowp__superior`, que con el bloque es una
+rejilla de dos columnas (la del bloque, hasta 360 px) a partir de 1101 px de ventana; por debajo se
+apila en el orden del HTML, con el bloque entre las tarjetas y los paneles. Sin bloque, el envoltorio
+no cambia nada. Las filas tienen la forma de las de los paneles más un `icono`
 (`PantallaAvisos::fila()`), y `pintarElementos()` las pinta para los dos. Solo se pinta si
 `PantallaAvisos::puede_ver()` y alguna casilla `aviso_*` está marcada o `Registro::hay_avisos()`, que
 solo se consulta con todas apagadas: sin avisos ni casillas no ocupa sitio ni pide nada. **No es un
 panel** a propósito: como panel entraría en el ajuste «Paneles», en «Personalizar» y en el catálogo
-de comandos de creación, que no tienen sentido para un registro. Ocupa todo el ancho, fuera de la
-rejilla, y no está en `config.paneles` ni en las preferencias.
+de comandos de creación, que no tienen sentido para un registro. Va fuera de la rejilla de paneles y
+no está en `config.paneles` ni en las preferencias.
+
+**Avisos sin leer.** `Avisos\Lectura` guarda por usuario el último aviso que ha visto, con
+`update_user_option()`: una opción de usuario por sitio (`{prefijo}escritoriowp_avisos_vistos`), porque
+cada sitio tiene su tabla. Sin leer son los de `id` mayor (`Registro::contar_desde()`, por la clave
+primaria); sin marca, todos. Una marca y no una lista de leídos, que crecería sin límite: se marcan
+todos a la vez, al abrir la pantalla Avisos o con «Marcar como leídos» (`POST avisos/leidos`), y solo se
+escribe si sube. La pantalla marca en `admin_menu`, cuando WordPress ya ha fijado `$plugin_page`, para
+que el menú de esa misma página salga sin contador, y guarda la marca anterior para pintar con punto
+rojo y en negrita las filas que eran nuevas en esa visita. La ruta `avisos` devuelve `sinLeer` y `nuevo`
+en cada fila; el JS pinta el número rojo de la campana (con «Avisos sin leer: N» para lectores de
+pantalla, porque el número no va dentro del `h3` que da nombre a la región), el punto de cada fila y,
+al marcar como leídos, quita la parte `data-escritoriowp-parte="avisos"` de la burbuja de
+«EscritorioWP» y la burbuja de «Avisos». «Avisos» lleva su burbuja y suma su parte al contador de
+«EscritorioWP» (§7 ter). Cuesta una consulta, el `COUNT` de la burbuja, en cada pantalla del
+administrador de quien tiene `manage_options` y el registro instalado.
 
 **Qué no registra.** Los correos que no son avisos del plugin, lo que no llega a intentar enviarse (una
 casilla desmarcada, una revisión sin cambios) y si el correo llegó al buzón (rebotes, spam). Tampoco
@@ -538,7 +560,8 @@ el lanzador del front-end ofrece solo las acciones fijas y la búsqueda de conte
 La opción `escritoriowp_revision_administradores` no es una caché y no va en esta tabla: es la
 situación con la que se compara la revisión siguiente (§7 quinquies), y perderla haría perder avisos.
 Tampoco lo es la tabla `{prefijo}escritoriowp_avisos`: es el registro de los avisos (§7 sexies), que se
-conserva hasta desinstalar.
+conserva hasta desinstalar. Ni la opción de usuario `{prefijo}escritoriowp_avisos_vistos`, que dice qué
+avisos ha visto cada usuario.
 
 ## 10. Pruebas
 

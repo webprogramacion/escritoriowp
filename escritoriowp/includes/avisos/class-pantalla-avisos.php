@@ -12,6 +12,7 @@ namespace EscritorioWP\Avisos;
 use EscritorioWP\Ajustes;
 use EscritorioWP\Escritorio\Preferencias;
 use EscritorioWP\Escritorio\Recientes;
+use EscritorioWP\Menu;
 use EscritorioWP\Seguridad\Administradores;
 
 defined( 'ABSPATH' ) || exit;
@@ -40,6 +41,14 @@ final class PantallaAvisos {
 	 * @var string
 	 */
 	private string $pantalla = '';
+
+	/**
+	 * Último aviso que el usuario había visto antes de abrir esta pantalla, para señalar los que eran
+	 * nuevos en esta visita. Null si la petición no es la de esta pantalla.
+	 *
+	 * @var int|null
+	 */
+	private ?int $vistos_antes = null;
 
 	/**
 	 * Indica si el usuario actual puede ver los avisos.
@@ -104,20 +113,77 @@ final class PantallaAvisos {
 
 	/**
 	 * Añade la subpágina al menú del plugin, detrás de «Administradores» o, si el usuario no la tiene,
-	 * de «Ajustes».
+	 * de «Ajustes», con el contador de avisos sin leer, y aporta ese número al de «EscritorioWP».
+	 *
+	 * En su propia pantalla marca los avisos como leídos aquí, y no al pintar: WordPress ya ha fijado
+	 * `$plugin_page`, y así el menú de esa misma página sale sin contador. Se queda con la marca
+	 * anterior para señalar en el listado los avisos que eran nuevos.
 	 *
 	 * @return void
 	 */
 	public function anadir_pagina(): void {
+		$sin_leer = 0;
+
+		if ( self::puede_ver() ) {
+			$usuario = get_current_user_id();
+
+			if ( $this->en_su_pantalla() ) {
+				$this->vistos_antes = Lectura::vistos( $usuario );
+				Lectura::marcar( $usuario );
+			} else {
+				$sin_leer = Lectura::sin_leer( $usuario );
+			}
+		}
+
+		$texto = self::texto_sin_leer( $sin_leer );
+
 		$this->pantalla = (string) add_submenu_page(
 			Ajustes::PAGINA,
 			__( 'Avisos por correo', 'escritoriowp' ),
-			__( 'Avisos', 'escritoriowp' ),
+			__( 'Avisos', 'escritoriowp' ) . Menu::burbuja( $sin_leer, $texto, 'avisos' ),
 			self::CAPACIDAD,
 			self::PAGINA,
 			array( $this, 'pintar' ),
 			Administradores::puede_ver() ? 2 : 1
 		);
+
+		Menu::sumar_contador( 'avisos', $sin_leer, $texto );
+	}
+
+	/**
+	 * Texto del contador de avisos sin leer para lectores de pantalla.
+	 *
+	 * @param int $total Avisos sin leer.
+	 * @return string
+	 */
+	private static function texto_sin_leer( int $total ): string {
+		return sprintf(
+			/* translators: %s: número de avisos sin leer. */
+			_n( '%s aviso sin leer', '%s avisos sin leer', $total, 'escritoriowp' ),
+			number_format_i18n( $total )
+		);
+	}
+
+	/**
+	 * Indica si la petición actual es la de esta pantalla. WordPress rellena `$plugin_page` antes de
+	 * construir el menú.
+	 *
+	 * @return bool
+	 */
+	private function en_su_pantalla(): bool {
+		global $plugin_page;
+
+		return self::PAGINA === $plugin_page;
+	}
+
+	/**
+	 * Indica si un aviso era nuevo para el usuario al abrir esta pantalla.
+	 *
+	 * @param int $id Identificador del aviso.
+	 * @return bool
+	 */
+	private function era_nuevo( int $id ): bool {
+		return null !== $this->vistos_antes && $id > $this->vistos_antes;
 	}
 
 	/**
@@ -160,13 +226,14 @@ final class PantallaAvisos {
 	}
 
 	/**
-	 * Fila de un aviso para el bloque del escritorio, con la forma de las filas de los paneles y un
-	 * icono en el lugar de la inicial. Los nombres van ya traducidos.
+	 * Fila de un aviso para el bloque del escritorio, con la forma de las filas de los paneles, un
+	 * icono en el lugar de la inicial y si está sin leer. Los nombres van ya traducidos.
 	 *
-	 * @param array<string, int|string> $aviso Aviso de `Registro::recientes()`.
+	 * @param array<string, int|string> $aviso  Aviso de `Registro::recientes()`.
+	 * @param int|null                  $vistos Último aviso que ha visto el usuario; null si no importa.
 	 * @return array<string, mixed>
 	 */
-	public static function fila( array $aviso ): array {
+	public static function fila( array $aviso, ?int $vistos = null ): array {
 		$tipo   = (string) ( $aviso['tipo'] ?? '' );
 		$estado = (string) ( $aviso['estado'] ?? '' );
 		$marca  = strtotime( (string) ( $aviso['fecha'] ?? '' ) . ' UTC' );
@@ -178,6 +245,7 @@ final class PantallaAvisos {
 			'imagen'    => '',
 			'inicial'   => '',
 			'icono'     => Registro::ADMINISTRADORES === $tipo ? 'dashicons-shield' : 'dashicons-admin-plugins',
+			'nuevo'     => null !== $vistos && (int) ( $aviso['id'] ?? 0 ) > $vistos,
 			'metas'     => array(
 				array(
 					'texto' => self::nombre_estado( $estado ),
@@ -324,10 +392,14 @@ final class PantallaAvisos {
 			</thead>
 			<tbody>
 				<?php foreach ( Registro::listar( $filtros, $pagina ) as $aviso ) : ?>
-					<tr>
+					<tr<?php echo $this->era_nuevo( (int) $aviso['id'] ) ? ' class="escritoriowp-avisos__fila--nueva"' : ''; ?>>
 						<td class="escritoriowp-avisos__fecha" data-columna="<?php echo esc_attr__( 'Fecha', 'escritoriowp' ); ?>"><?php echo esc_html( self::fecha( (string) $aviso['fecha'] ) ); ?></td>
 						<td data-columna="<?php echo esc_attr__( 'Tipo', 'escritoriowp' ); ?>"><?php echo esc_html( self::nombre_tipo( (string) $aviso['tipo'] ) ); ?></td>
 						<td data-columna="<?php echo esc_attr__( 'Asunto', 'escritoriowp' ); ?>">
+							<?php if ( $this->era_nuevo( (int) $aviso['id'] ) ) : ?>
+								<span class="escritoriowp-avisos__punto" aria-hidden="true"></span>
+								<span class="screen-reader-text"><?php echo esc_html__( 'Sin leer:', 'escritoriowp' ); ?></span>
+							<?php endif; ?>
 							<a href="<?php echo esc_url( self::url_detalle( (int) $aviso['id'], array_merge( $filtros, array( 'paged' => $pagina ) ) ) ); ?>"><?php echo esc_html( self::asunto( (string) $aviso['asunto'] ) ); ?></a>
 						</td>
 						<td class="escritoriowp-avisos__destinatarios" data-columna="<?php echo esc_attr__( 'Destinatarios', 'escritoriowp' ); ?>"><?php echo esc_html( (string) $aviso['destinatarios'] ); ?></td>
