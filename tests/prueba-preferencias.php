@@ -35,6 +35,30 @@ comprobar(
 	'una entrada que no es un array devuelve los valores por defecto'
 );
 
+grupo( 'Preferencias · tipos de contenido personalizados' );
+
+$con_tipos = Preferencias::sanear(
+	array(
+		'paneles_ocultos' => array( 'cpt-libro', 'cpt-Malo', 'inventado', 'cpt-libro' ),
+		'orden_paneles'   => array( 'cpt-libro', 'entradas' ),
+	),
+	$paneles
+);
+
+comprobar( array( 'cpt-libro' ), $con_tipos['paneles_ocultos'], 'un panel de tipo personalizado oculto se conserva aunque no esté en la lista; los mal formados y los repetidos no' );
+comprobar( array( 'cpt-libro', 'entradas' ), $con_tipos['orden_paneles'], 'el orden conserva los paneles de tipos personalizados' );
+
+$muchos = array();
+
+for ( $i = 1; $i <= 150; $i++ ) {
+	$muchos[] = 'cpt-tipo' . $i;
+}
+
+$cortada = Preferencias::sanear( array( 'paneles_ocultos' => $muchos ), $paneles )['paneles_ocultos'];
+
+comprobar( Preferencias::MAX_PANELES, count( $cortada ), 'una lista de 150 paneles se corta en 100' );
+comprobar( 'cpt-tipo100', end( $cortada ), 'se conservan los primeros' );
+
 grupo( 'Preferencias · orden de paneles' );
 
 comprobar(

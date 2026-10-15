@@ -34,3 +34,4 @@ comprobar( false, Capacidades::MAPA['entradas']['woo'], 'las entradas no requier
 
 comprobar( true, Capacidades::existe( 'pedidos' ), 'un tipo conocido existe' );
 comprobar( false, Capacidades::existe( 'inventado' ), 'un tipo desconocido no existe' );
+comprobar( false, Capacidades::existe( 'cpt-' ), 'una clave de tipo personalizado mal formada no existe, sin consultar WordPress' );

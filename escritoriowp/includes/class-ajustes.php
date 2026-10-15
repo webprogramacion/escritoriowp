@@ -72,6 +72,11 @@ final class Ajustes {
 	private const MAX_MENSAJE = 5000;
 
 	/**
+	 * Número máximo de tipos de contenido personalizados activos en cada lista de casillas.
+	 */
+	public const MAX_TIPOS_CONTENIDO = 100;
+
+	/**
 	 * Instancia única.
 	 *
 	 * @var Ajustes|null
@@ -114,7 +119,9 @@ final class Ajustes {
 	 * Valores por defecto de todos los ajustes.
 	 *
 	 * `indicadores_activos` y `paneles_activos` dicen, para todo el sitio, qué indicadores y paneles
-	 * muestra el escritorio: todos al principio. `menu_debajo_de` vacío significa «Al final»;
+	 * muestra el escritorio: al principio, todos los propios y ningún tipo de contenido
+	 * personalizado, que solo aparece si su clave `cpt-…` está guardada. `menu_debajo_de` vacío
+	 * significa «Al final»;
 	 * `menu_color_fondo` vacío, sin color propio. Los avisos por correo empiezan apagados;
 	 * `aviso_destinatarios` vacío significa el correo de administración del sitio, y `aviso_asunto` y
 	 * `aviso_mensaje` vacíos, el texto predeterminado, que se traduce al enviar en lugar de guardarse
@@ -203,6 +210,11 @@ final class Ajustes {
 	 * verdadero, para que lo que añada una versión futura salga activo; las desconocidas se
 	 * descartan. El formulario envía `0` o `1` por cada casilla, igual que el tipo `casilla`.
 	 *
+	 * Detrás van las claves de tipos de contenido personalizados (`cpt-…`) que llegan marcadas,
+	 * hasta `MAX_TIPOS_CONTENIDO`. Un tipo personalizado que falta está desactivado, así que las
+	 * desmarcadas no se guardan. No se comprueba si el tipo está registrado: puede desaparecer y
+	 * volver, como el de un plugin desactivado y reactivado.
+	 *
 	 * @param mixed    $valor  Valor recibido: clave => valor de la casilla.
 	 * @param string[] $claves Claves conocidas, en el orden en que se guardan.
 	 * @return array<string, bool>
@@ -213,6 +225,19 @@ final class Ajustes {
 
 		foreach ( $claves as $clave ) {
 			$salida[ $clave ] = ! array_key_exists( $clave, $valor ) || self::a_booleano( $valor[ $clave ] );
+		}
+
+		$tipos = 0;
+
+		foreach ( $valor as $clave => $marcada ) {
+			if ( $tipos >= self::MAX_TIPOS_CONTENIDO ) {
+				break;
+			}
+
+			if ( TiposContenido::es_clave( (string) $clave ) && self::a_booleano( $marcada ) ) {
+				$salida[ (string) $clave ] = true;
+				++$tipos;
+			}
 		}
 
 		return $salida;
@@ -412,7 +437,8 @@ final class Ajustes {
 	}
 
 	/**
-	 * Indica si un panel del escritorio está activo en el sitio.
+	 * Indica si un panel del escritorio está activo en el sitio. Un panel propio que no está en la
+	 * lista está activo; uno de un tipo de contenido personalizado, no.
 	 *
 	 * No dice si el usuario actual puede verlo: eso lo decide `Capacidades`.
 	 *
@@ -424,7 +450,8 @@ final class Ajustes {
 	}
 
 	/**
-	 * Indica si un indicador del escritorio está activo en el sitio.
+	 * Indica si un indicador del escritorio está activo en el sitio. Un indicador propio que no está
+	 * en la lista está activo; uno de un tipo de contenido personalizado, no.
 	 *
 	 * No dice si el usuario actual puede verlo: eso lo decide `Resumen::claves_visibles()`.
 	 *
@@ -436,8 +463,8 @@ final class Ajustes {
 	}
 
 	/**
-	 * Lee una casilla de una lista de casillas. Una clave que no está en la lista vale verdadero,
-	 * como en `sanear_activos()`.
+	 * Lee una casilla de una lista de casillas. Una clave que no está en la lista vale verdadero si
+	 * es propia y falso si es de un tipo de contenido personalizado, como en `sanear_activos()`.
 	 *
 	 * @param string $ajuste Nombre del ajuste que guarda la lista.
 	 * @param string $clave  Clave de la casilla.
@@ -446,7 +473,22 @@ final class Ajustes {
 	private function activo( string $ajuste, string $clave ): bool {
 		$lista = $this->obtener( $ajuste );
 
-		return ! is_array( $lista ) || ! array_key_exists( $clave, $lista ) || $lista[ $clave ];
+		if ( ! is_array( $lista ) || ! array_key_exists( $clave, $lista ) ) {
+			return self::activo_por_defecto( $clave );
+		}
+
+		return (bool) $lista[ $clave ];
+	}
+
+	/**
+	 * Valor de una casilla de una lista de casillas sin valor guardado: marcada si es propia,
+	 * desmarcada si es de un tipo de contenido personalizado.
+	 *
+	 * @param string $clave Clave de la casilla.
+	 * @return bool
+	 */
+	private static function activo_por_defecto( string $clave ): bool {
+		return ! TiposContenido::es_clave( $clave );
 	}
 
 	/**
@@ -599,14 +641,14 @@ final class Ajustes {
 				'seccion'     => 'escritoriowp_seccion_escritorio',
 				'tipo'        => 'casillas',
 				'etiqueta'    => __( 'Indicadores', 'escritoriowp' ),
-				'descripcion' => __( 'Las tarjetas de resumen de la parte de arriba del escritorio. Las que desmarques no las ve nadie; las marcadas, cada usuario solo si su rol le deja ver esa pantalla.', 'escritoriowp' ),
+				'descripcion' => __( 'Las tarjetas de resumen de la parte de arriba del escritorio. Las que desmarques no las ve nadie; las marcadas, cada usuario solo si su rol le deja ver esa pantalla.', 'escritoriowp' ) . ' ' . self::descripcion_tipos_contenido(),
 				'opciones'    => self::opciones_indicadores(),
 			),
 			'paneles_activos'          => array(
 				'seccion'     => 'escritoriowp_seccion_escritorio',
 				'tipo'        => 'casillas',
 				'etiqueta'    => __( 'Paneles', 'escritoriowp' ),
-				'descripcion' => __( 'Los paneles con los últimos elementos. Los que desmarques no los ve nadie; los marcados, cada usuario solo si su rol se lo permite, y además puede ocultarlos para sí desde «Personalizar», en el propio escritorio.', 'escritoriowp' ),
+				'descripcion' => __( 'Los paneles con los últimos elementos. Los que desmarques no los ve nadie; los marcados, cada usuario solo si su rol se lo permite, y además puede ocultarlos para sí desde «Personalizar», en el propio escritorio.', 'escritoriowp' ) . ' ' . self::descripcion_tipos_contenido(),
 				'opciones'    => self::opciones_paneles(),
 			),
 			'elementos_por_panel'      => array(
@@ -750,8 +792,23 @@ final class Ajustes {
 	}
 
 	/**
+	 * Frase final de las descripciones de «Indicadores» y «Paneles»: dónde están los tipos de
+	 * contenido personalizados detectados o, si no hay ninguno, que aparecerían ahí.
+	 *
+	 * @return string
+	 */
+	private static function descripcion_tipos_contenido(): string {
+		if ( array() === TiposContenido::detectados() ) {
+			return __( 'Este sitio no tiene tipos de contenido personalizados; si un plugin añade alguno, aparecerá aquí, desmarcado.', 'escritoriowp' );
+		}
+
+		return __( 'Al final están los tipos de contenido personalizados de este sitio; salen desmarcados.', 'escritoriowp' );
+	}
+
+	/**
 	 * Casillas del ajuste «Indicadores»: una por indicador disponible en esta instalación, con el
-	 * nombre de su tarjeta. Los de WooCommerce solo aparecen con WooCommerce activo.
+	 * nombre de su tarjeta, y detrás una por tipo de contenido personalizado detectado. Los de
+	 * WooCommerce solo aparecen con WooCommerce activo.
 	 *
 	 * @return array<string, string>
 	 */
@@ -764,12 +821,13 @@ final class Ajustes {
 			}
 		}
 
-		return $opciones;
+		return $opciones + TiposContenido::opciones();
 	}
 
 	/**
 	 * Casillas del ajuste «Paneles»: una por panel disponible en esta instalación, con el nombre de
-	 * su cabecera. Los de WooCommerce solo aparecen con WooCommerce activo.
+	 * su cabecera, y detrás una por tipo de contenido personalizado detectado. Los de WooCommerce
+	 * solo aparecen con WooCommerce activo.
 	 *
 	 * @return array<string, string>
 	 */
@@ -782,7 +840,7 @@ final class Ajustes {
 			}
 		}
 
-		return $opciones;
+		return $opciones + TiposContenido::opciones();
 	}
 
 	/**
@@ -911,8 +969,9 @@ final class Ajustes {
 	 * WordPress: un `fieldset` cuya `legend` da nombre al grupo para los lectores de pantalla.
 	 *
 	 * Cada casilla lleva delante su campo oculto con valor `0`, como `pintar_casilla()`, para que
-	 * desmarcarla viaje en el envío. Una opción sin valor guardado se pinta marcada, igual que la
-	 * interpreta `sanear_activos()`.
+	 * desmarcarla viaje en el envío. Una opción sin valor guardado se pinta como la interpreta
+	 * `sanear_activos()`: marcada si es propia y desmarcada si es de un tipo de contenido
+	 * personalizado.
 	 *
 	 * @param string                $id       Prefijo del identificador de cada casilla.
 	 * @param string                $nombre   Nombre del campo en el formulario.
@@ -929,7 +988,7 @@ final class Ajustes {
 				'<input type="hidden" name="%1$s" value="0"><label for="%2$s"><input type="checkbox" id="%2$s" name="%1$s" value="1" %3$s> %4$s</label><br>',
 				esc_attr( $nombre . '[' . $clave . ']' ),
 				esc_attr( $id . '-' . $clave ),
-				checked( $valores[ $clave ] ?? true, true, false ),
+				checked( $valores[ $clave ] ?? self::activo_por_defecto( (string) $clave ), true, false ),
 				esc_html( $texto )
 			);
 		}

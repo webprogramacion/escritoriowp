@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EscritorioWP\Busqueda;
 
 use EscritorioWP\Capacidades;
+use EscritorioWP\TiposContenido;
 use WP_Post;
 use WP_Query;
 
@@ -23,36 +24,6 @@ defined( 'ABSPATH' ) || exit;
  * consulta, y el orden prioriza los títulos que empiezan por el texto buscado.
  */
 final class FuenteContenidos implements Fuente {
-
-	/**
-	 * Tipos de contenido que nunca se buscan: adjuntos, estructuras del editor y datos internos
-	 * de WooCommerce, que tienen sus propias fuentes.
-	 *
-	 * @var string[]
-	 */
-	private const TIPOS_EXCLUIDOS = array(
-		'attachment',
-		'revision',
-		'nav_menu_item',
-		'custom_css',
-		'customize_changeset',
-		'oembed_cache',
-		'user_request',
-		'wp_block',
-		'wp_template',
-		'wp_template_part',
-		'wp_global_styles',
-		'wp_navigation',
-		'wp_font_family',
-		'wp_font_face',
-		'product',
-		'product_variation',
-		'shop_order',
-		'shop_order_refund',
-		'shop_order_placehold',
-		'shop_coupon',
-		'shop_subscription',
-	);
 
 	/**
 	 * Clave de la fuente: entradas, paginas o contenidos.
@@ -130,7 +101,7 @@ final class FuenteContenidos implements Fuente {
 		$tipos = array();
 
 		foreach ( get_post_types( array( 'show_ui' => true ), 'objects' ) as $objeto ) {
-			if ( in_array( $objeto->name, self::TIPOS_EXCLUIDOS, true ) ) {
+			if ( in_array( $objeto->name, TiposContenido::EXCLUIDOS, true ) ) {
 				continue;
 			}
 

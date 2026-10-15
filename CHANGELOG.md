@@ -20,6 +20,15 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   casilla no avisa, y si el correo no se puede enviar, la revisión siguiente vuelve a avisar. Usa los
   mismos destinatarios que los avisos de plugins, con un texto fijo, y la casilla muestra cuándo fue
   la última revisión y cuándo toca la próxima.
+- Tipos de contenido personalizados en el escritorio. Los grupos «Indicadores» y «Paneles» de
+  EscritorioWP › Ajustes detectan los tipos de contenido personalizados con entrada en el menú del
+  administrador y los listan al final, desmarcados. Un tipo marcado en «Paneles» tiene su panel con
+  los últimos elementos modificados, como el de entradas, y un botón de crear que lleva a su pantalla
+  de creación nativa; marcado en «Indicadores», su tarjeta con los publicados y los borradores. Cada
+  usuario solo los ve si su rol le deja editar ese tipo. Si el plugin que registra el tipo se
+  desactiva, el panel y la tarjeta desaparecen y vuelven al reactivarlo, con las preferencias de cada
+  usuario intactas. Otro plugin puede quitar o añadir tipos con el filtro nuevo
+  `escritoriowp_tipos_contenido`.
 
 ### Cambiado
 
@@ -27,6 +36,8 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   guardada de los administradores.
 - El asunto y el mensaje configurables de los avisos por correo dicen que solo se aplican a los
   avisos de plugins.
+- Los textos del estado vacío de cada panel llegan desde el servidor con el panel, en lugar de estar
+  en el catálogo de textos del JavaScript. No cambia ningún texto visible.
 
 ## [0.4.0] - 2026-10-14
 

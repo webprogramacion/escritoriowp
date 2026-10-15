@@ -12,6 +12,7 @@ use EscritorioWP\Autoloader;
 grupo( 'Autoloader' );
 
 comprobar( 'plugin.php', Autoloader::ruta_relativa( 'EscritorioWP\\Plugin' ), 'clase de primer nivel' );
+comprobar( 'tipos-contenido.php', Autoloader::ruta_relativa( 'EscritorioWP\\TiposContenido' ), 'clase de primer nivel con dos palabras' );
 comprobar( 'busqueda/fuente-usuarios.php', Autoloader::ruta_relativa( 'EscritorioWP\\Busqueda\\FuenteUsuarios' ), 'clase en subdirectorio' );
 comprobar( 'rest/controlador-busqueda.php', Autoloader::ruta_relativa( 'EscritorioWP\\Rest\\ControladorBusqueda' ), 'controlador REST' );
 comprobar( 'escritorio/preferencias.php', Autoloader::ruta_relativa( 'EscritorioWP\\Escritorio\\Preferencias' ), 'clase del escritorio' );

@@ -29,17 +29,23 @@ Repite la lista con cada combinación:
 - [x] `[S]` En la primera activación se crea la opción con los dieciocho valores por defecto.
 - [x] `[N]` Un ajuste ausente tras una actualización toma su valor por defecto sin perder el resto.
 - [x] `[N]` Un número de elementos por panel fuera de rango se ajusta al límite más cercano.
-- [x] `[N]` Si los paneles activos llegan con un valor que no es una lista, quedan todos activos; si a
-      la lista le falta un panel, ese queda activo y el resto conserva el valor enviado.
+- [x] `[N]` Si los paneles activos llegan con un valor que no es una lista, quedan activos todos los
+      propios; si a la lista le falta un panel propio, ese queda activo y el resto conserva el valor
+      enviado.
+- [x] `[N]` En una lista de casillas, un tipo de contenido personalizado marcado queda activo; uno
+      desmarcado o ausente queda inactivo, y un identificador que WordPress no admitiría se descarta,
+      sin comprobar si el tipo está registrado.
 - [x] `[S]` La página EscritorioWP › Ajustes existe, exige `manage_options` y publica en `options.php`
       con nonce.
 - [ ] `[M]` Guardar «Sustituir el escritorio nativo» en No devuelve el escritorio nativo al recargar.
-- [x] `[S]` Sin WooCommerce, la sección Escritorio de los ajustes ofrece, entre «Ocultar los widgets
-      de otros plugins» y «Elementos por panel», «Indicadores» con cinco casillas (Entradas
+- [x] `[S]` Sin WooCommerce ni tipos de contenido personalizados, la sección Escritorio de los ajustes
+      ofrece, entre «Ocultar los widgets de otros plugins» y «Elementos por panel», «Indicadores» con
+      cinco casillas (Entradas
       publicadas, Páginas publicadas, Usuarios registrados, Comentarios pendientes y Actualizaciones
       pendientes) y «Paneles» con tres (Entradas, Páginas y Usuarios), todas marcadas.
 - [x] `[S]` Con WooCommerce aparecen además Productos publicados, Pedidos este mes e Ingresos este
-      mes tras Usuarios registrados, y Productos y Pedidos al final de «Paneles».
+      mes tras Usuarios registrados, y Productos y Pedidos tras Usuarios en «Paneles», antes de
+      cualquier tipo de contenido personalizado.
 - [x] `[S]` Con «Pedidos» desmarcado, guardar los ajustes sin WooCommerce y reactivarlo deja
       «Pedidos» desmarcado en los ajustes y fuera del escritorio.
 - [x] `[S]` Un envío con una clave de panel inventada la descarta, guarda el resto y no muestra avisos.
@@ -52,6 +58,29 @@ Repite la lista con cada combinación:
 - [x] `[C]` Los dos grupos de casillas quedan alineados con el resto de la tabla de ajustes.
 - [x] `[C]` Desmarcar «Usuarios» e «Ingresos este mes» y guardar desde el formulario los deja
       desmarcados, con el aviso de ajustes guardados; volver a marcarlos y guardar los activa.
+- [x] `[S]` Con un plugin que registra «Libros» y dos tipos «Eventos», «Indicadores» y «Paneles»
+      terminan, desmarcados y después de sus opciones propias, en «Eventos (evento)», «Eventos
+      (tribe_events)» y «Libros», y el escritorio no muestra nada de esos tipos.
+- [x] `[S]` Un tipo que se registra después aparece desmarcado en los dos grupos y el resto de
+      casillas conserva su valor.
+- [x] `[S]` No se ofrecen como tipo personalizado los tipos del núcleo, los de WooCommerce
+      (productos, pedidos, cupones) ni los registrados sin pantalla o sin entrada en el menú.
+- [x] `[S]` Sin tipos personalizados, los dos grupos solo tienen sus opciones propias y su descripción
+      dice que el sitio no tiene tipos de contenido personalizados.
+- [x] `[S]` Un envío con «Libros» marcado y una clave de tipo mal formada guarda solo «Libros», sin
+      avisos.
+- [x] `[S]` Con «Libros» marcado en los dos grupos y su plugin desactivado, nadie ve su panel ni su
+      tarjeta, el escritorio se pinta sin avisos de PHP, la ruta `recientes/cpt-libro` responde 404 y
+      los ajustes no listan «Libros».
+- [x] `[S]` Guardar los ajustes con el plugin de «Libros» desactivado y reactivarlo después devuelve
+      «Libros» marcado a los dos grupos y su panel y su tarjeta al escritorio.
+- [x] `[S]` Un usuario que tenía oculto «Libros» y guarda su tema mientras el plugin del tipo está
+      desactivado lo sigue teniendo oculto al reactivarlo.
+- [x] `[C]` Marcar «Libros» en «Paneles» y en «Indicadores» y guardar desde el formulario los deja
+      marcados y los muestra en el escritorio; desmarcarlos y guardar los quita. Con WooCommerce y
+      sin él, y sin errores en la consola, tampoco para un autor.
+- [x] `[C]` Con tipos personalizados, los dos grupos de casillas siguen alineados con el resto de la
+      tabla de ajustes y la descripción se lee completa.
 - [ ] `[M]` Un usuario sin `manage_options` que abre la URL de ajustes recibe el aviso de permisos.
 - [x] `[S]` Sin WooCommerce no aparecen indicadores, paneles ni resultados de productos o pedidos, y
       no se emite ningún aviso.
@@ -127,6 +156,45 @@ Repite la lista con cada combinación:
       de que el administrador lo desactive y lo vuelva a activar: su metadato no cambia.
 - [ ] `[M]` A 400 px de ancho no hay desplazamiento horizontal y los paneles se apilan.
 - [ ] `[M]` Recorrer la interfaz con Tab da foco visible a todos los botones y enlaces en orden.
+
+### Tipos de contenido personalizados
+
+Con un mu-plugin que registre un tipo «Libros» (`libro`, con capacidades propias y `map_meta_cap`)
+y lo marque en «Paneles».
+
+- [x] `[C]` El panel «Libros» sale detrás de los paneles propios, con los libros por fecha de
+      modificación descendente, «Borrador» en el borrador, «Ver» solo en los publicados y «Ver todos»
+      hacia `edit.php?post_type=libro`.
+- [x] `[C]` Su botón de crear es un enlace a `post-new.php?post_type=libro`, sin ventana de creación
+      rápida.
+- [x] `[C]` Sin libros, el panel muestra el texto `not_found` del tipo y un enlace con su
+      `add_new_item` a la pantalla nativa de creación; los estados vacíos de los paneles propios no
+      cambian.
+- [x] `[C]` Quien puede editar libros pero no crearlos ve el panel sin botón de crear, ni en su
+      cabecera ni en su estado vacío.
+- [x] `[S]` Quien puede editar sus libros pero no los ajenos solo ve los suyos en el panel.
+- [x] `[C]` Ocultar «Libros» desde «Personalizar», volver a mostrarlo y subirlo por encima de
+      «Entradas» persiste al recargar: el orden se guarda en el metadato del usuario.
+- [x] `[S]` La cabecera tiene los mismos botones de creación con «Libros» marcado y sin marcar.
+- [x] `[S]` Un usuario sin la capacidad de editar libros no recibe el panel, y la ruta
+      `recientes/cpt-libro` le responde 403 sin datos.
+- [x] `[S]` Con «Libros» sin marcar en «Paneles», la ruta `recientes/cpt-libro` sigue respondiendo a
+      quien puede editar libros.
+- [x] `[S]` La ruta `recientes` responde 404 con la clave de un tipo no registrado
+      (`cpt-noexiste`), de uno sin pantalla (`cpt-oculto`), de WooCommerce (`cpt-product`) y con una
+      clave mal formada (`cpt-Libro`).
+- [x] `[S]` Sin ninguna clave `cpt-…` guardada, las rutas `recientes` propias, la del resumen y el
+      escritorio pintado son idénticos a los de la versión anterior, salvo los textos de estado vacío
+      que ahora llegan con cada panel.
+- [x] `[S]` Con «Libros» marcado en «Indicadores», 12 libros publicados y 3 en borrador, la última
+      tarjeta del resumen es «Libros», con valor 12, detalle «3 en borrador», el icono del tipo y
+      enlace a su listado.
+- [x] `[S]` La tarjeta de un tipo sin borradores no lleva texto de detalle.
+- [x] `[S]` Con «Libros» marcado en «Paneles» y sin marcar en «Indicadores», no hay tarjeta de libros
+      en la respuesta de la ruta `resumen`.
+- [x] `[S]` Con todos los indicadores propios desmarcados y solo «Libros» marcado, el escritorio pinta
+      la fila de tarjetas con la de libros como única tarjeta.
+- [x] `[S]` Un usuario sin la capacidad de editar libros no recibe su tarjeta.
 
 ## 3. Creación rápida
 

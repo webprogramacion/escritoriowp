@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EscritorioWP\Escritorio;
 
 use EscritorioWP\Capacidades;
+use EscritorioWP\TiposContenido;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -32,6 +33,11 @@ final class Preferencias {
 	public const TEMAS = array( 'auto', 'claro', 'oscuro' );
 
 	/**
+	 * Número máximo de paneles en cada lista de preferencias.
+	 */
+	public const MAX_PANELES = 100;
+
+	/**
 	 * Preferencias por defecto.
 	 *
 	 * @return array{paneles_ocultos: string[], orden_paneles: string[], tema: string}
@@ -48,7 +54,9 @@ final class Preferencias {
 	 * Sanea unas preferencias recibidas del cliente o de la base de datos.
 	 *
 	 * Función pura: recibe la lista de paneles válidos en lugar de consultarla, para poder probarla
-	 * sin WordPress.
+	 * sin WordPress. Admite además cualquier clave de tipo de contenido personalizado bien formada,
+	 * esté o no registrado el tipo: la preferencia sobre un panel cuyo plugin está desactivado se
+	 * conserva para cuando vuelva.
 	 *
 	 * @param mixed    $entrada         Preferencias sin sanear.
 	 * @param string[] $paneles_validos Claves de panel admitidas.
@@ -58,33 +66,32 @@ final class Preferencias {
 		$entrada = is_array( $entrada ) ? $entrada : array();
 		$salida  = self::defectos();
 
-		$ocultos = is_array( $entrada['paneles_ocultos'] ?? null ) ? $entrada['paneles_ocultos'] : array();
-		$ocultos = array_values(
-			array_unique(
-				array_filter(
-					array_map( 'strval', $ocultos ),
-					static fn ( string $panel ): bool => in_array( $panel, $paneles_validos, true )
-				)
-			)
-		);
-
-		$orden = is_array( $entrada['orden_paneles'] ?? null ) ? $entrada['orden_paneles'] : array();
-		$orden = array_values(
-			array_unique(
-				array_filter(
-					array_map( 'strval', $orden ),
-					static fn ( string $panel ): bool => in_array( $panel, $paneles_validos, true )
-				)
-			)
-		);
-
 		$tema = is_string( $entrada['tema'] ?? null ) ? $entrada['tema'] : '';
 
-		$salida['paneles_ocultos'] = $ocultos;
-		$salida['orden_paneles']   = $orden;
+		$salida['paneles_ocultos'] = self::sanear_paneles( $entrada['paneles_ocultos'] ?? null, $paneles_validos );
+		$salida['orden_paneles']   = self::sanear_paneles( $entrada['orden_paneles'] ?? null, $paneles_validos );
 		$salida['tema']            = in_array( $tema, self::TEMAS, true ) ? $tema : 'auto';
 
 		return $salida;
+	}
+
+	/**
+	 * Sanea una lista de paneles: sin claves desconocidas ni repetidas, y con `MAX_PANELES` como
+	 * mucho. Función pura.
+	 *
+	 * @param mixed    $lista           Lista sin sanear.
+	 * @param string[] $paneles_validos Claves de panel admitidas, además de las de tipos personalizados.
+	 * @return string[]
+	 */
+	private static function sanear_paneles( mixed $lista, array $paneles_validos ): array {
+		$lista = is_array( $lista ) ? array_map( 'strval', $lista ) : array();
+
+		$validos = array_filter(
+			$lista,
+			static fn ( string $panel ): bool => in_array( $panel, $paneles_validos, true ) || TiposContenido::es_clave( $panel )
+		);
+
+		return array_slice( array_values( array_unique( $validos ) ), 0, self::MAX_PANELES );
 	}
 
 	/**

@@ -11,6 +11,7 @@ namespace EscritorioWP\Escritorio;
 
 use EscritorioWP\Ajustes;
 use EscritorioWP\Capacidades;
+use EscritorioWP\TiposContenido;
 use EscritorioWP\Woo\Woo;
 
 defined( 'ABSPATH' ) || exit;
@@ -44,8 +45,9 @@ final class Resumen {
 	 * Indicadores del escritorio, en el orden en que se muestran, con el tipo de `Capacidades::MAPA`
 	 * que decide quién los ve y si dependen de WooCommerce.
 	 *
-	 * Es también la lista que ofrece el ajuste «Indicadores»: una tarjeta que no esté aquí no se
-	 * muestra.
+	 * Es también la lista que ofrece el ajuste «Indicadores»: una tarjeta propia que no esté aquí no
+	 * se muestra. Detrás van las de los tipos de contenido personalizados que ofrece
+	 * `TiposContenido`, una por tipo, con su clave `cpt-…`.
 	 *
 	 * @var array<string, string>
 	 */
@@ -62,15 +64,21 @@ final class Resumen {
 
 	/**
 	 * Claves de los indicadores que ve el usuario actual: los activos en el ajuste «Indicadores»
-	 * cuyo tipo puede ver. No cuenta nada, así que sirve para decidir qué pintar antes de calcular.
+	 * cuyo tipo puede ver, primero los propios y después los de tipos de contenido personalizados.
+	 * No cuenta nada, así que sirve para decidir qué pintar antes de calcular.
 	 *
 	 * @return string[]
 	 */
 	public static function claves_visibles(): array {
-		$ajustes = Ajustes::instancia();
-		$claves  = array();
+		$ajustes    = Ajustes::instancia();
+		$claves     = array();
+		$candidatos = self::INDICADORES;
 
-		foreach ( self::INDICADORES as $clave => $tipo ) {
+		foreach ( array_keys( TiposContenido::detectados() ) as $clave ) {
+			$candidatos[ $clave ] = $clave;
+		}
+
+		foreach ( $candidatos as $clave => $tipo ) {
 			if ( $ajustes->indicador_activo( $clave ) && Capacidades::puede_ver( $tipo ) ) {
 				$claves[] = $clave;
 			}
@@ -90,22 +98,7 @@ final class Resumen {
 		$tarjetas = array();
 
 		if ( in_array( 'entradas', $visibles, true ) ) {
-			$conteo     = wp_count_posts( 'post' );
-			$borradores = (int) ( $conteo->draft ?? 0 );
-
-			$tarjetas[] = self::tarjeta(
-				'entradas',
-				(int) ( $conteo->publish ?? 0 ),
-				$borradores > 0
-					? sprintf(
-						/* translators: %s: número de entradas en borrador. */
-						_n( '%s en borrador', '%s en borrador', $borradores, 'escritoriowp' ),
-						number_format_i18n( $borradores )
-					)
-					: '',
-				Capacidades::url_listado( 'entradas' ),
-				'azul'
-			);
+			$tarjetas[] = self::tarjeta_contenido( 'entradas', 'post' );
 		}
 
 		if ( in_array( 'paginas', $visibles, true ) ) {
@@ -163,7 +156,40 @@ final class Resumen {
 			);
 		}
 
+		foreach ( $visibles as $clave ) {
+			if ( TiposContenido::es_clave( $clave ) ) {
+				$tarjetas[] = self::tarjeta_contenido( $clave, TiposContenido::tipo( $clave ) );
+			}
+		}
+
 		return $tarjetas;
+	}
+
+	/**
+	 * Tarjeta de un tipo de contenido con publicados y borradores: la de entradas y las de los tipos
+	 * personalizados. Los contadores de `wp_count_posts()` ya los cachea WordPress.
+	 *
+	 * @param string $clave          Clave del indicador.
+	 * @param string $tipo_contenido Tipo de contenido de WordPress.
+	 * @return array<string, string>
+	 */
+	private static function tarjeta_contenido( string $clave, string $tipo_contenido ): array {
+		$conteo     = wp_count_posts( $tipo_contenido );
+		$borradores = (int) ( $conteo->draft ?? 0 );
+
+		return self::tarjeta(
+			$clave,
+			(int) ( $conteo->publish ?? 0 ),
+			$borradores > 0
+				? sprintf(
+					/* translators: %s: número de elementos en borrador. */
+					_n( '%s en borrador', '%s en borrador', $borradores, 'escritoriowp' ),
+					number_format_i18n( $borradores )
+				)
+				: '',
+			Capacidades::url_listado( $clave ),
+			'azul'
+		);
 	}
 
 	/**
@@ -307,12 +333,17 @@ final class Resumen {
 	}
 
 	/**
-	 * Nombre de un indicador, el mismo en su tarjeta y en el ajuste «Indicadores».
+	 * Nombre de un indicador, el mismo en su tarjeta y en el ajuste «Indicadores». El de un tipo de
+	 * contenido personalizado es el nombre del tipo, sin «publicados»: no se sabe con qué concuerda.
 	 *
 	 * @param string $clave Clave del indicador.
 	 * @return string
 	 */
 	public static function etiqueta( string $clave ): string {
+		if ( TiposContenido::es_clave( $clave ) ) {
+			return TiposContenido::nombre( $clave );
+		}
+
 		return match ( $clave ) {
 			'entradas'        => __( 'Entradas publicadas', 'escritoriowp' ),
 			'paginas'         => __( 'Páginas publicadas', 'escritoriowp' ),

@@ -66,16 +66,6 @@
 		return ( estado.preferencias.paneles_ocultos || [] ).indexOf( clave ) !== -1;
 	}
 
-	/**
-	 * Pasa una clave de panel a su forma capitalizada, para componer claves de texto.
-	 *
-	 * @param {string} clave Clave del panel.
-	 * @return {string} Clave capitalizada.
-	 */
-	function capitalizar( clave ) {
-		return clave.charAt( 0 ).toUpperCase() + clave.slice( 1 );
-	}
-
 	/* --------------------------------------------------------------------- Indicadores */
 
 	/**
@@ -255,7 +245,8 @@
 	}
 
 	/**
-	 * Pinta las filas de un panel.
+	 * Pinta las filas de un panel. Los textos del estado vacío llegan con la definición del panel,
+	 * porque los de un tipo de contenido personalizado no se conocen de antemano.
 	 *
 	 * @param {string}      clave     Clave del panel.
 	 * @param {HTMLElement} cuerpo    Contenedor del contenido.
@@ -270,13 +261,13 @@
 
 			cuerpo.appendChild(
 				EWP.crear( 'div', { clase: 'escritoriowp-vacio' }, [
-					EWP.crear( 'p', { texto: EWP.t( 'panelVacio' + capitalizar( clave ) ) } ),
+					EWP.crear( 'p', { texto: panel ? panel.textoVacio : '' } ),
 					panel && panel.puedeCrear
 						? ( panel.enModal
 							? EWP.crear( 'button', {
 								type: 'button',
 								clase: 'escritoriowp-boton escritoriowp-boton--claro',
-								texto: EWP.t( 'crearPrimero' + capitalizar( clave ) ),
+								texto: panel.textoCrearPrimero,
 								onClick: function ( evento ) {
 									abrirModal( clave, evento.currentTarget );
 								}
@@ -284,7 +275,7 @@
 							: EWP.crear( 'a', {
 								clase: 'escritoriowp-boton escritoriowp-boton--claro',
 								href: panel.urlNuevo,
-								texto: EWP.t( 'crearPrimero' + capitalizar( clave ) )
+								texto: panel.textoCrearPrimero
 							} ) )
 						: null
 				] )

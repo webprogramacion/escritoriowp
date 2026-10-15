@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EscritorioWP\Escritorio;
 
 use EscritorioWP\Capacidades;
+use EscritorioWP\TiposContenido;
 use EscritorioWP\Woo\Woo;
 use WC_Order;
 use WC_Product;
@@ -29,13 +30,19 @@ final class Recientes {
 	/**
 	 * Devuelve los últimos elementos de un tipo.
 	 *
-	 * @param string $tipo   Clave del tipo (entradas, paginas, usuarios, productos, pedidos).
+	 * @param string $tipo   Clave del tipo (entradas, paginas, usuarios, productos, pedidos o la
+	 *                       `cpt-…` de un tipo de contenido personalizado).
 	 * @param int    $limite Número máximo de elementos.
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function obtener( string $tipo, int $limite ): array {
 		if ( ! Capacidades::puede_ver( $tipo ) ) {
 			return array();
+		}
+
+		// Un tipo personalizado se muestra como las entradas: mismas filas y mismo filtro por autor.
+		if ( TiposContenido::es_clave( $tipo ) ) {
+			return self::contenidos( TiposContenido::tipo( $tipo ), $limite );
 		}
 
 		return match ( $tipo ) {
@@ -48,7 +55,7 @@ final class Recientes {
 	}
 
 	/**
-	 * Últimas entradas o páginas modificadas.
+	 * Últimos contenidos modificados de un tipo: entradas, páginas o un tipo personalizado.
 	 *
 	 * @param string $tipo_contenido Tipo de contenido de WordPress.
 	 * @param int    $limite         Número máximo de elementos.
@@ -85,7 +92,7 @@ final class Recientes {
 	/**
 	 * Convierte una entrada en una fila de panel.
 	 *
-	 * @param WP_Post $entrada Entrada o página.
+	 * @param WP_Post $entrada Entrada, página o contenido de un tipo personalizado.
 	 * @return array<string, mixed>
 	 */
 	public static function fila_contenido( WP_Post $entrada ): array {

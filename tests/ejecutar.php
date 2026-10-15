@@ -17,6 +17,7 @@ $plugin = $raiz . '/escritoriowp/includes/';
 require_once $plugin . 'class-autoloader.php';
 require_once $plugin . 'class-ajustes.php';
 require_once $plugin . 'class-capacidades.php';
+require_once $plugin . 'class-tipos-contenido.php';
 require_once $plugin . 'class-changelog.php';
 require_once $plugin . 'class-menu.php';
 require_once $plugin . 'escritorio/class-preferencias.php';

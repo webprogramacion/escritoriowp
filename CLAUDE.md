@@ -55,6 +55,7 @@ WooCommerce es opcional: si está activo añade productos y pedidos.
     │   ├── class-plugin.php          Singleton que compone los módulos.
     │   ├── class-ajustes.php         Opción, defaults, saneado y pantalla de ajustes.
     │   ├── class-capacidades.php     Mapa tipo → capacidad, URLs, etiquetas e iconos.
+    │   ├── class-tipos-contenido.php Tipos personalizados que se ofrecen: detección, clave e icono.
     │   ├── class-activos.php         Registro de CSS/JS y catálogo de textos traducibles.
     │   ├── class-acerca-de.php       Pantalla «Acerca de»: versión, enlaces y novedades.
     │   ├── class-changelog.php       Lee el historial de cambios del readme.txt.
@@ -117,12 +118,20 @@ que muestre la interfaz**: cada ruta REST repite la comprobación en su `permiss
 | pedidos | `edit_shop_orders` | `edit_shop_orders` | — |
 | comentarios | `moderate_comments` | — | — |
 | actualizaciones | `update_core`, `update_plugins` o `update_themes` | — | — |
+| tipos personalizados (`cpt-{tipo}`) | `cap->edit_posts` del tipo | `cap->create_posts` | `cap->publish_posts` |
+
+Las capacidades de un tipo de contenido personalizado salen de su objeto (`get_post_type_object()`),
+y son las mismas que exigen su listado y su pantalla de creación nativos. `Capacidades` las resuelve
+para cualquier clave `cpt-…` de un tipo que ofrece `TiposContenido`; con la de un tipo que no se
+ofrece (no registrado, sin entrada en el menú o de WooCommerce), `existe()` es falso y la ruta
+responde 404 antes de mirar capacidades.
 
 Los ajustes «Indicadores» y «Paneles» (`indicadores_activos` y `paneles_activos`) **no son control de
 acceso**: deciden qué muestra el escritorio a todo el sitio, y encima sigue mandando la capacidad.
 Por eso se aplican en `Escritorio` (paneles) y en `Resumen::claves_visibles()` (indicadores), y nunca
 en `Capacidades`. La ruta `recientes/{tipo}` sigue respondiendo a quien tiene la capacidad aunque su
-panel esté desactivado, porque esos datos están igualmente en el listado nativo. La ruta `resumen`
+panel esté desactivado, también `recientes/cpt-…` con un tipo personalizado sin marcar, porque esos
+datos están igualmente en el listado nativo. La ruta `resumen`
 sí los filtra, porque devuelve lo que pinta el escritorio y así no calcula lo que no se muestra.
 
 ## 6. Cómo se sustituye el escritorio
@@ -377,14 +386,23 @@ orden del array es el orden de los grupos en el lanzador.
 
 **Un panel nuevo en el escritorio**: añade el tipo a `Capacidades::MAPA` y a
 `Capacidades::TIPOS_PANEL`, y devuélvelo en `Recientes::obtener()`. Añade sus textos de estado vacío
-(`panelVacioX`, `crearPrimeroX`) al catálogo de `Activos::textos()`. No hace falta nada más para el
-ajuste «Paneles»: el panel aparece solo en Ajustes y sale activo, también en los sitios que ya
-habían guardado el ajuste.
+a `Capacidades::texto_vacio()` y `Capacidades::texto_crear_primero()`: llegan al JS con cada panel,
+no en el catálogo de `Activos::textos()`, porque los de un tipo personalizado no se conocen de
+antemano. No hace falta nada más para el ajuste «Paneles»: el panel aparece solo en Ajustes y sale
+activo, también en los sitios que ya habían guardado el ajuste. Se crea en ventana solo si tiene
+creador en `Creador::CREADORES`; si no, su botón enlaza a `Capacidades::url_nuevo()`.
 
 **Un indicador nuevo**: añade su clave a `Resumen::INDICADORES`, con el tipo de `Capacidades::MAPA`
 que decide quién lo ve, su nombre a `Resumen::etiqueta()` y su tarjeta a `Resumen::obtener()`,
 condicionada a que la clave esté en `claves_visibles()`. Una tarjeta que no esté en `INDICADORES` no
 se muestra nunca. Como el panel, aparece sola en el ajuste «Indicadores» y sale activa.
+
+**Ofrecer o quitar un tipo de contenido personalizado**: `TiposContenido::detectados()` ofrece los
+tipos registrados con `show_ui` y entrada en el menú, sin los de `TiposContenido::EXCLUIDOS`. Otro
+plugin cambia la lista con el filtro `escritoriowp_tipos_contenido`, que recibe los identificadores
+detectados: puede quitar uno o añadir uno que no está en el menú. Del resultado se descartan los que
+no están registrados con `show_ui`, las entradas, las páginas y los excluidos. Ofrecer un tipo solo
+crea sus casillas en Ajustes, desmarcadas: quién lo ve sigue dependiendo de la capacidad del tipo.
 
 **Un comando fijo del lanzador**: añádelo en `CatalogoComandos::comandos_accion()`, siempre
 condicionado a una capacidad. Para comandos desde otro plugin, usa el filtro `escritoriowp_comandos`.

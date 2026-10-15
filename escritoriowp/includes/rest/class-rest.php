@@ -109,7 +109,7 @@ final class Rest {
 
 		register_rest_route(
 			self::ESPACIO,
-			'/recientes/(?P<tipo>[a-z]+)',
+			'/recientes/(?P<tipo>[a-z0-9_-]+)',
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( ControladorRecientes::class, 'obtener' ),

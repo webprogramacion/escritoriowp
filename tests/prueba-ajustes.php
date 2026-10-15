@@ -10,6 +10,7 @@ declare(strict_types=1);
 use EscritorioWP\Ajustes;
 use EscritorioWP\Capacidades;
 use EscritorioWP\Escritorio\Resumen;
+use EscritorioWP\TiposContenido;
 
 grupo( 'Ajustes' );
 
@@ -106,6 +107,52 @@ comprobar( 20, $con_mapas['elementos_por_panel'], 'con los mapas, el número de 
 comprobar( false, $con_mapas['indicadores_activos']['ingresos'], 'el saneado general aplica el de los indicadores' );
 comprobar( true, $con_mapas['indicadores_activos']['pedidos'], 'desactivar los ingresos no desactiva los pedidos' );
 comprobar( false, $con_mapas['paneles_activos']['usuarios'], 'el saneado general aplica el de los paneles' );
+
+grupo( 'Ajustes · tipos de contenido personalizados' );
+
+comprobar(
+	array(),
+	array_filter( array_keys( $defectos['paneles_activos'] + $defectos['indicadores_activos'] ), array( TiposContenido::class, 'es_clave' ) ),
+	'por defecto no hay ningún tipo personalizado activo'
+);
+
+$con_tipos = Ajustes::sanear_activos(
+	array(
+		'cpt-libro'  => '1',
+		'cpt-evento' => '0',
+		'inventado'  => '1',
+		'cpt-Malo'   => '1',
+	),
+	$paneles
+);
+
+comprobar(
+	array_merge( array_fill_keys( $paneles, true ), array( 'cpt-libro' => true ) ),
+	$con_tipos,
+	'se guardan los propios y solo el tipo personalizado marcado y válido'
+);
+comprobar(
+	array_merge( $paneles, array( 'cpt-libro' ) ),
+	array_keys( Ajustes::sanear_activos( array( 'cpt-libro' => '1', 'entradas' => '1' ), $paneles ) ),
+	'las claves propias salen primero y en su orden'
+);
+
+$muchos = array();
+
+for ( $i = 1; $i <= 150; $i++ ) {
+	$muchos[ 'cpt-tipo' . $i ] = '1';
+}
+
+$acotados = array_values( array_filter( array_keys( Ajustes::sanear_activos( $muchos, $paneles ) ), array( TiposContenido::class, 'es_clave' ) ) );
+
+comprobar( Ajustes::MAX_TIPOS_CONTENIDO, count( $acotados ), 'se conservan como mucho cien tipos personalizados' );
+comprobar( 'cpt-tipo100', end( $acotados ), 'se conservan los primeros' );
+comprobar( array_fill_keys( $paneles, true ), Ajustes::sanear_activos( 'cpt-libro', $paneles ), 'un valor que no es una lista no activa ningún tipo personalizado' );
+comprobar(
+	false,
+	array_key_exists( 'cpt-libro', Ajustes::sanear( array( 'indicadores_activos' => array( 'cpt-libro' => '0' ) ) )['indicadores_activos'] ),
+	'el saneado general no guarda un tipo personalizado desmarcado'
+);
 
 grupo( 'Ajustes · avisos por correo' );
 

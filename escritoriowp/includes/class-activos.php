@@ -137,18 +137,6 @@ final class Activos {
 			'verTodos'              => __( 'Ver todos', 'escritoriowp' ),
 			'obligatorio'           => __( 'Este campo es obligatorio.', 'escritoriowp' ),
 
-			// Paneles.
-			'panelVacioEntradas'    => __( 'Todavía no hay entradas.', 'escritoriowp' ),
-			'panelVacioPaginas'     => __( 'Todavía no hay páginas.', 'escritoriowp' ),
-			'panelVacioUsuarios'    => __( 'Todavía no hay usuarios.', 'escritoriowp' ),
-			'panelVacioProductos'   => __( 'Todavía no hay productos.', 'escritoriowp' ),
-			'panelVacioPedidos'     => __( 'Todavía no hay pedidos.', 'escritoriowp' ),
-			'crearPrimeroEntradas'  => __( 'Crear la primera entrada', 'escritoriowp' ),
-			'crearPrimeroPaginas'   => __( 'Crear la primera página', 'escritoriowp' ),
-			'crearPrimeroUsuarios'  => __( 'Crear el primer usuario', 'escritoriowp' ),
-			'crearPrimeroProductos' => __( 'Crear el primer producto', 'escritoriowp' ),
-			'crearPrimeroPedidos'   => __( 'Crear el primer pedido', 'escritoriowp' ),
-
 			// Personalización.
 			'personalizar'          => __( 'Personalizar', 'escritoriowp' ),
 			'paneles'               => __( 'Paneles', 'escritoriowp' ),

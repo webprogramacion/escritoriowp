@@ -12,6 +12,7 @@ namespace EscritorioWP\Escritorio;
 use EscritorioWP\Activos;
 use EscritorioWP\Ajustes;
 use EscritorioWP\Capacidades;
+use EscritorioWP\Creacion\Creador;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -258,6 +259,10 @@ final class Escritorio {
 	 * puede ver, estén o no activos en el sitio: la creación rápida de la cabecera los necesita
 	 * aunque su panel esté desactivado, porque sus botones no dependen de ese ajuste.
 	 *
+	 * Cada tipo lleva los textos de su estado vacío, porque los de un tipo de contenido
+	 * personalizado no se conocen de antemano. Solo se crea en ventana lo que tiene creador: los
+	 * pedidos y los tipos personalizados enlazan a su pantalla nativa.
+	 *
 	 * @return array<string, mixed>
 	 */
 	private function configuracion(): array {
@@ -268,15 +273,17 @@ final class Escritorio {
 
 		foreach ( Capacidades::paneles_visibles() as $tipo ) {
 			$tipos[ $tipo ] = array(
-				'clave'         => $tipo,
-				'etiqueta'      => Capacidades::etiqueta( $tipo ),
-				'etiquetaNuevo' => Capacidades::etiqueta_nuevo( $tipo ),
-				'icono'         => Capacidades::icono( $tipo ),
-				'urlListado'    => Capacidades::url_listado( $tipo ),
-				'urlNuevo'      => Capacidades::url_nuevo( $tipo ),
-				'puedeCrear'    => Capacidades::puede_crear( $tipo ),
-				'enModal'       => 'pedidos' !== $tipo && Capacidades::puede_crear( $tipo ),
-				'puedePublicar' => Capacidades::puede_publicar( $tipo ),
+				'clave'             => $tipo,
+				'etiqueta'          => Capacidades::etiqueta( $tipo ),
+				'etiquetaNuevo'     => Capacidades::etiqueta_nuevo( $tipo ),
+				'icono'             => Capacidades::icono( $tipo ),
+				'urlListado'        => Capacidades::url_listado( $tipo ),
+				'urlNuevo'          => Capacidades::url_nuevo( $tipo ),
+				'puedeCrear'        => Capacidades::puede_crear( $tipo ),
+				'enModal'           => Creador::admite( $tipo ) && Capacidades::puede_crear( $tipo ),
+				'puedePublicar'     => Capacidades::puede_publicar( $tipo ),
+				'textoVacio'        => Capacidades::texto_vacio( $tipo ),
+				'textoCrearPrimero' => Capacidades::texto_crear_primero( $tipo ),
 			);
 		}
 

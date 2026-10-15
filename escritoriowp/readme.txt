@@ -21,6 +21,8 @@ seguridad y avisos por correo de los cambios en los plugins y en los administrad
   pendientes y actualizaciones pendientes. Con WooCommerce, además productos, pedidos del mes e
   ingresos del mes.
 * Paneles con los últimos elementos de cada tipo, con enlace directo a editar o ver.
+* Tus tipos de contenido personalizados (libros, eventos, inmuebles…) con su propio panel y su
+  propia tarjeta de indicador, si los activas en los ajustes.
 * Creación rápida en una ventana: entradas, páginas, usuarios y productos sin salir del escritorio.
 * Personalización por usuario: oculta paneles, reordénalos y elige tema claro, oscuro o automático.
 
@@ -68,7 +70,8 @@ pantallas:
 
 * **Ajustes**: desactiva cada parte por separado. Sustituir o no el escritorio, conservar los
   widgets de otros plugins, elegir qué indicadores y qué paneles muestra el escritorio a todos los
-  usuarios, desactivar o no la paleta de comandos nativa y activar o desactivar el lanzador, también
+  usuarios (también los de los tipos de contenido personalizados que detecta en el sitio),
+  desactivar o no la paleta de comandos nativa y activar o desactivar el lanzador, también
   en el sitio público. También eliges debajo de qué menú aparece EscritorioWP, o si va al final, un
   color de fondo para que su entrada destaque en la barra lateral y los avisos por correo.
 * **Administradores**: quién es administrador y quién tiene permisos de administrador sin serlo.
@@ -145,7 +148,18 @@ Sí. En EscritorioWP › Ajustes, sección Escritorio, desmarca lo que no quiera
 «Indicadores» o en «Paneles» y nadie lo verá en el escritorio. Lo que dejes marcado lo sigue viendo
 cada usuario solo si su rol se lo permite. Es distinto de «Personalizar», en el propio escritorio:
 ahí cada usuario oculta o reordena paneles solo para sí, y entre los paneles que el sitio tenga
-activos.
+activos. Los tipos de contenido personalizados aparecen al final de los dos grupos y salen
+desmarcados: no se ven hasta que los marcas.
+
+= ¿Puedo ver mis tipos de contenido personalizados en el escritorio? =
+
+Sí. EscritorioWP detecta los tipos de contenido personalizados que tienen entrada en el menú del
+administrador y los lista al final de «Indicadores» y de «Paneles», en EscritorioWP › Ajustes,
+desmarcados. Marca un tipo en «Paneles» para ver sus últimos elementos, y en «Indicadores» para ver
+cuántos hay publicados y en borrador. El botón de crear del panel lleva a la pantalla de creación del
+propio tipo, con todos sus campos. Cada usuario solo ve el panel y la tarjeta de los tipos que su rol
+le deja editar, y si desactivas el plugin que registra un tipo, su panel desaparece y vuelve al
+reactivarlo.
 
 = ¿Necesita WooCommerce? =
 
