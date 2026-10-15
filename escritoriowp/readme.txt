@@ -122,8 +122,8 @@ es lo mismo que entregado), «Fallido» con el motivo que dé WordPress, o «Sin
 terminó antes de saberlo. Así no se pierde aunque el correo falle o acabe en spam. Los encontrarás en
 EscritorioWP › Avisos, con filtros por tipo y por estado y el mensaje completo de cada uno, y los cinco
 últimos arriba a la derecha del escritorio. Los que todavía no has visto se marcan en rojo: una
-campana con el número en el escritorio, un punto en cada aviso y un contador en el menú lateral. Al
-abrir la pantalla Avisos, o con «Marcar como leídos», dejan de estarlo; cada administrador tiene los
+campana con el número y un punto en cada aviso en el escritorio, y un contador en el menú lateral. Al
+abrir la pantalla Avisos, o con «Marcar como leídos», quedan leídos; cada administrador tiene los
 suyos.
 
 = Actualizaciones =

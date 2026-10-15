@@ -29,9 +29,10 @@ quiso contarle quede guardado en el propio sitio y poder verlo al entrar en el e
   enviaron, y enlaza a la pantalla Avisos. Es un bloque propio, fuera del ajuste «Paneles» y del menú
   «Personalizar». No aparece mientras no haya ningún aviso guardado ni ningún aviso activado.
 - **Avisos sin leer**, por administrador: una campana con el número en rojo en la cabecera del bloque,
-  un punto rojo en cada aviso sin leer (en el bloque y en la pantalla Avisos) y un contador rojo en
+  un punto rojo y el asunto en negrita en cada aviso sin leer del bloque y un contador rojo en
   «EscritorioWP › Avisos» y en «EscritorioWP» del menú lateral. Abrir la pantalla Avisos o pulsar
-  «Marcar como leídos» en el bloque los marca todos como leídos para ese usuario.
+  «Marcar como leídos» en el bloque los marca todos como leídos para ese usuario; por eso la pantalla
+  Avisos los muestra ya leídos.
 - **Rutas REST nuevas** `escritoriowp/v1/avisos` (los últimos avisos y cuántos hay sin leer) y
   `escritoriowp/v1/avisos/leidos` (marcarlos como leídos) para el bloque, con la misma comprobación de
   `manage_options` en el servidor.

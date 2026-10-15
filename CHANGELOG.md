@@ -21,10 +21,10 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
   escritorio, el bloque «Avisos por correo», arriba a la derecha junto a la cabecera y los indicadores,
   enseña a esos mismos usuarios los cinco últimos avisos con su tipo, su estado y cuándo se enviaron.
   Aparece en cuanto hay algún aviso guardado o algún aviso activado, y no depende del ajuste «Paneles».
-  Los avisos que cada administrador no ha visto se marcan en rojo: una campana con el número en el
-  bloque, un punto en cada aviso, en el bloque y en la pantalla Avisos, y un contador en «Avisos» y en
-  «EscritorioWP» del menú lateral, que se suma al de Administradores. Abrir la pantalla Avisos o pulsar
-  «Marcar como leídos» en el bloque los marca todos como leídos.
+  Los avisos que cada administrador no ha visto se marcan en rojo: una campana con el número y un
+  punto en cada aviso del bloque, y un contador en «Avisos» y en «EscritorioWP» del menú lateral, que se
+  suma al de Administradores. Abrir la pantalla Avisos, que ya los muestra leídos, o pulsar «Marcar
+  como leídos» en el bloque los marca todos como leídos.
 - Aviso por correo de los cambios en los administradores, con la casilla nueva «Avisar de cambios en
   los administradores» de la sección «Avisos por correo» (desmarcada por defecto). Mientras está
   marcada, una revisión de WP-Cron cada 6 horas clasifica a los usuarios con el mismo criterio que la

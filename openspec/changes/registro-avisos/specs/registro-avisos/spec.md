@@ -141,7 +141,7 @@ Cada usuario con `manage_options` SHALL tener su propio estado de lectura en cad
 #### Scenario: Abrir la pantalla Avisos
 
 - **WHEN** con avisos sin leer, el administrador abre EscritorioWP › Avisos
-- **THEN** en esa misma pantalla el menú ya no muestra contador de avisos, las filas que estaban sin leer tienen el punto rojo y el asunto en negrita, y al volver a abrirla ya no lo tienen
+- **THEN** en esa misma pantalla los avisos ya se ven leídos: el menú no muestra contador de avisos y ninguna fila tiene punto rojo ni el asunto en negrita; al volver al escritorio, la campana tampoco tiene número
 
 #### Scenario: Cada administrador con su marca
 

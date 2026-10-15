@@ -834,9 +834,9 @@ Deriva de `openspec/changes/registro-avisos/specs/`.
       «Administradores» y una sola burbuja con 5 en «EscritorioWP», que dice a los lectores de pantalla
       «3 usuarios que requieren revisión, 2 avisos sin leer». Con solo una de las dos, la burbuja de
       «EscritorioWP» es la de esa parte.
-- [x] `[S]` Abrir EscritorioWP › Avisos pinta con punto rojo y en negrita las filas que estaban sin leer
-      y, en esa misma página, el menú ya no lleva contador de avisos; la visita siguiente no tiene
-      marcas.
+- [x] `[C]` Con 3 avisos sin leer, «Ver todos» abre EscritorioWP › Avisos con los avisos ya leídos:
+      ninguna fila tiene punto rojo ni negrita y el menú de esa misma página no lleva contador de
+      avisos; al volver al escritorio por el menú o con «atrás», la campana no tiene número.
 - [x] `[S]` Cada administrador tiene su marca: que uno abra la pantalla Avisos no cambia los avisos sin
       leer de otro, y un usuario sin marca tiene todos sin leer.
 - [x] `[S]` Un aviso guardado después de leerlo todo deja el contador en 1.

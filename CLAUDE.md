@@ -480,8 +480,8 @@ cada sitio tiene su tabla. Sin leer son los de `id` mayor (`Registro::contar_des
 primaria); sin marca, todos. Una marca y no una lista de leídos, que crecería sin límite: se marcan
 todos a la vez, al abrir la pantalla Avisos o con «Marcar como leídos» (`POST avisos/leidos`), y solo se
 escribe si sube. La pantalla marca en `admin_menu`, cuando WordPress ya ha fijado `$plugin_page`, para
-que el menú de esa misma página salga sin contador, y guarda la marca anterior para pintar con punto
-rojo y en negrita las filas que eran nuevas en esa visita. La ruta `avisos` devuelve `sinLeer` y `nuevo`
+que el menú de esa misma página salga sin contador, y pinta las filas ya leídas: un punto rojo en la
+pantalla que acaba de marcarlos se leía como «no se han marcado». La ruta `avisos` devuelve `sinLeer` y `nuevo`
 en cada fila; el JS pinta el número rojo de la campana (con «Avisos sin leer: N» para lectores de
 pantalla, porque el número no va dentro del `h3` que da nombre a la región), el punto de cada fila y,
 al marcar como leídos, quita la parte `data-escritoriowp-parte="avisos"` de la burbuja de

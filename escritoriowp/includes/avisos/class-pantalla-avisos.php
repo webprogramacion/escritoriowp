@@ -43,14 +43,6 @@ final class PantallaAvisos {
 	private string $pantalla = '';
 
 	/**
-	 * Último aviso que el usuario había visto antes de abrir esta pantalla, para señalar los que eran
-	 * nuevos en esta visita. Null si la petición no es la de esta pantalla.
-	 *
-	 * @var int|null
-	 */
-	private ?int $vistos_antes = null;
-
-	/**
 	 * Indica si el usuario actual puede ver los avisos.
 	 *
 	 * @return bool
@@ -116,8 +108,8 @@ final class PantallaAvisos {
 	 * de «Ajustes», con el contador de avisos sin leer, y aporta ese número al de «EscritorioWP».
 	 *
 	 * En su propia pantalla marca los avisos como leídos aquí, y no al pintar: WordPress ya ha fijado
-	 * `$plugin_page`, y así el menú de esa misma página sale sin contador. Se queda con la marca
-	 * anterior para señalar en el listado los avisos que eran nuevos.
+	 * `$plugin_page`, y así el menú de esa misma página sale sin contador. Abrir la pantalla es leerlos,
+	 * así que el listado los pinta ya leídos.
 	 *
 	 * @return void
 	 */
@@ -128,7 +120,6 @@ final class PantallaAvisos {
 			$usuario = get_current_user_id();
 
 			if ( $this->en_su_pantalla() ) {
-				$this->vistos_antes = Lectura::vistos( $usuario );
 				Lectura::marcar( $usuario );
 			} else {
 				$sin_leer = Lectura::sin_leer( $usuario );
@@ -176,15 +167,6 @@ final class PantallaAvisos {
 		return self::PAGINA === $plugin_page;
 	}
 
-	/**
-	 * Indica si un aviso era nuevo para el usuario al abrir esta pantalla.
-	 *
-	 * @param int $id Identificador del aviso.
-	 * @return bool
-	 */
-	private function era_nuevo( int $id ): bool {
-		return null !== $this->vistos_antes && $id > $this->vistos_antes;
-	}
 
 	/**
 	 * Encola la hoja de estilo de la pantalla.
@@ -392,14 +374,10 @@ final class PantallaAvisos {
 			</thead>
 			<tbody>
 				<?php foreach ( Registro::listar( $filtros, $pagina ) as $aviso ) : ?>
-					<tr<?php echo $this->era_nuevo( (int) $aviso['id'] ) ? ' class="escritoriowp-avisos__fila--nueva"' : ''; ?>>
+					<tr>
 						<td class="escritoriowp-avisos__fecha" data-columna="<?php echo esc_attr__( 'Fecha', 'escritoriowp' ); ?>"><?php echo esc_html( self::fecha( (string) $aviso['fecha'] ) ); ?></td>
 						<td data-columna="<?php echo esc_attr__( 'Tipo', 'escritoriowp' ); ?>"><?php echo esc_html( self::nombre_tipo( (string) $aviso['tipo'] ) ); ?></td>
 						<td data-columna="<?php echo esc_attr__( 'Asunto', 'escritoriowp' ); ?>">
-							<?php if ( $this->era_nuevo( (int) $aviso['id'] ) ) : ?>
-								<span class="escritoriowp-avisos__punto" aria-hidden="true"></span>
-								<span class="screen-reader-text"><?php echo esc_html__( 'Sin leer:', 'escritoriowp' ); ?></span>
-							<?php endif; ?>
 							<a href="<?php echo esc_url( self::url_detalle( (int) $aviso['id'], array_merge( $filtros, array( 'paged' => $pagina ) ) ) ); ?>"><?php echo esc_html( self::asunto( (string) $aviso['asunto'] ) ); ?></a>
 						</td>
 						<td class="escritoriowp-avisos__destinatarios" data-columna="<?php echo esc_attr__( 'Destinatarios', 'escritoriowp' ); ?>"><?php echo esc_html( (string) $aviso['destinatarios'] ); ?></td>

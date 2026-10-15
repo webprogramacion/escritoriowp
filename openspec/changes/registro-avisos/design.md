@@ -293,8 +293,10 @@ leer.
   leídos»: la marca pasa a `Registro::ultimo_id()`. Solo se escribe si sube. Descartado leer aviso a
   aviso: obligaría a guardar por usuario la lista de leídos, que crece sin límite.
 - **La pantalla marca en `admin_menu`**, cuando WordPress ya ha fijado `$plugin_page`, igual que
-  Administradores analiza ahí: así el contador del menú de esa misma página ya sale a cero. Guarda la
-  marca anterior para pintar con punto rojo las filas que eran nuevas en esta visita.
+  Administradores analiza ahí: así el contador del menú de esa misma página ya sale a cero. Las filas
+  del listado se pintan ya leídas: un punto rojo en una pantalla que acaba de marcarlos se lee como
+  «sin leer» y contradice al menú. Descartado señalar ahí los que eran nuevos en esta visita: se probó
+  y parecía que la pantalla no los marcaba.
 - **Contador del menú.** «Avisos» lleva su burbuja, la de WordPress (`awaiting-mod`), con «N avisos sin
   leer» para lectores de pantalla. En «EscritorioWP» va una sola burbuja con la suma de Administradores
   y Avisos: cada módulo aporta su parte con `Menu::sumar_contador()` y `Menu::anadir_contador()`, en
@@ -331,7 +333,8 @@ leer.
 - [Un administrador nuevo ve todos los avisos antiguos sin leer] → Es lo que significa «sin leer»; una
   visita a la pantalla Avisos los marca.
 - [Abrir la página 1 del listado marca también los de las páginas siguientes] → La marca es una sola
-  por usuario (D11); el punto rojo solo se ve en la visita que los marcó.
+  por usuario (D11) y abrir la pantalla es leerlos; el orden del listado, del más reciente al más
+  antiguo, ya pone arriba los últimos.
 - [Orden de archivado] → El delta de `menu-administracion` parte del texto que deja
   `pantalla-administradores`: hay que archivar ese cambio (y `tipos-contenido-personalizados`, que toca
   `escritorio-panel`) antes que este.
