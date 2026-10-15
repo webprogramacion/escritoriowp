@@ -2,1118 +2,1384 @@
 # This file is distributed under the GPL-2.0-or-later license.
 msgid ""
 msgstr ""
-"Project-Id-Version: EscritorioWP 0.4.0\n"
+"Project-Id-Version: EscritorioWP 0.5.0\n"
 "Report-Msgid-Bugs-To: https://webprogramacion.es\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-14 11:51+0000\n"
+"POT-Creation-Date: 2026-10-15 19:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: tools/generar-pot.php\n"
 "X-Domain: escritoriowp\n"
 
+#. translators: 1: permisos separados por comas, 2: nombre del rol.
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:427
+msgid "%1$s (del rol «%2$s»)"
+msgstr ""
+
 #. translators: 1: los primeros nombres, separados por comas, 2: cuántos más hay.
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:303
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:312
 msgid "%1$s y %2$d más"
 msgstr ""
 
 #. translators: 1: nombres separados por comas, 2: el último nombre.
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:301
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:310
 msgid "%1$s y %2$s"
 msgstr ""
 
+#. translators: %s: permisos separados por comas.
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:421
+msgid "%s (asignado al usuario)"
+msgid_plural "%s (asignados al usuario)"
+msgstr[0] ""
+msgstr[1] ""
+
 #. translators: %s: identificador del menú guardado, que ya no existe.
-#: escritoriowp\includes\class-ajustes.php:955
+#: escritoriowp/includes/class-ajustes.php:1046
 msgid "%s (no disponible)"
 msgstr ""
 
-#. translators: %s: número de entradas en borrador.
-#: escritoriowp\includes\escritorio\class-resumen.php:102
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:358
+msgid "%s aviso coincide con los filtros."
+msgid_plural "%s avisos coinciden con los filtros."
+msgstr[0] ""
+msgstr[1] ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:360
+msgid "%s aviso guardado."
+msgid_plural "%s avisos guardados."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: número de avisos sin leer.
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:153
+msgid "%s aviso sin leer"
+msgid_plural "%s avisos sin leer"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: número de elementos en borrador.
+#: escritoriowp/includes/escritorio/class-resumen.php:186
 msgid "%s en borrador"
 msgid_plural "%s en borrador"
 msgstr[0] ""
 msgstr[1] ""
 
-#: escritoriowp\includes\class-activos.php:201
+#: escritoriowp/includes/class-activos.php:193
 msgid "%s resultados"
 msgstr ""
 
 #. translators: %s: número de usuarios que requieren revisión.
-#: escritoriowp\includes\seguridad\class-administradores.php:214
+#: escritoriowp/includes/seguridad/class-administradores.php:214
 msgid "%s usuario que requiere revisión"
 msgid_plural "%s usuarios que requieren revisión"
 msgstr[0] ""
 msgstr[1] ""
 
-#: escritoriowp\includes\busqueda\class-fuente-contenidos.php:285
-#: escritoriowp\includes\escritorio\class-recientes.php:404
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:559
+msgid "(sin asunto)"
+msgstr ""
+
+#: escritoriowp/includes/escritorio/class-recientes.php:411
+#: escritoriowp/includes/busqueda/class-fuente-contenidos.php:256
 msgid "(sin título)"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:202
+#: escritoriowp/includes/class-activos.php:194
 msgid "1 resultado"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:631
+#: escritoriowp/includes/class-ajustes.php:683
 msgid "Abre el buscador con Comando+K o Control+K y desde el botón de la barra de administración."
 msgstr ""
 
-#: escritoriowp\includes\lanzador\class-lanzador.php:221
+#: escritoriowp/includes/lanzador/class-lanzador.php:221
 msgid "Abrir el buscador de EscritorioWP"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:598
-#: escritoriowp\includes\seguridad\class-administradores.php:645
+#: escritoriowp/includes/seguridad/class-administradores.php:565
+#: escritoriowp/includes/seguridad/class-administradores.php:612
 msgid "Acciones"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:194
+#: escritoriowp/includes/class-activos.php:186
 msgid "Acciones rápidas"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:74
+#: escritoriowp/includes/class-acerca-de.php:74
 msgid "Acerca de"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:73
-#: escritoriowp\includes\class-acerca-de.php:111
+#: escritoriowp/includes/class-acerca-de.php:73
+#: escritoriowp/includes/class-acerca-de.php:111
 msgid "Acerca de EscritorioWP"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:428
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:403
 msgid "Activación"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:630
+#: escritoriowp/includes/class-ajustes.php:682
 msgid "Activar el lanzador de EscritorioWP"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:233
+#: escritoriowp/includes/class-capacidades.php:293
 msgid "Actualizaciones"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:324
+#: escritoriowp/includes/escritorio/class-resumen.php:355
 msgid "Actualizaciones pendientes"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:398
+#: escritoriowp/includes/escritorio/class-escritorio.php:412
 msgid "Actualizar"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:206
+#: escritoriowp/includes/class-acerca-de.php:206
 msgid "Actualizar en la pantalla Plugins"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:182
-#: escritoriowp\includes\seguridad\class-administradores.php:183
-#: escritoriowp\includes\seguridad\class-administradores.php:319
-#: escritoriowp\includes\seguridad\class-administradores.php:588
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:192
+#: escritoriowp/includes/seguridad/class-administradores.php:183
+#: escritoriowp/includes/seguridad/class-administradores.php:184
+#: escritoriowp/includes/seguridad/class-administradores.php:286
+#: escritoriowp/includes/seguridad/class-administradores.php:555
 msgid "Administradores"
 msgstr ""
 
-#: escritoriowp\includes\busqueda\class-fuente-productos.php:134
-#: escritoriowp\includes\escritorio\class-recientes.php:234
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:446
+msgid "Administradores nuevos"
+msgstr ""
+
+#: escritoriowp/includes/escritorio/class-recientes.php:241
+#: escritoriowp/includes/busqueda/class-fuente-productos.php:134
 msgid "Agotado"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:524
+#: escritoriowp/includes/class-ajustes.php:570
 msgid "Ajustes"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:509
-#: escritoriowp\includes\class-ajustes.php:523
-#: escritoriowp\includes\class-ajustes.php:1076
-#: escritoriowp\includes\lanzador\class-catalogo-comandos.php:250
+#: escritoriowp/includes/lanzador/class-catalogo-comandos.php:250
+#: escritoriowp/includes/class-ajustes.php:555
+#: escritoriowp/includes/class-ajustes.php:569
+#: escritoriowp/includes/class-ajustes.php:1167
 msgid "Ajustes de EscritorioWP"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:145
+#: escritoriowp/includes/class-acerca-de.php:145
 msgid "Ajustes del plugin"
 msgstr ""
 
 #. translators: %s: direcciones de correo descartadas, separadas por comas.
-#: escritoriowp\includes\class-ajustes.php:808
+#: escritoriowp/includes/class-ajustes.php:898
 msgid "Ajustes guardados, pero se ha quitado de los destinatarios esta dirección, que no es válida: %s"
 msgid_plural "Ajustes guardados, pero se han quitado de los destinatarios estas direcciones, que no son válidas: %s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: escritoriowp\includes\class-ajustes.php:979
+#: escritoriowp/includes/class-ajustes.php:1070
 msgid "Al final"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:173
+#: escritoriowp/includes/class-ajustes.php:813
+msgid "Al final están los tipos de contenido personalizados de este sitio; salen desmarcados."
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:360
+msgid "Antes era administrador"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:354
+msgid "Antes tenía permisos de administrador sin el rol"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:165
 msgid "Apellidos"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:828
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:322
+msgid "Aquí se guardan todos los avisos por correo que EscritorioWP intenta enviar, también los que no se pudieron enviar. «Enviado» quiere decir que el servidor de correo del sitio aceptó el mensaje, no que haya llegado al buzón."
+msgstr ""
+
+#: escritoriowp/includes/seguridad/class-administradores.php:795
 msgid "Asignado al usuario"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:689
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:370
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:380
+#: escritoriowp/includes/class-ajustes.php:747
 msgid "Asunto"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:156
+#: escritoriowp/includes/class-activos.php:148
 msgid "Automático"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:654
+#: escritoriowp/includes/class-ajustes.php:706
 msgid "Avisar al activar un plugin"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:672
+#: escritoriowp/includes/class-ajustes.php:724
 msgid "Avisar al borrar un plugin"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:660
+#: escritoriowp/includes/class-ajustes.php:712
 msgid "Avisar al desactivar un plugin"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:666
+#: escritoriowp/includes/class-ajustes.php:718
 msgid "Avisar al instalar un plugin"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:576
+#: escritoriowp/includes/class-ajustes.php:730
+msgid "Avisar de cambios en los administradores"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:292
+msgid "Aviso por correo"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:134
+msgid "Avisos"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:133
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:292
+#: escritoriowp/includes/escritorio/class-escritorio.php:464
+#: escritoriowp/includes/class-ajustes.php:622
 msgid "Avisos por correo"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:163
+#: escritoriowp/includes/class-activos.php:140
+msgid "Avisos sin leer: %s"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:155
 msgid "Bajar el panel %s"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:431
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:406
 msgid "Borrado"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:178
+#: escritoriowp/includes/class-activos.php:170
 msgid "Borrador"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:467
+#: escritoriowp/includes/escritorio/class-escritorio.php:547
 msgid "Buenas noches, %s"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:476
+#: escritoriowp/includes/escritorio/class-escritorio.php:556
 msgid "Buenas tardes, %s"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:472
+#: escritoriowp/includes/escritorio/class-escritorio.php:552
 msgid "Buenos días, %s"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:191
+#: escritoriowp/includes/class-activos.php:183
 msgid "Busca pantallas, entradas, páginas, usuarios, productos o pedidos…"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:190
+#: escritoriowp/includes/class-activos.php:182
 msgid "Buscador de EscritorioWP"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:391
-#: escritoriowp\includes\lanzador\class-lanzador.php:215
+#: escritoriowp/includes/lanzador/class-lanzador.php:215
+#: escritoriowp/includes/escritorio/class-escritorio.php:405
 msgid "Buscar"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:214
+#: escritoriowp/includes/class-acerca-de.php:214
 msgid "Buscar actualizaciones ahora"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:134
-#: escritoriowp\includes\seguridad\class-administradores.php:459
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:119
+msgid "Cada 6 horas (EscritorioWP)"
+msgstr ""
+
+#. translators: %s: enlace a la pantalla Avisos.
+#: escritoriowp/includes/class-ajustes.php:627
+msgid "Cada aviso queda guardado en %s, también si el correo falla."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:134
+#: escritoriowp/includes/seguridad/class-administradores.php:426
 msgid "Cancelar"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:129
+#: escritoriowp/includes/class-activos.php:129
 msgid "Cargando…"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:671
+#: escritoriowp/includes/seguridad/class-administradores.php:638
 msgid "Casi siempre vienen de un rol alterado: revisa la sección «Roles alterados»."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:168
+#: escritoriowp/includes/class-activos.php:160
 msgid "Categoría"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:133
+#: escritoriowp/includes/class-activos.php:133
 msgid "Cerrar"
 msgstr ""
 
-#: escritoriowp\includes\lanzador\class-catalogo-comandos.php:260
+#: escritoriowp/includes/lanzador/class-catalogo-comandos.php:260
 msgid "Cerrar sesión"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:157
+#: escritoriowp/includes/class-activos.php:149
 msgid "Claro"
 msgstr ""
 
-#: escritoriowp\includes\rest\class-rest.php:81
+#: escritoriowp/includes/rest/class-rest.php:83
 msgid "Claves de fuente separadas por comas."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:648
+#: escritoriowp/includes/class-ajustes.php:700
 msgid "Color de fondo en el menú"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:235
+#: escritoriowp/includes/class-capacidades.php:295
 msgid "Comandos"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:232
+#: escritoriowp/includes/class-capacidades.php:292
 msgid "Comentarios"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:323
+#: escritoriowp/includes/escritorio/class-resumen.php:354
 msgid "Comentarios pendientes"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:673
+#: escritoriowp/includes/class-ajustes.php:725
 msgid "Con el nombre y la versión que tenía. La pantalla Plugins borra los plugins de uno en uno, así que un borrado en lote manda un correo por plugin."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:167
+#: escritoriowp/includes/class-activos.php:159
 msgid "Contenido"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:569
+#: escritoriowp/includes/class-ajustes.php:615
 msgid "Controla dónde aparece EscritorioWP en la barra lateral del administrador y cómo se ve."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:560
+#: escritoriowp/includes/class-ajustes.php:606
 msgid "Controla el buscador que se abre con Comando+K o Control+K."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:551
+#: escritoriowp/includes/class-ajustes.php:597
 msgid "Controla qué se muestra al entrar en el escritorio de WordPress."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:596
-#: escritoriowp\includes\seguridad\class-administradores.php:605
+#: escritoriowp/includes/seguridad/class-administradores.php:563
+#: escritoriowp/includes/seguridad/class-administradores.php:572
 msgid "Correo"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:182
+#: escritoriowp/includes/class-activos.php:174
 msgid "Crear"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:150
+#: escritoriowp/includes/class-capacidades.php:385
 msgid "Crear el primer pedido"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:149
+#: escritoriowp/includes/class-capacidades.php:384
 msgid "Crear el primer producto"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:148
+#: escritoriowp/includes/class-capacidades.php:383
 msgid "Crear el primer usuario"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:146
+#: escritoriowp/includes/class-capacidades.php:381
 msgid "Crear la primera entrada"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:147
+#: escritoriowp/includes/class-capacidades.php:382
 msgid "Crear la primera página"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:185
+#: escritoriowp/includes/class-activos.php:177
 msgid "Crear otro"
 msgstr ""
 
 #. translators: 1: número mínimo, 2: número máximo.
-#: escritoriowp\includes\class-ajustes.php:616
+#: escritoriowp/includes/class-ajustes.php:668
 msgid "Cuántos elementos recientes muestra cada panel (entre %1$d y %2$d)."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:964
+#: escritoriowp/includes/class-ajustes.php:1055
 msgid "Debajo de…"
 msgstr ""
 
 #. translators: %s: nombre del rol.
-#: escritoriowp\includes\seguridad\class-administradores.php:833
+#: escritoriowp/includes/seguridad/class-administradores.php:800
 msgid "Del rol «%s»"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:429
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:404
 msgid "Desactivación"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:624
+#: escritoriowp/includes/class-ajustes.php:676
 msgid "Desactivar la paleta de comandos nativa"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:667
+#: escritoriowp/includes/class-ajustes.php:719
 msgid "Desde el directorio de plugins, subiendo un zip (también si sustituye a uno instalado), por la API REST o con WP-CLI."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:655
+#: escritoriowp/includes/class-ajustes.php:707
 msgid "Desde la pantalla Plugins, en lote, por la API REST o con WP-CLI."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:678
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:371
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:383
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:516
+#: escritoriowp/includes/class-ajustes.php:736
 msgid "Destinatarios"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:450
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:425
 msgid "Dirección del sitio."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:636
+#: escritoriowp/includes/class-ajustes.php:688
 msgid "Disponible también en el sitio público"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:136
+#: escritoriowp/includes/class-activos.php:136
 msgid "Editar"
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-usuario.php:46
+#: escritoriowp/includes/creacion/class-creador-usuario.php:46
 msgid "El email es obligatorio."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-usuario.php:38
+#: escritoriowp/includes/creacion/class-creador-usuario.php:38
 msgid "El nombre de usuario es obligatorio."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-producto.php:44
+#: escritoriowp/includes/creacion/class-creador-producto.php:44
 msgid "El nombre del producto es obligatorio."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-producto.php:51
+#: escritoriowp/includes/creacion/class-creador-producto.php:51
 msgid "El precio debe ser un número mayor o igual que cero."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-contenido.php:48
+#: escritoriowp/includes/creacion/class-creador-contenido.php:48
 msgid "El título es obligatorio."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:613
+#: escritoriowp/includes/class-ajustes.php:665
 msgid "Elementos por panel"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:171
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:330
+msgid "Elige qué avisos quieres recibir en los ajustes."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:163
 msgid "Email"
 msgstr ""
 
-#: escritoriowp\includes\busqueda\class-fuente-productos.php:133
-#: escritoriowp\includes\escritorio\class-recientes.php:230
+#: escritoriowp/includes/escritorio/class-recientes.php:237
+#: escritoriowp/includes/busqueda/class-fuente-productos.php:133
 msgid "En stock"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:451
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:426
 msgid "Enlace a la pantalla Plugins."
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:227
+#: escritoriowp/includes/class-capacidades.php:287
 msgid "Entradas"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:317
+#: escritoriowp/includes/escritorio/class-resumen.php:348
 msgid "Entradas publicadas"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:175
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:203
+msgid "Enviado"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:167
 msgid "Enviarle un email de bienvenida"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:192
+#: escritoriowp/includes/class-activos.php:184
 msgid "Escribe para buscar por título, email, SKU o número de pedido."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:549
+#: escritoriowp/includes/class-ajustes.php:595
 msgid "Escritorio"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:510
-#: escritoriowp\includes\escritorio\class-escritorio.php:125
+#: escritoriowp/includes/escritorio/class-escritorio.php:130
+#: escritoriowp/includes/class-ajustes.php:556
 msgid "EscritorioWP"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:643
+#: escritoriowp/includes/class-ajustes.php:695
 msgid "EscritorioWP aparece justo debajo del menú que elijas. Si ese menú deja de existir, por ejemplo al desactivar su plugin, vuelve a aparecer debajo del Escritorio."
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:414
+#: escritoriowp/includes/escritorio/class-escritorio.php:436
 msgid "EscritorioWP necesita JavaScript para mostrar el escritorio."
 msgstr ""
 
 #. translators: 1: versión de PHP requerida, 2: versión de PHP instalada.
-#: escritoriowp\escritoriowp.php:82
+#: escritoriowp/escritoriowp.php:82
 msgid "EscritorioWP necesita PHP %1$s o superior. Esta instalación usa PHP %2$s."
 msgstr ""
 
 #. translators: 1: versión de WordPress requerida, 2: versión de WordPress instalada.
-#: escritoriowp\escritoriowp.php:88
+#: escritoriowp/escritoriowp.php:88
 msgid "EscritorioWP necesita WordPress %1$s o superior. Esta instalación usa WordPress %2$s."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:1079
+#: escritoriowp/includes/class-ajustes.php:1170
 msgid "EscritorioWP sustituye el escritorio de WordPress y su paleta de comandos. Puedes desactivar cada parte por separado."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-usuario.php:48
+#: escritoriowp/includes/class-ajustes.php:628
+msgid "EscritorioWP › Avisos"
+msgstr ""
+
+#: escritoriowp/includes/creacion/class-creador-usuario.php:48
 msgid "Ese email no es válido."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-usuario.php:40
+#: escritoriowp/includes/creacion/class-creador-usuario.php:40
 msgid "Ese nombre de usuario no es válido."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-errores.php:60
-#: escritoriowp\includes\rest\class-rest.php:244
+#: escritoriowp/includes/rest/class-rest.php:289
+#: escritoriowp/includes/creacion/class-errores.php:60
 msgid "Ese tipo de contenido no está disponible."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:169
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:372
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:384
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:417
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:508
+#: escritoriowp/includes/class-activos.php:161
 msgid "Estado"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:138
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:309
+msgid "Este aviso compara la situación de ahora con la de la revisión anterior: no dice quién hizo los cambios ni cuándo exactamente."
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:490
+msgid "Este aviso no existe."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:142
 msgid "Este campo es obligatorio."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:380
+#: escritoriowp/includes/class-ajustes.php:810
+msgid "Este sitio no tiene tipos de contenido personalizados; si un plugin añade alguno, aparecerá aquí, desmarcado."
+msgstr ""
+
+#: escritoriowp/includes/seguridad/class-administradores.php:347
 msgid "Este usuario no está marcado: es administrador o no tiene permisos de administrador."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:378
+#: escritoriowp/includes/seguridad/class-administradores.php:345
 msgid "Este usuario no tiene permisos de administrador asignados que retirar."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:696
+#: escritoriowp/includes/seguridad/class-administradores.php:663
 msgid "Estos roles incluyen permisos de administrador, así que todos sus usuarios los tienen. EscritorioWP no modifica roles: corrígelos con un editor de roles o restaura sus permisos originales."
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:195
+#: escritoriowp/includes/class-acerca-de.php:195
 msgid "Estás en la última versión publicada."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:625
+#: escritoriowp/includes/class-ajustes.php:677
 msgid "Evita que WordPress cargue su paleta en el administrador. La paleta del editor de bloques no se toca."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:597
-#: escritoriowp\includes\seguridad\class-administradores.php:606
-#: escritoriowp\includes\seguridad\class-administradores.php:644
-#: escritoriowp\includes\seguridad\class-administradores.php:654
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:204
+msgid "Fallido"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:368
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:378
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:502
+msgid "Fecha"
+msgstr ""
+
+#: escritoriowp/includes/seguridad/class-administradores.php:564
+#: escritoriowp/includes/seguridad/class-administradores.php:573
+#: escritoriowp/includes/seguridad/class-administradores.php:611
+#: escritoriowp/includes/seguridad/class-administradores.php:621
 msgid "Fecha de alta"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:448
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:423
 msgid "Fecha y hora, en el formato y la zona horaria del sitio."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:180
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:426
+msgid "Filtrar"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:172
 msgid "Guardar borrador"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:417
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:392
 msgid "Ha habido un cambio en los plugins de {sitio} ({url}).\n\nEvento: {evento}\nPlugins ({cantidad}):\n{lista}\n\nUsuario: {usuario}\nIP: {ip}\nFecha: {fecha}\n\nRevisa los plugins en {url_plugins}"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:666
+#: escritoriowp/includes/seguridad/class-administradores.php:633
 msgid "Hay %s usuario más con permisos de administrador que no se muestra."
 msgid_plural "Hay %s usuarios más con permisos de administrador que no se muestran."
 msgstr[0] ""
 msgstr[1] ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:568
+#: escritoriowp/includes/seguridad/class-administradores.php:535
 msgid "Hay %s usuario que requiere revisión."
 msgid_plural "Hay %s usuarios que requieren revisión."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: número de la versión disponible.
-#: escritoriowp\includes\class-acerca-de.php:189
+#: escritoriowp/includes/class-acerca-de.php:189
 msgid "Hay una versión nueva disponible: %s"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:452
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:427
 msgid "IP desde la que se hizo el cambio. Si el sitio está detrás de un proxy o una CDN, es la del proxy."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:599
+#: escritoriowp/includes/class-ajustes.php:651
 msgid "Indicadores"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:322
+#: escritoriowp/includes/escritorio/class-resumen.php:353
 msgid "Ingresos este mes"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:430
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:405
 msgid "Instalación"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:247
+#: escritoriowp/includes/class-acerca-de.php:247
 msgid "Instalada"
 msgstr ""
 
-#: escritoriowp\includes\busqueda\class-fuente-pedidos.php:132
-#: escritoriowp\includes\escritorio\class-recientes.php:291
+#: escritoriowp/includes/escritorio/class-recientes.php:298
+#: escritoriowp/includes/busqueda/class-fuente-pedidos.php:132
 msgid "Invitado"
 msgstr ""
 
-#: escritoriowp\includes\lanzador\class-catalogo-comandos.php:222
+#: escritoriowp/includes/lanzador/class-catalogo-comandos.php:222
 msgid "Ir al escritorio"
 msgstr ""
 
 #. translators: 1: número mínimo de caracteres, 2: número máximo.
-#: escritoriowp\includes\rest\class-controlador-busqueda.php:39
+#: escritoriowp/includes/rest/class-controlador-busqueda.php:39
 msgid "La búsqueda debe tener entre %1$d y %2$d caracteres."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:197
+#: escritoriowp/includes/class-activos.php:189
 msgid "La búsqueda ha fallado. Los comandos siguen disponibles."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:558
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:525
+msgid "La función de correo de WordPress no aceptó el mensaje y no dio ningún motivo."
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:512
+msgid "La petición terminó antes de saber si el correo se envió."
+msgstr ""
+
+#. translators: 1: nombre del sitio, 2: dirección del sitio, 3: fecha y hora de la revisión anterior.
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:273
+msgid "La revisión periódica de EscritorioWP ha encontrado cambios en los administradores de %1$s (%2$s) desde la revisión anterior, del %3$s."
+msgstr ""
+
+#: escritoriowp/includes/class-ajustes.php:604
 msgid "Lanzador"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:600
+#: escritoriowp/includes/class-ajustes.php:652
 msgid "Las tarjetas de resumen de la parte de arriba del escritorio. Las que desmarques no las ve nadie; las marcadas, cada usuario solo si su rol le deja ver esa pantalla."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:607
+#: escritoriowp/includes/class-ajustes.php:659
 msgid "Los paneles con los últimos elementos. Los que desmarques no los ve nadie; los marcados, cada usuario solo si su rol se lo permite, y además puede ocultarlos para sí desde «Personalizar», en el propio escritorio."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:794
+#: escritoriowp/includes/seguridad/class-administradores.php:761
 msgid "Los permisos vienen de su rol. EscritorioWP no modifica roles."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:696
+#: escritoriowp/includes/escritorio/class-escritorio.php:472
+msgid "Marcar como leídos"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:533
+#: escritoriowp/includes/class-ajustes.php:754
 msgid "Mensaje"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:199
-#: escritoriowp\includes\class-ajustes.php:567
-#: escritoriowp\includes\lanzador\class-lanzador.php:169
+#: escritoriowp/includes/class-activos.php:191
+#: escritoriowp/includes/lanzador/class-lanzador.php:169
+#: escritoriowp/includes/class-ajustes.php:613
 msgid "Menú"
 msgstr ""
 
-#: escritoriowp\includes\lanzador\class-catalogo-comandos.php:240
+#: escritoriowp/includes/lanzador/class-catalogo-comandos.php:240
 msgid "Mi perfil"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:588
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:520
+msgid "Motivo del fallo"
+msgstr ""
+
+#: escritoriowp/includes/class-ajustes.php:640
 msgid "Muestra la interfaz de EscritorioWP en lugar de los widgets de WordPress."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:632
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:342
+msgid "Ningún aviso coincide con estos filtros."
+msgstr ""
+
+#: escritoriowp/includes/seguridad/class-administradores.php:599
 msgid "Ningún usuario sin el rol Administrador tiene permisos de administrador."
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:233
+#: escritoriowp/includes/class-acerca-de.php:233
 msgid "No hay historial de cambios disponible."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:553
+#: escritoriowp/includes/seguridad/class-administradores.php:520
 msgid "No hay usuarios con permisos de administrador fuera del rol Administrador ni administradores ocultos."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-usuario.php:64
+#: escritoriowp/includes/creacion/class-creador-usuario.php:64
 msgid "No puedes asignar ese rol."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:377
+#: escritoriowp/includes/seguridad/class-administradores.php:344
 msgid "No puedes retirarte tus propios permisos."
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:197
+#: escritoriowp/includes/class-acerca-de.php:197
 msgid "No se ha podido consultar GitHub. Vuelve a intentarlo más tarde."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:132
-#: escritoriowp\includes\creacion\class-errores.php:74
+#: escritoriowp/includes/class-activos.php:132
+#: escritoriowp/includes/creacion/class-errores.php:74
 msgid "No se ha podido guardar."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:131
+#: escritoriowp/includes/class-activos.php:131
 msgid "No se han podido cargar los datos."
 msgstr ""
 
 #. translators: 1: nombre de usuario, 2: lista de permisos.
-#: escritoriowp\includes\seguridad\class-administradores.php:519
+#: escritoriowp/includes/seguridad/class-administradores.php:486
 msgid "No se han podido retirar a %1$s estos permisos: %2$s."
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:379
+#: escritoriowp/includes/seguridad/class-administradores.php:346
 msgid "No tienes permiso para cambiar el rol de este usuario."
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:102
-#: escritoriowp\includes\class-ajustes.php:1071
-#: escritoriowp\includes\seguridad\class-administradores.php:118
-#: escritoriowp\includes\seguridad\class-administradores.php:297
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:271
+#: escritoriowp/includes/seguridad/class-administradores.php:119
+#: escritoriowp/includes/seguridad/class-administradores.php:264
+#: escritoriowp/includes/class-acerca-de.php:102
+#: escritoriowp/includes/class-ajustes.php:1162
 msgid "No tienes permisos para acceder a esta página."
 msgstr ""
 
-#: escritoriowp\includes\rest\class-rest.php:231
+#: escritoriowp/includes/rest/class-rest.php:276
 msgid "No tienes permisos para acceder a estos datos."
 msgstr ""
 
-#: escritoriowp\includes\actualizaciones\class-actualizador-github.php:84
+#: escritoriowp/includes/actualizaciones/class-actualizador-github.php:84
 msgid "No tienes permisos para buscar actualizaciones."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-errores.php:47
+#: escritoriowp/includes/creacion/class-errores.php:47
 msgid "No tienes permisos para hacer esto."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:172
+#: escritoriowp/includes/class-activos.php:164
 msgid "Nombre"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:170
+#: escritoriowp/includes/class-activos.php:162
 msgid "Nombre de usuario"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:449
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:424
 msgid "Nombre del sitio."
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:444
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:419
 msgid "Nombre y versión de los plugins, resumidos para el asunto: los tres primeros y cuántos más hay."
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:151
+#: escritoriowp/includes/class-acerca-de.php:151
 msgid "Novedades"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:248
+#: escritoriowp/includes/class-capacidades.php:312
 msgid "Nueva entrada"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:249
+#: escritoriowp/includes/class-capacidades.php:313
 msgid "Nueva página"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:253
+#: escritoriowp/includes/class-capacidades.php:317
 msgid "Nuevo"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:252
+#: escritoriowp/includes/class-capacidades.php:316
 msgid "Nuevo pedido"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:251
+#: escritoriowp/includes/class-capacidades.php:315
 msgid "Nuevo producto"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:250
+#: escritoriowp/includes/class-capacidades.php:314
 msgid "Nuevo usuario"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:446
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:421
 msgid "Número de plugins del aviso."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:593
+#: escritoriowp/includes/class-ajustes.php:645
 msgid "Ocultar los widgets de otros plugins"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:743
+#: escritoriowp/includes/seguridad/class-administradores.php:710
 msgid "Oculto en Usuarios"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:158
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:365
+msgid "Oculto en la pantalla Usuarios"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:150
 msgid "Oscuro"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:234
+#: escritoriowp/includes/class-capacidades.php:294
 msgid "Otros contenidos"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:419
+#: escritoriowp/includes/escritorio/class-escritorio.php:441
 msgid "Otros widgets"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:154
-#: escritoriowp\includes\class-ajustes.php:606
+#: escritoriowp/includes/class-activos.php:146
+#: escritoriowp/includes/class-ajustes.php:658
 msgid "Paneles"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:637
+#: escritoriowp/includes/class-ajustes.php:689
 msgid "Para usuarios identificados que ven la barra de administración."
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:231
+#: escritoriowp/includes/class-capacidades.php:291
 msgid "Pedidos"
 msgstr ""
 
 #. translators: %s: lista de estados de pedido que cuentan como ingresos.
-#: escritoriowp\includes\escritorio\class-resumen.php:217
+#: escritoriowp/includes/escritorio/class-resumen.php:243
 msgid "Pedidos %s"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:321
+#: escritoriowp/includes/escritorio/class-resumen.php:352
 msgid "Pedidos este mes"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:643
-#: escritoriowp\includes\seguridad\class-administradores.php:653
-#: escritoriowp\includes\seguridad\class-administradores.php:703
-#: escritoriowp\includes\seguridad\class-administradores.php:714
-#: escritoriowp\includes\seguridad\class-administradores.php:740
+#: escritoriowp/includes/seguridad/class-administradores.php:610
+#: escritoriowp/includes/seguridad/class-administradores.php:620
+#: escritoriowp/includes/seguridad/class-administradores.php:670
+#: escritoriowp/includes/seguridad/class-administradores.php:681
+#: escritoriowp/includes/seguridad/class-administradores.php:707
 msgid "Permisos de administrador"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:153
+#: escritoriowp/includes/class-activos.php:145
 msgid "Personalizar"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:649
+#: escritoriowp/includes/class-ajustes.php:701
 msgid "Pinta el fondo de la entrada EscritorioWP para que destaque. El texto se pone en blanco o en negro según lo que se lea mejor. Déjalo vacío para que se vea como las demás."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:642
+#: escritoriowp/includes/class-ajustes.php:694
 msgid "Posición en el menú"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:176
+#: escritoriowp/includes/class-activos.php:168
 msgid "Precio normal"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:230
+#: escritoriowp/includes/class-capacidades.php:290
 msgid "Productos"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:320
+#: escritoriowp/includes/escritorio/class-resumen.php:351
 msgid "Productos publicados"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:179
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:510
+msgid "Próxima: %s."
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:171
 msgid "Publicada"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:181
+#: escritoriowp/includes/class-activos.php:173
 msgid "Publicar"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:573
+#: escritoriowp/includes/seguridad/class-administradores.php:540
 msgid "Pueden ser una puerta trasera: cuentas con permisos de administrador sin el rol Administrador, o administradores que algún código esconde de la pantalla Usuarios. Si no reconoces alguno, revísalo cuanto antes."
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:228
+#: escritoriowp/includes/class-capacidades.php:288
 msgid "Páginas"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:318
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:465
+msgid "Páginas de avisos"
+msgstr ""
+
+#: escritoriowp/includes/escritorio/class-resumen.php:349
 msgid "Páginas publicadas"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:325
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:343
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:429
+msgid "Quitar filtros"
+msgstr ""
+
+#: escritoriowp/includes/seguridad/class-administradores.php:292
 msgid "Quién es administrador en este sitio y quién, sin tener ese rol, tiene guardados permisos que dan control del sitio. Es una forma habitual de esconder una puerta trasera: la cuenta aparece con un rol normal en la pantalla Usuarios."
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:447
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:422
 msgid "Quién ha hecho el cambio: su nombre visible y su nombre de usuario, o WP-CLI."
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:443
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:418
 msgid "Qué ha pasado: Activación, Desactivación, Instalación o Borrado."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:578
-msgid "Recibe un correo cada vez que alguien activa, desactiva, instala o borra un plugin. Si se cambian varios a la vez, llega un solo correo con todos."
+#: escritoriowp/includes/class-ajustes.php:624
+msgid "Recibe un correo cada vez que alguien activa, desactiva, instala o borra un plugin, y cuando cambian los administradores del sitio. Si se cambian varios plugins a la vez, llega un solo correo con todos."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:193
+#: escritoriowp/includes/class-activos.php:185
 msgid "Recientes"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:130
+#: escritoriowp/includes/class-activos.php:130
 msgid "Reintentar"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:133
+#: escritoriowp/includes/class-acerca-de.php:133
 msgid "Repositorio en GitHub"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:159
+#: escritoriowp/includes/class-activos.php:151
 msgid "Restablecer"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:406
+#: escritoriowp/includes/escritorio/class-escritorio.php:420
 msgid "Resumen del sitio"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:397
-#: escritoriowp\includes\seguridad\class-administradores.php:456
-#: escritoriowp\includes\seguridad\class-administradores.php:787
+#: escritoriowp/includes/seguridad/class-administradores.php:364
+#: escritoriowp/includes/seguridad/class-administradores.php:423
+#: escritoriowp/includes/seguridad/class-administradores.php:754
 msgid "Retirar permisos"
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-errores.php:30
+#: escritoriowp/includes/class-ajustes.php:793
+msgid "Revisa cada 6 horas quién es administrador y quién tiene permisos de administrador sin el rol, y avisa de lo que haya cambiado desde la revisión anterior. Lo que ya existe al marcar la casilla no avisa. Este correo tiene un texto fijo."
+msgstr ""
+
+#. translators: %s: enlace a la pantalla Administradores.
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:306
+msgid "Revisa los administradores en %s"
+msgstr ""
+
+#: escritoriowp/includes/creacion/class-errores.php:30
 msgid "Revisa los datos del formulario."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:174
-#: escritoriowp\includes\seguridad\class-administradores.php:642
-#: escritoriowp\includes\seguridad\class-administradores.php:652
-#: escritoriowp\includes\seguridad\class-administradores.php:702
-#: escritoriowp\includes\seguridad\class-administradores.php:710
+#: escritoriowp/includes/class-activos.php:166
+#: escritoriowp/includes/seguridad/class-administradores.php:609
+#: escritoriowp/includes/seguridad/class-administradores.php:619
+#: escritoriowp/includes/seguridad/class-administradores.php:669
+#: escritoriowp/includes/seguridad/class-administradores.php:677
 msgid "Rol"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:692
+#: escritoriowp/includes/seguridad/class-administradores.php:659
 msgid "Roles alterados"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:177
+#: escritoriowp/includes/class-activos.php:169
 msgid "SKU"
 msgstr ""
 
 #. translators: %s: código SKU del producto.
-#: escritoriowp\includes\busqueda\class-fuente-productos.php:127
+#: escritoriowp/includes/busqueda/class-fuente-productos.php:127
 msgid "SKU %s"
 msgstr ""
 
 #. translators: 1: número de permisos retirados, 2: nombre de usuario, 3: lista de permisos.
-#: escritoriowp\includes\seguridad\class-administradores.php:504
+#: escritoriowp/includes/seguridad/class-administradores.php:471
 msgid "Se ha retirado %1$s permiso a %2$s: %3$s. Si era legítimo, puedes devolverlo con un editor de roles."
 msgid_plural "Se han retirado %1$s permisos a %2$s: %3$s. Si alguno era legítimo, puedes devolverlo con un editor de roles."
 msgstr[0] ""
 msgstr[1] ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:444
+#: escritoriowp/includes/seguridad/class-administradores.php:411
 msgid "Seguirá teniendo %s, que le viene de su rol. EscritorioWP no modifica roles."
 msgid_plural "Seguirá teniendo %s, que le vienen de su rol. EscritorioWP no modifica roles."
 msgstr[0] ""
 msgstr[1] ""
 
-#: escritoriowp\includes\class-ajustes.php:594
+#: escritoriowp/includes/class-ajustes.php:646
 msgid "Si lo desactivas, los widgets de otros plugins se muestran debajo, bajo el título «Otros widgets»."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:196
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:372
+msgid "Sigue existiendo, sin permisos de administrador"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:455
+msgid "Siguiente ›"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:205
+msgid "Sin confirmar"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:141
+msgid "Sin leer:"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:188
 msgid "Sin resultados para «%s»"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-recientes.php:418
-#: escritoriowp\includes\seguridad\class-administradores.php:851
+#: escritoriowp/includes/seguridad/class-administradores.php:818
+#: escritoriowp/includes/escritorio/class-recientes.php:425
 msgid "Sin rol"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:372
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:347
 msgid "Sin usuario identificado"
 msgstr ""
 
+#: escritoriowp/includes/class-ajustes.php:755
+msgid "Solo para los avisos de plugins. Texto plano, sin HTML. Vacíalo y guarda para volver al mensaje predeterminado. Puedes usar estos marcadores en el asunto y en el mensaje:"
+msgstr ""
+
+#: escritoriowp/includes/class-ajustes.php:748
+msgid "Solo para los avisos de plugins. Una sola línea. Vacíalo y guarda para volver al asunto predeterminado."
+msgstr ""
+
 #. translators: %s: roles del usuario.
-#: escritoriowp\includes\seguridad\class-administradores.php:434
+#: escritoriowp/includes/seguridad/class-administradores.php:401
 msgid "Su rol (%s) y el resto de sus permisos no cambian."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:161
+#: escritoriowp/includes/class-activos.php:153
 msgid "Subir el panel %s"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:746
+#: escritoriowp/includes/seguridad/class-administradores.php:713
 msgid "Superadministrador"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:587
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:350
+msgid "Superadministrador de la red"
+msgstr ""
+
+#: escritoriowp/includes/class-ajustes.php:639
 msgid "Sustituir el escritorio nativo"
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:661
+#: escritoriowp/includes/class-ajustes.php:713
 msgid "También si alguien desactiva EscritorioWP. Las actualizaciones no avisan, aunque WordPress desactive y reactive el plugin para actualizarlo."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:155
+#: escritoriowp/includes/class-activos.php:147
 msgid "Tema"
 msgstr ""
 
-#: escritoriowp\includes\rest\class-rest.php:76
+#: escritoriowp/includes/rest/class-rest.php:78
 msgid "Texto a buscar."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:697
-msgid "Texto plano, sin HTML. Vacíalo y guarda para volver al mensaje predeterminado. Puedes usar estos marcadores en el asunto y en el mensaje:"
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:369
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:379
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:407
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:505
+msgid "Tipo"
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:136
+#: escritoriowp/includes/class-acerca-de.php:136
 msgid "Todas las versiones"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:141
+#: escritoriowp/includes/class-capacidades.php:359
 msgid "Todavía no hay entradas."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:145
+#: escritoriowp/includes/class-capacidades.php:363
 msgid "Todavía no hay pedidos."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:144
+#: escritoriowp/includes/class-capacidades.php:362
 msgid "Todavía no hay productos."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:142
+#: escritoriowp/includes/class-capacidades.php:360
 msgid "Todavía no hay páginas."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:143
+#: escritoriowp/includes/class-capacidades.php:361
 msgid "Todavía no hay usuarios."
 msgstr ""
 
-#: escritoriowp\includes\class-acerca-de.php:199
+#: escritoriowp/includes/class-acerca-de.php:199
 msgid "Todavía no se ha comprobado si hay versiones nuevas."
 msgstr ""
 
-#: escritoriowp\includes\lanzador\class-lanzador.php:165
+#: escritoriowp/includes/class-activos.php:138
+msgid "Todavía no se ha enviado ningún aviso por correo."
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:329
+msgid "Todavía no se ha guardado ningún aviso."
+msgstr ""
+
+#: escritoriowp/includes/lanzador/class-lanzador.php:165
 msgid "Todo"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:160
+#: escritoriowp/includes/escritorio/class-resumen.php:153
 msgid "Todo al día"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:186
-#: escritoriowp\includes\creacion\class-creador-contenido.php:55
-#: escritoriowp\includes\creacion\class-creador-producto.php:68
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:419
+msgid "Todos los estados"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:409
+msgid "Todos los tipos"
+msgstr ""
+
+#: escritoriowp/includes/class-activos.php:178
+#: escritoriowp/includes/creacion/class-creador-contenido.php:55
+#: escritoriowp/includes/creacion/class-creador-producto.php:68
 msgid "Tu rol solo permite guardar borradores."
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:166
+#: escritoriowp/includes/class-activos.php:158
 msgid "Título"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:445
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:420
 msgid "Un plugin por línea, con su versión y su fichero."
 msgstr ""
 
 #. translators: %d: número máximo de direcciones.
-#: escritoriowp\includes\class-ajustes.php:681
+#: escritoriowp/includes/class-ajustes.php:739
 msgid "Una o varias direcciones separadas por comas, hasta %d. Si lo dejas vacío, el aviso va al correo de administración del sitio."
 msgstr ""
 
-#: escritoriowp\includes\class-ajustes.php:690
-msgid "Una sola línea. Vacíalo y guarda para volver al asunto predeterminado."
-msgstr ""
-
-#: escritoriowp\includes\seguridad\class-administradores.php:595
-#: escritoriowp\includes\seguridad\class-administradores.php:604
-#: escritoriowp\includes\seguridad\class-administradores.php:641
-#: escritoriowp\includes\seguridad\class-administradores.php:651
+#: escritoriowp/includes/seguridad/class-administradores.php:562
+#: escritoriowp/includes/seguridad/class-administradores.php:571
+#: escritoriowp/includes/seguridad/class-administradores.php:608
+#: escritoriowp/includes/seguridad/class-administradores.php:618
 msgid "Usuario"
 msgstr ""
 
-#: escritoriowp\includes\class-capacidades.php:229
-#: escritoriowp\includes\seguridad\class-administradores.php:704
-#: escritoriowp\includes\seguridad\class-administradores.php:719
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:371
+msgid "Usuario borrado"
+msgstr ""
+
+#: escritoriowp/includes/class-capacidades.php:289
+#: escritoriowp/includes/seguridad/class-administradores.php:671
+#: escritoriowp/includes/seguridad/class-administradores.php:686
 msgid "Usuarios"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:627
+#: escritoriowp/includes/seguridad/class-administradores.php:594
 msgid "Usuarios con permisos de administrador sin serlo"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-resumen.php:319
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:447
+msgid "Usuarios nuevos con permisos de administrador sin el rol"
+msgstr ""
+
+#: escritoriowp/includes/escritorio/class-resumen.php:350
 msgid "Usuarios registrados"
 msgstr ""
 
 #. translators: 1: nombre visible del usuario, 2: nombre de usuario.
-#: escritoriowp\includes\seguridad\class-administradores.php:419
+#: escritoriowp/includes/seguridad/class-administradores.php:386
 msgid "Vas a quitar a %1$s (%2$s) estos permisos de administrador, que tiene asignados directamente:"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:135
+#: escritoriowp/includes/class-activos.php:135
 msgid "Ver"
 msgstr ""
 
-#: escritoriowp\includes\lanzador\class-catalogo-comandos.php:231
+#: escritoriowp/includes/lanzador/class-catalogo-comandos.php:231
 msgid "Ver el sitio"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:815
+#: escritoriowp/includes/seguridad/class-administradores.php:782
 msgid "Ver ficha"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:137
+#: escritoriowp/includes/class-activos.php:137
+#: escritoriowp/includes/escritorio/class-escritorio.php:467
 msgid "Ver todos"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:198
+#: escritoriowp/includes/class-activos.php:190
 msgid "Ver todos en el listado"
 msgstr ""
 
 #. translators: %s: número de versión instalada.
-#: escritoriowp\includes\class-acerca-de.php:123
+#: escritoriowp/includes/class-acerca-de.php:123
 msgid "Versión %s"
 msgstr ""
 
-#: escritoriowp\includes\seguridad\class-administradores.php:405
+#: escritoriowp/includes/seguridad/class-administradores.php:372
 msgid "Volver a Administradores"
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-producto.php:58
+#: escritoriowp/includes/creacion/class-creador-producto.php:58
 msgid "Ya existe un producto con ese SKU."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-usuario.php:42
+#: escritoriowp/includes/creacion/class-creador-usuario.php:42
 msgid "Ya existe un usuario con ese nombre."
 msgstr ""
 
-#: escritoriowp\includes\creacion\class-creador-usuario.php:50
+#: escritoriowp/includes/creacion/class-creador-usuario.php:50
 msgid "Ya existe un usuario con este email."
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:407
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:448
+msgid "Ya no son administradores"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:449
+msgid "Ya no tienen permisos de administrador"
+msgstr ""
+
+#. translators: %s: nombre del sitio.
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:254
+msgid "[%s] Cambios en los administradores"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:382
 msgid "[{sitio}] {evento}: {plugins}"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:203
+#: escritoriowp/includes/class-activos.php:195
 msgid "abrir"
 msgstr ""
 
-#: escritoriowp\includes\avisos\class-avisos-plugins.php:292
+#: escritoriowp/includes/avisos/class-avisos-plugins.php:301
 msgid "en toda la red"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:207
+#: escritoriowp/includes/class-activos.php:199
 msgid "filtrar"
 msgstr ""
 
 #. translators: %s: intervalo de tiempo, por ejemplo «2 horas».
-#: escritoriowp\includes\escritorio\class-recientes.php:440
+#: escritoriowp/includes/escritorio/class-recientes.php:447
 msgid "hace %s"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:206
+#: escritoriowp/includes/class-activos.php:198
 msgid "navegar"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:187
+#: escritoriowp/includes/class-activos.php:179
 msgid "opcional"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:204
+#: escritoriowp/includes/class-activos.php:196
 msgid "pestaña nueva"
 msgstr ""
 
 #. translators: %s: nombre del autor.
-#: escritoriowp\includes\busqueda\class-fuente-contenidos.php:308
-#: escritoriowp\includes\escritorio\class-recientes.php:100
+#: escritoriowp/includes/escritorio/class-recientes.php:107
+#: escritoriowp/includes/busqueda/class-fuente-contenidos.php:279
 msgid "por %s"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:205
+#: escritoriowp/includes/class-activos.php:197
 msgid "ver en el sitio"
 msgstr ""
 
-#: escritoriowp\includes\class-activos.php:184
+#: escritoriowp/includes/class-activos.php:176
 msgid "¡Listo! Se ha creado «%s»."
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:410
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:505
+msgid "Última revisión: %s."
+msgstr ""
+
+#: escritoriowp/includes/escritorio/class-escritorio.php:432
 msgid "Últimos elementos"
 msgstr ""
 
-#: escritoriowp\includes\escritorio\class-escritorio.php:485
+#. translators: %d: usuarios que no se listan.
+#: escritoriowp/includes/avisos/class-avisos-administradores.php:296
+msgid "… y %d más. La pantalla Administradores muestra la situación completa."
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:454
+msgid "‹ Anterior"
+msgstr ""
+
+#: escritoriowp/includes/avisos/class-pantalla-avisos.php:483
+msgid "← Volver a los avisos"
+msgstr ""
+
+#: escritoriowp/includes/escritorio/class-escritorio.php:565
 msgctxt "formato de fecha de la cabecera del escritorio"
 msgid "l, j \\d\\e F \\d\\e Y"
 msgstr ""

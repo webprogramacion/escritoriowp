@@ -4,7 +4,7 @@ Tags: dashboard, escritorio, buscador, command palette, woocommerce
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -238,6 +238,14 @@ Política de privacidad: https://docs.github.com/site-policy/privacy-policies/gi
 
 == Changelog ==
 
+= 0.5.0 =
+* Nueva pantalla EscritorioWP › Avisos, que guarda cada aviso por correo con su mensaje, sus destinatarios y si se envió o falló, con filtros por tipo y por estado.
+* Bloque «Avisos por correo» arriba a la derecha del escritorio, con los cinco últimos avisos.
+* Los avisos que todavía no has visto se marcan en rojo en el escritorio y en el menú lateral, y quedan leídos al abrir la pantalla Avisos o con «Marcar como leídos».
+* Aviso por correo de los cambios en los administradores: cada 6 horas revisa quién es administrador o tiene sus permisos sin el rol, y te avisa de lo que haya cambiado.
+* Tus tipos de contenido personalizados pueden tener su panel y su indicador en el escritorio, si los activas en los ajustes.
+* Con el tema oscuro, los títulos de los paneles del escritorio vuelven a leerse bien.
+
 = 0.4.0 =
 * Nueva pantalla EscritorioWP › Administradores, que señala a los usuarios con permisos de administrador sin tener ese rol, a los que algún código oculta y los roles alterados, y permite retirar esos permisos.
 * Un número rojo en el menú avisa cuando hay usuarios que revisar.
@@ -272,6 +280,11 @@ Política de privacidad: https://docs.github.com/site-policy/privacy-policies/gi
 * Compatibilidad declarada con HPOS de WooCommerce.
 
 == Upgrade Notice ==
+
+= 0.5.0 =
+Añade el registro de los avisos por correo, con la pantalla EscritorioWP › Avisos y un bloque en el
+escritorio, el aviso de cambios en los administradores y paneles para los tipos de contenido
+personalizados. Los dos últimos vienen desactivados: actívalos en EscritorioWP › Ajustes.
 
 = 0.4.0 =
 Añade la pantalla Administradores para detectar puertas traseras, avisos por correo de los cambios en

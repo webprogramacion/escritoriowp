@@ -7,6 +7,8 @@ y el proyecto utiliza [versionado semántico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.5.0] - 2026-10-15
+
 ### Añadido
 
 - Registro de los avisos por correo. Cada aviso que el plugin intenta enviar, de plugins o de
